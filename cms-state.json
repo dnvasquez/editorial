@@ -438,7 +438,21 @@
       "visible": true
     }
   ],
-  "editorialCmsColumnas": null,
+  "editorialCmsColumnas": [
+    {
+      "id": "col-1777480071350",
+      "titulo": "Cuando el agua se convierte en un costo, no en un recurso",
+      "autor": "David A. Vásquez Stuardo",
+      "fecha": "2026-04-29",
+      "categoria": "Analisis",
+      "estado": "publicada",
+      "imagen": "https://www.paiscircular.cl/wp-content/uploads/2024/04/fedfeutasequia.jpg",
+      "banner": "https://www.paiscircular.cl/wp-content/uploads/2024/04/fedfeutasequia.jpg",
+      "resumen": "La agricultura en Coquimbo enfrenta una transformación estructural para evitar el abandono del campo.",
+      "contenido": "La agricultura de Limarí no está muriendo —ni tampoco se está reorganizando por voluntad propia—. Está siendo desmantelada por una combinación de factores sistémicos que, en su conjunto, han creado un nudo crítico en el tejido productivo de la Región de Coquimbo. No se trata de una crisis puntual, sino de un proceso de desacoplamiento estructural entre la oferta agrícola y la capacidad de retorno de los insumos, los recursos y el mercado. La escasez hídrica, que ya no es un fenómeno estacional, se ha convertido en una constante que ha desplazado la rentabilidad de cultivos tradicionales —kiwi, alcachofas, mandarinas— hacia un espacio de subsistencia o de ciclo corto, donde el margen de ganancia es tan delgado que el costo de insumos, como el combustible o el agua, lo anula.\n\nLo que se observa en Río Hurtado, Monte Patria y Tulahuén no es una simple reestructuración de la producción, sino una reconfiguración de la gobernanza del campo. La decisión de reducir 16 hectáreas de mandarina o pasar de dos a una hectárea de paltos no es un ajuste de mercado, sino una respuesta a la certeza jurídica de la falta de agua. El agricultor que dice “no conviene sembrar poco” no habla de la economía del ciclo, sino de la economía de la certeza: si el agua es un recurso que no se puede predecir, la inversión en cultivos de ciclo largo pierde su sentido. La migración hacia la minería no es un desplazamiento de talento, sino una señal de que el capital humano del campo no puede sostenerse en un entorno donde el retorno es incierto y el costo constante.\n\nEl abandono de predios no es un fenómeno de desmotivación, sino de desinversión. La desaparición de la uva, la pérdida de la alcachofa, el silencio de los huertos abandonados —no por negligencia, sino por impotencia— reflejan un sistema que ha perdido su capacidad de generar certeza jurídica en la producción. No hay un solo factor: es la intersección entre la escasez hídrica, la volatilidad de los precios, el aumento de los costos de insumos y la falta de una política de agua que permita una distribución equitativa y predecible. El resultado es un cambio estructural que no se puede revertir con políticas de apoyo a la producción, sino con una redefinición de la relación entre el agua, la tierra y el capital humano.\n\nEl futuro de la agricultura en Limarí no está en la reactivación de cultivos tradicionales, sino en la construcción de un nuevo modelo de producción que integre la gestión del agua como un activo estratégico, no como un recurso disponible. La solución no es la tecnología, sino la gobernanza. La agricultura no puede sobrevivir en un entorno donde el agua no es un recurso, sino un riesgo. El cambio no es un cambio de cultivo, sino un cambio de paradigma: de un modelo extractivo a un modelo de regeneración, donde la tierra no es solo un sustrato, sino un activo que debe ser cuidado, gestionado y valorado. La agricultura de Limarí no puede seguir siendo un negocio de rentabilidad; debe convertirse en un negocio de certeza. Y eso, en este momento, es lo que el mercado no está dispuesto a pagar.",
+      "visible": true
+    }
+  ],
   "editorialCmsPublicaciones": null,
   "editorialCmsPages": null,
   "editorialCmsPageContent": null,
