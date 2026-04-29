@@ -460,30 +460,10 @@
       "teamTitle": "Equipo Editorial",
       "teamMembers": [
         {
-          "name": "Jean Smith",
-          "role": "Editora asociada",
-          "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur ab quas facilis obcaecati non ea, est odit repellat distinctio incidunt, quia aliquam eveniet quod deleniti impedit sapiente atque tenetur porro?",
-          "image": "images/person_1.jpg",
-          "twitter": "#",
-          "instagram": "#",
-          "facebook": "#",
-          "linkedin": "#"
-        },
-        {
           "name": "David A. Vásquez Stuardo",
           "role": "Editor general",
-          "bio": "Agrónomo y Máster en Gestión de Recursos Naturales. Especialista en dinámicas territoriales con más de una década en campo. Editor general comprometido con el rigor y la accesibilidad.",
           "image": "images/person_2.jpg",
-          "twitter": "#",
-          "instagram": "#",
-          "facebook": "#",
-          "linkedin": "#"
-        },
-        {
-          "name": "John Smith",
-          "role": "Editor de contenidos",
-          "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur ab quas facilis obcaecati non ea, est odit repellat distinctio incidunt, quia aliquam eveniet quod deleniti impedit sapiente atque tenetur porro?",
-          "image": "images/person_4.jpg",
+          "bio": "Agrónomo y Máster en Gestión de Recursos Naturales. Especialista en dinámicas territoriales con más de una década en campo. Editor general comprometido con el rigor y la accesibilidad.",
           "twitter": "#",
           "instagram": "#",
           "facebook": "#",
@@ -498,10 +478,40 @@
       "title": "Invitados Destacados",
       "items": [
         {
+          "name": "Megan Smith",
+          "role": "Directora Editorial",
+          "bio": "Especialista en narrativa digital y curaduría de contenidos editoriales.",
+          "image": "images/person_1.jpg"
+        },
+        {
           "name": "David A. Vásquez Stuardo",
           "role": "Editor general",
-          "image": "images/person_2.jpg",
-          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación."
+          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación.",
+          "image": "images/person_2.jpg"
+        },
+        {
+          "name": "Philip Martin",
+          "role": "Editor de contenidos",
+          "bio": "Acompaña procesos de edición, guion y despliegue de publicaciones multiformato.",
+          "image": "images/person_3.jpg"
+        },
+        {
+          "name": "Steven Ericson",
+          "role": "Colaborador invitado",
+          "bio": "Analiza tendencias, formatos y distribución de contenidos editoriales.",
+          "image": "images/person_4.jpg"
+        },
+        {
+          "name": "Nathan Dumlao",
+          "role": "Investigador invitado",
+          "bio": "Se enfoca en innovación, entrevistas y mediación entre academia y público general.",
+          "image": "images/person_5.jpg"
+        },
+        {
+          "name": "Brook Smith",
+          "role": "Columnista invitado",
+          "bio": "Escribe sobre política pública, territorio y cultura editorial contemporánea.",
+          "image": "images/person_6.jpg"
         }
       ]
     },
