@@ -454,7 +454,51 @@
     }
   ],
   "editorialCmsPublicaciones": null,
-  "editorialCmsPages": null,
+  "editorialCmsPages": {
+    "index": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": "images/hero_bg_1.jpg",
+      "featuredContentType": "column",
+      "featuredContentId": "col03",
+      "featuredEpisodeId": "",
+      "manualHeroTitle": "",
+      "manualHeroMeta": "",
+      "manualHeroAudio": "",
+      "manualHeroTranscriptLink": ""
+    },
+    "programas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "columnas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "publicaciones": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "about": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "contact": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    }
+  },
   "editorialCmsPageContent": {
     "about": {
       "teamTitle": "Equipo Editorial",
