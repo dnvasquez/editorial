@@ -9,25 +9,29 @@
       "visible": true
     },
     {
-      "id": "territorio-rural",
-      "nombre": "La Cuestión Rural Latinoamericana",
-      "frecuencia": "Quincenal",
-      "imagen": "https://dn720702.ca.archive.org/0/items/20260413-1158-image-generation-remix-01kp-3s-0amwfdn-9kfcz-0c-7920fb/20260413_1158_Image%20Generation_remix_01kp3s0amwfdn9kfcz0c7920fb.png",
-      "descripcion": "Examinamos la ruralidad latinoamericana desde perspectivas que articulan saberes campesinos, políticas públicas e innovación territorial.",
-      "visible": true
-    },
-    {
       "id": "ceguera-digital",
       "nombre": "Ceguera digital y territorio",
       "frecuencia": "Mensual",
       "imagen": "https://dn721904.ca.archive.org/0/items/20260413-1149-image-generation-remix-01kp-3rgpmye-9rsq-1f-9d-4evekjq/20260413_1149_Image%20Generation_remix_01kp3rgpmye9rsq1f9d4evekjq.png",
       "descripcion": "Exploramos el choque entre las herramientas tecnológicas digitales y la realidad del territorio.",
       "visible": true
+    },
+    {
+      "id": "territorio-rural",
+      "nombre": "La Cuestión rural Latinoamericana",
+      "frecuencia": "Quincenal",
+      "imagen": "https://dn720702.ca.archive.org/0/items/20260413-1158-image-generation-remix-01kp-3s-0amwfdn-9kfcz-0c-7920fb/20260413_1158_Image%20Generation_remix_01kp3s0amwfdn9kfcz0c7920fb.png",
+      "descripcion": "Examinamos la ruralidad latinoamericana desde perspectivas que articulan saberes campesinos, políticas públicas e innovación territorial.",
+      "visible": true
+    },
+    {
+      "id": "programa-1777477965174",
+      "_deleted": true
     }
   ],
   "editorialCmsEpisodios": [
     {
-      "id": "ep-1777478207343",
+      "id": "ep-1777472808822",
       "programaId": "publico-privado",
       "numero": "01",
       "titulo": "El espejismo de los decretos ecológicos ¿Avance o puro humo?",
@@ -440,7 +444,7 @@
   ],
   "editorialCmsColumnas": [
     {
-      "id": "col-1777478371423",
+      "id": "col-1777472968112",
       "titulo": "Cuando el agua se convierte en un costo, no en un recurso",
       "autor": "David A. Vásquez Stuardo",
       "fecha": "2026-04-29",
@@ -454,7 +458,51 @@
     }
   ],
   "editorialCmsPublicaciones": null,
-  "editorialCmsPages": null,
+  "editorialCmsPages": {
+    "index": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": "images/hero_bg_1.jpg",
+      "featuredContentType": "episode",
+      "featuredContentId": "ep-1777472808822",
+      "featuredEpisodeId": "ep-1777472808822",
+      "manualHeroTitle": "",
+      "manualHeroMeta": "",
+      "manualHeroAudio": "",
+      "manualHeroTranscriptLink": ""
+    },
+    "programas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "columnas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "publicaciones": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "about": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "contact": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    }
+  },
   "editorialCmsPageContent": {
     "about": {
       "teamTitle": "Equipo Editorial",
