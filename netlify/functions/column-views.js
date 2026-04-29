@@ -1,5 +1,3 @@
-const { getSessionFromEvent } = require("./_cms-auth");
-
 const DEFAULT_REPO = "dnvasquez/editorial";
 const DEFAULT_BRANCH = "main";
 const DEFAULT_PATH = "cms-state.json";
@@ -131,67 +129,86 @@ async function writeRemoteState(state, message) {
   return response.json();
 }
 
+function normalizeCount(value) {
+  const count = Number.parseInt(value, 10);
+  return Number.isFinite(count) && count > 0 ? count : 0;
+}
+
+function getViewsMap(state) {
+  const raw = state && state.editorialCmsColumnViews;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return {};
+  }
+
+  return Object.keys(raw).reduce((accumulator, key) => {
+    accumulator[key] = normalizeCount(raw[key]);
+    return accumulator;
+  }, {});
+}
+
+function readRequestBody(event) {
+  try {
+    return JSON.parse(event.body || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
 exports.handler = async function (event) {
+  const state = await readRemoteState();
+  const views = getViewsMap(state);
+
   if (event.httpMethod === "GET") {
-    const state = await readRemoteState();
+    const id = (event.queryStringParameters && event.queryStringParameters.id) ? String(event.queryStringParameters.id) : "";
+    const count = id ? normalizeCount(views[id]) : 0;
+
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-store"
       },
-      body: JSON.stringify({ ok: true, state })
+      body: JSON.stringify({ ok: true, count, views })
     };
   }
 
-  if (event.httpMethod !== "PUT" && event.httpMethod !== "POST") {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { Allow: "GET, PUT, POST", "Content-Type": "application/json" },
+      headers: { Allow: "GET, POST", "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" })
     };
   }
 
-  const session = getSessionFromEvent(event);
-  if (!session) {
-    return {
-      statusCode: 401,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Not authenticated." })
-    };
-  }
-
-  let body = {};
-  try {
-    body = JSON.parse(event.body || "{}");
-  } catch (error) {
-    body = {};
-  }
-
-  const state = body && typeof body.state === "object" ? body.state : null;
-  if (!state) {
+  const body = readRequestBody(event);
+  const id = String(body.id || "").trim();
+  if (!id) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Missing CMS state payload." })
+      body: JSON.stringify({ error: "Missing column id." })
     };
   }
 
+  const nextCount = normalizeCount(views[id]) + 1;
+  views[id] = nextCount;
+  state.editorialCmsColumnViews = views;
+
   try {
-    await writeRemoteState(state, `Update CMS state from ${session.username}`);
+    await writeRemoteState(state, `Increment column view for ${id}`);
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-store"
       },
-      body: JSON.stringify({ ok: true })
+      body: JSON.stringify({ ok: true, id, count: nextCount, views })
     };
   } catch (error) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Unable to persist CMS state." })
+      body: JSON.stringify({ error: "Unable to persist column view count." })
     };
   }
 };

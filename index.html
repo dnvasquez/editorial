@@ -551,7 +551,7 @@
           '<div class="image w-100" style="height: 200px; background-image: url(\'' + c.imagen + '\');"></div>' +
           '<div class="text">' +
           '<h3 class="font-weight-light"><a href="columna.html?id=' + c.id + '">' + c.titulo + '</a></h3>' +
-          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>Por ' + c.autor + ' <span class="sep">/</span> ' + c.fecha + '</small></span></div>' +
+          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>Por ' + c.autor + ' <span class="sep">/</span> ' + c.fecha + ' <span class="sep">/</span> <span class="column-view-count">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(c.vistas || 0) : ((c.vistas || 0) + " vistas")) + '</span></small></span></div>' +
           '<p>' + c.resumen.substring(0, 120) + '...</p>' +
           '<a href="columna.html?id=' + c.id + '" class="btn btn-sm btn-primary py-2 px-3">Leer columna</a>' +
           '</div></div></div>';

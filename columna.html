@@ -128,6 +128,25 @@
   <script src="js/cms-site.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      function formatViews(count) {
+        var value = parseInt(count, 10);
+        var total = isFinite(value) && value > 0 ? value : 0;
+        return total + ' vista' + (total === 1 ? '' : 's');
+      }
+
+      function persistViewCount(id, count) {
+        try {
+          var storageKey = window.EditorialCmsSite && window.EditorialCmsSite.STORAGE_KEYS ? window.EditorialCmsSite.STORAGE_KEYS.columnViews : 'editorialCmsColumnViews';
+          var raw = window.localStorage.getItem(storageKey);
+          var views = raw ? JSON.parse(raw) : {};
+          if (!views || typeof views !== 'object' || Array.isArray(views)) {
+            views = {};
+          }
+          views[id] = count;
+          window.localStorage.setItem(storageKey, JSON.stringify(views));
+        } catch (error) {}
+      }
+
       var params = new URLSearchParams(window.location.search);
       var colId = params.get('id');
       var col = colId ? COLUMNAS.find(function(c) { return c.id === colId; }) : null;
@@ -140,7 +159,7 @@
       document.getElementById('col-hero-bg').style.backgroundImage = "url('" + col.banner + "')";
       document.getElementById('col-cover').innerHTML =
         '<h2 class="text-white font-weight-light mb-2 display-4">' + col.titulo + '</h2>' +
-        '<p class="text-white"><small>Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> ' + col.lectura + ' lectura</small></p>';
+        '<p class="text-white"><small>Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> ' + col.lectura + ' lectura <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span></small></p>';
 
       // Contenido de la columna
       var html = '<p class="lead mb-5 text-muted">' + col.resumen + '</p>';
@@ -161,6 +180,29 @@
       var footerColumns = document.getElementById('footer-columnas');
       if (footerColumns) {
         footerColumns.innerHTML = footerHtml;
+      }
+
+      if (col && col.id) {
+        fetch('/.netlify/functions/column-views', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: col.id })
+        })
+          .then(function(response) {
+            return response.ok ? response.json() : null;
+          })
+          .then(function(payload) {
+            if (!payload || typeof payload.count !== 'number') return;
+            col.vistas = payload.count;
+            persistViewCount(col.id, payload.count);
+            var viewsNode = document.getElementById('col-views');
+            if (viewsNode) {
+              viewsNode.textContent = formatViews(payload.count);
+            }
+          })
+          .catch(function() {});
       }
 
     });

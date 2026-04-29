@@ -7,6 +7,7 @@
     "editorialCmsEpisodios",
     "editorialCmsColumnas",
     "editorialCmsPublicaciones",
+    "editorialCmsColumnViews",
     "editorialCmsPages",
     "editorialCmsPageContent",
     "editorialCmsSections",

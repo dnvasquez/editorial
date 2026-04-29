@@ -5,7 +5,8 @@
     programs: "editorialCmsProgramas",
     episodes: "editorialCmsEpisodios",
     columns: "editorialCmsColumnas",
-    publications: "editorialCmsPublicaciones"
+    publications: "editorialCmsPublicaciones",
+    columnViews: "editorialCmsColumnViews"
   };
   var REMOTE_STATE_ENDPOINT = "/.netlify/functions/cms-state";
   var REMOTE_STATE_KEYS = [
@@ -13,6 +14,7 @@
     "editorialCmsEpisodios",
     "editorialCmsColumnas",
     "editorialCmsPublicaciones",
+    "editorialCmsColumnViews",
     "editorialCmsPages",
     "editorialCmsPageContent",
     "editorialCmsSections",
@@ -411,6 +413,8 @@
   }
 
   function normalizeColumnForSite(column) {
+    var views = getColumnViews();
+    var columnId = String(column.id);
     var contentArray = toParagraphArray(column.contenido);
     return {
       id: column.id,
@@ -422,10 +426,29 @@
       banner: column.banner || column.imagen || "images/col01_img.jpg",
       resumen: column.resumen || "",
       contenido: contentArray,
+      vistas: views[columnId] || 0,
       categoria: column.categoria || "Opinion",
       estado: column.estado || "publicada",
       visible: column.visible !== false
     };
+  }
+
+  function getColumnViews() {
+    var raw = readObject(STORAGE_KEYS.columnViews);
+    var normalized = {};
+
+    Object.keys(raw).forEach(function (key) {
+      var value = parseInt(raw[key], 10);
+      normalized[String(key)] = isFinite(value) && value > 0 ? value : 0;
+    });
+
+    return normalized;
+  }
+
+  function formatViewLabel(count) {
+    var value = parseInt(count, 10);
+    var total = isFinite(value) && value > 0 ? value : 0;
+    return total + " vista" + (total === 1 ? "" : "s");
   }
 
   function getColumnsForAdmin() {
@@ -500,6 +523,11 @@
     }
 
     writeArray(STORAGE_KEYS.columns, localItems);
+    var views = getColumnViews();
+    if (Object.prototype.hasOwnProperty.call(views, String(id))) {
+      delete views[String(id)];
+      writeObject(STORAGE_KEYS.columnViews, views);
+    }
     queueRemoteSync();
   }
 
@@ -1268,6 +1296,7 @@
     savePageConfig: savePageConfig,
     findPageDefinition: findPageDefinition,
     hydrateGlobals: hydrateGlobals,
+    formatViewLabel: formatViewLabel,
     renderAboutContent: renderAboutContent,
     renderContactContent: renderContactContent,
     applyPageConfig: applyPageConfig

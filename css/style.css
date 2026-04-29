@@ -152,6 +152,15 @@ a {
 .text-black-opacity-05 {
   color: rgba(0, 0, 0, 0.5); }
 
+.column-view-count {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(242, 58, 46, 0.08);
+  color: #f23a2e;
+  border: 1px solid rgba(242, 58, 46, 0.16);
+  white-space: nowrap; }
+
 /* Navbar */
 .site-navbar {
   margin-bottom: 0px;
