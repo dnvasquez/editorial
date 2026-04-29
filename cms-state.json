@@ -9,19 +9,550 @@
       "visible": true
     },
     {
+      "id": "ceguera-digital",
+      "nombre": "Ceguera digital y territorio",
+      "frecuencia": "Mensual",
+      "imagen": "https://dn721904.ca.archive.org/0/items/20260413-1149-image-generation-remix-01kp-3rgpmye-9rsq-1f-9d-4evekjq/20260413_1149_Image%20Generation_remix_01kp3rgpmye9rsq1f9d4evekjq.png",
+      "descripcion": "Exploramos el choque entre las herramientas tecnológicas digitales y la realidad del territorio.",
+      "visible": true
+    },
+    {
       "id": "territorio-rural",
-      "nombre": "La Cuestión Rural Latinoamericana",
+      "nombre": "La Cuestión rural Latinoamericana",
       "frecuencia": "Quincenal",
       "imagen": "https://dn720702.ca.archive.org/0/items/20260413-1158-image-generation-remix-01kp-3s-0amwfdn-9kfcz-0c-7920fb/20260413_1158_Image%20Generation_remix_01kp3s0amwfdn9kfcz0c7920fb.png",
       "descripcion": "Examinamos la ruralidad latinoamericana desde perspectivas que articulan saberes campesinos, políticas públicas e innovación territorial.",
       "visible": true
+    },
+    {
+      "id": "programa-1777477965174",
+      "_deleted": true
     }
   ],
-  "editorialCmsEpisodios": null,
-  "editorialCmsColumnas": null,
+  "editorialCmsEpisodios": [
+    {
+      "id": "ep-1777472808822",
+      "programaId": "publico-privado",
+      "numero": "01",
+      "titulo": "El espejismo de los decretos ecológicos ¿Avance o puro humo?",
+      "autor": "Valeria & Ignacio",
+      "fecha": "13 Abril 2026",
+      "duracion": "19:54",
+      "imagen": "https://dn721803.ca.archive.org/0/items/portada-programa/Portada%20programa.jpg",
+      "audio": "https://ia600709.us.archive.org/30/items/1.-proteccion-real-o-solo-decretos-ambientales/Simbiosis%20-%20capitulo%201.mp3",
+      "resumen": "Chile rompe récords en conservación: más del 50% del océano protegido, una nueva estrategia nacional y millones de datos liberados. Pero, ¿Qué pasa cuando el mapa no coincide con el territorio? En este capítulo, Ignacio y Valeria confrontan el verdadero dilema: ¿estamos construyendo un sistema robusto o acumulando promesas sin capacidad operativa? Un debate incómodo sobre Estado, fiscalización y la brecha crítica entre ley y realidad.",
+      "transcripcion": [
+        {
+          "locutor": "Valeria",
+          "texto": "Bienvenidos a este espacio de contraste y análisis profundo. Esto es Simbiosis, crónica semanal sobre biodiversidad. Capítulo de hoy, el espejismo de los decretos ecológicos. Avance histórico o puro humo."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Hola, ¿qué tal?"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Usualmente, cuando observamos un mapa y vemos una zona delineada en, no sé, en un verde vibrante o un azul profundo, asumimos automáticamente que ese bosque o ese trozo de mar está a salvo."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Mm. Claro, como un límite limpio en el papel."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Exacto. Como si compraras un terreno y levantaras un muro de concreto. Pero tú y yo sabemos que la realidad es otra."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Totalmente. Porque cuando das un paso fuera de la oficina gubernamental y te enfrentas a la realidad del territorio, ese límite perfecto y binario se desvanece por completo. O sea, el mapa no es el territorio."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Y esa fricción, precisamente esa fricción entre el mapa y el territorio es el centro de nuestra discusión de hoy. En las últimas semanas. Los reportes oficiales nos muestran que Chile ha alcanzado, uf, una serie de hitos históricos masivos en conservación ecológica."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Cifras gigantes, cifras que reconfiguran el mapa global."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Estamos hablando de la superación del 50% de protección de toda la zona oceánica chilena."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "También la aprobación de la estrategia nacional de biodiversidad 2025-2030 y algo no menor, la liberación de más de 12,000000 de registros de biodiversidad. O sea, en la superficie parece un triunfo monumental."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Mira, son titulares impresionantes de esos que dominan las cumbres internacionales y quedan muy bonitos en la prensa. Pero la pregunta que debemos diseccionar hoy y que a veces puede sonar un poco fome para el público general es bastante más urgente."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "¿Y cuál sería, según tú?"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "¿Representan realmente estos decretos una transformación sistémica en la protección de la naturaleza? O eh o estamos ante una enorme victoria administrativa que simplemente oculta una profunda crisis de capacidad estatal y de logística operativa."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Ya. Para poner mis cartas sobre la mesa al tiro. Mi postura es clara. Yo sostengo que estas medidas no son solo papel. Están construyendo una arquitectura institucional robusta, sin precedentes, que posiciona a Chile como un líder mundial pragmático y real. Estamos creando las bases obligatorias para la conservación del siglo XXI."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Yo soy mucho más escéptico. Si miras más allá de los anuncios, la realidad operativa nos cuenta una historia super ferente. Mi posición es que la evidencia nos muestra un sistema burocrático que está saturado. O sea, las declaraciones de áreas protegidas superan de manera bien alarmante la capacidad física, técnica y sobre todo financiera del Estado para gestionar y fiscalizar esos mismos territorios."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Entiendo, entiendo por qué la cantidad de anuncios recientes puede generar este escepticismo, pero mira, analicemos cómo operan estos hitos en la maquinaria real del Estado. No son puro humo, no son ejercicios de relaciones públicas. Tomemos El caso del océano, por ejemplo,"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "a ver,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "cuando el Consejo de Ministros aprueba oficialmente la creación de los parques marinos, Juan Fernández 2 y Nazca Desventuradas 2, no están e dibujando líneas imaginarias en el agua por simple capricho."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Bueno, están elevando los números,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "están elevando a Chile al podio mundial, nos convierten en el tercer país con mayor superficie oceánica protegida en el mundo."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Estamos hablando de cientos de miles de kilómetros cuadrados."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Es Exactamente. Superficies inmensas. Y claro, alguien que nos escuche podría decir, \"Ya, pero ¿de qué sirve firmar un decreto si no tienes los barcos y la infraestructura desplegada hoy mismo?\""
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "¿Qué es exactamente lo que yo me pregunto?"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Sirve porque en la administración pública la política y la ley deben preceder a la infraestructura. Siempre si tú no estableces el perímetro legal primero, si no creas el mandato vinculante de protección, el Ministerio de Hacienda jamás, pero jamás te va a asignar las lucas en los ciclos presupuestarios siguientes."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya, pero"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "espera, déjame terminar el punto. El decreto fuerza al Estado te obliga legalmente a comprar los barcos, a contratar a los científicos y a construir los centros de monitoreo en el futuro."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya, pero detengámonos ahí un segundo, porque el tiempo que pasa entre esa firma legal y la llegada efectiva de las lucas del presupuesto es donde literalmente se juega la supervivencia de los ecosistemas y esto nos lleva al famoso concepto de los parques de papel. elegidas solo de nombre."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Exacto. Un fenómeno que es de los más destructivos en la conservación global. Llevemos esto a la geografía real."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya. Nasca desventuradas está en el medio del Pacífico, a cientos y cientos de kilómetros de la costa continental. Tú no puedes vigilar un área remota de ese tamaño asomándote con binoculares desde el puerto de Valparaíso. Cachá. Proteger eso requiere tecnología satelital 247."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Nadie niega el costo logístico de eso."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Pero requiere embarcaciones oceánicas que aguanten semanas en alta mar, o sea, un gasto de combustible estrat esférico y tripulación superespecializada. El tema es que declarar un área de esta magnitud sin tener la infraestructura operativa asegurada al tiro es como comprar una caja fuerte de última generación carísima y dezarla en medio de la calle con la puerta abierta."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "¡Uf! Esa analogía es un poco extrema."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Es que es así. La dejas abierta porque no te alcanzó el presupuesto para contratar a un guardia. El papel dice que el océano es nuestro y está protegido, pero en la práctica, sin lanchas de intercepción rápida, ese océano le pertenece a la flota pesquera ilegal, extranjera o nacional. que tenga más combustible y menos escrúpulos. Durante los 5 o 10 años que el estado tarde en asignar el presupuesto que tú mencionas, el ecosistema queda absolutamente vulnerable. O sea, el papel aguanta cualquier cosa, pero el océano no."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Mira, esa analogía de la caja fuerte es super gráfica, te lo concedo, pero ignora un hecho fundamental y es que el estado no está dejando el área abandonada mientras espera los recursos cruzados de brazos."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ah, no,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "no, porque precisamente por eso se acaba de iniciar el despliegue físico del Servicio de Biodiversidad y Áreas Protegidas, el famoso ESVAP. Por décadas, tú sabes que la conservación en Chile fue un caos administrativo total."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "¡Uf! Sí. Una pesadilla burocrática."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Una agencia veía los bosques, otra veía el mar, otra las especias protegidas. Era ineficiente. Pero hoy el SVAP está aterrizando en las regiones. Empezaron eh con su reciente inauguración en Los Ríos. Estamos viendo oficinas reales con presupuesto asignado y guardaparques unificados bajo un solo mandato. O sea, El guardia de tu caja fuerte ya está siendo contratado, ya está siendo la pega."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "A ver, reconozco el avance histórico que significa el SBAP. Unificar ese caos institucional era imperativo, no te lo discuto, pero y aquí hay un pero gigante. Abrir una oficina regional en Los ríos que cubre áreas terrestres y costeras que están relativamente cerca es un desafío logístico infinitamente menor que fiscalizar zonas económicas exclusivas en altamar."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Tienen que empezar por algún lado."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Sí, pero esto me preocupa aún más al mirar la meta de el 30%. Esta meta de proteger el 30% del territorio terrestre para 2030 que viene respaldada por la nueva estrategia nacional, ¿cómo va a absorber esta nueva y seamos honestos pequeña institución semejante carga administrativa territorial de la noche a la mañana?"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "La absorberá apoyándose en un cambio de paradigma, un cambio que compensa la falta de recursos físicos iniciales con inteligencia de datos. Y aquí es donde la discusión da un giro supercrucial."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "A ver, cuéntame."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "de que no tenemos suficientes barcos o guardaparques físicos caminando por ahí, pero la fiscalización del siglo XXI no depende exclusivamente de tener a un humano patrullando cada hectárea de bosque o navegando cada milla náutica."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "¿Te refieres al anuncio reciente de la Superintendencia del Medio Ambiente?"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Exactamente. La publicación de más de 12 millones de registros de biodiversidad chilena, 12 millones de puntos de datos. Y quiero ser supercara en qué significa esto empílicamente. No, estamos hablando de, no sé, 12 millones de hojas de papel arrumbadas en un sótano ministerial en Santiago acumulando polvo."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Claro, son bases de datos digitales,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "son coordenadas de telemetría satelital siguiendo los patrones de migración de las ballenas. Son miles de imágenes de trampas cámara ocultas en la cordillera que nos dictan el movimiento de pumas y otros felinos en tiempo real. Son registros acústicos, avistamientos de ciencia ciudadana validados científicamente."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "al liberar este 12 millones de registros bajo una política de datos abiertos, el Estado descentraliza la fiscalización. Ahora tienes a una red de ONGs, universidades, las mismas comunidades locales y centros de investigación globales cruzando esos datos. Pueden detectar si una embarcación apaga su transpondor cerca de un parque marino o si la deforestación avanza sobre un corredor biológico. Esta democratización radical de la información crea una red de vigilancia omnipresente. Y eso hace obsoleto tu concepto de los parques de papel, porque ya no estamos ciegos ante lo que ocurre en ellos."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "p****, ahí, ahí está la trampa del tecno optimismos, creo yo. Mencionas 12 millones de registros y vigilancia ciudadana como si fueran la solución mágica definitiva. Pero a ver, volvamos a lo que ocurrió hace apenas unos días, el 14 de marzo."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Ah, ya sé para dónde vas."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ese evento es la prueba de fuego que desarma tu argumento de los datos."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "¿Te refieres al día en que se tuvo que pausar el mapa interactivo del ministerio?"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Pausar es un eufemismo bastante amable. Seamos francos, el Estado chileno tuvo que congelar y detener por completo su plataforma del mapa de biodiversidad. Colapsó. Y quiero que quienes nos escuchan entiendan la gravedad de por qué colapsó."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Fue por alta demanda."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Sí, el sistema se paralizó al recibir 10,000 observaciones. Y ojo, no eran 10,000 clics en una página de encuestas o mensajes de texto rápidos,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "eran observaciones técnicas del proceso de participación ciudadana."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Así es. eran polígonos geoespaciales meticulosamente trazados por organizaciones locales que querían proteger humedales no reconocidos. Eran expedientes técnicos enteros enviados por biólogos marinos y municipalidades intentando ajustar los límites de protección. O sea, fue una avalancha de participación real, densa y tal para el país."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "M"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "pero el servidor colapsó estrepitosamente. Entonces, yo te pregunto, ¿de qué nos sirve tener un repositorio maravilloso con 12 millones de registros pasados? Si cuando 10,000 ciudadanos y expertos intentan ingresar datos nuevos, datos vinculantes para el futuro, la plataforma técnica se desmorona."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "A ver, el sistema llegó a su límite de capacidad de procesamiento momentáneo. Sí, no te lo voy a negar."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Pero eso revela una falla estructural masiva. Que la plataforma se paralice ante apenas 10,000 ingresos nos demuestra que la infraestructura técnica y el capital humano para procesar esa información están kilómetros por detrás de la capacidad de recolección de datos."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Ya, pero"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "es como tener un escáner de última generación arrojando diagnósticos hiperdetallados. sobre la salud de los ecosistemas, pero el médico especialista que debe interpretarlos está desmayado en la sala de emergencias por exceso de pega administrativa. La burocracia está ahogada y eso hace que todo este avance parezca puro humo."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Entiendo perfectamente tu preocupación y ver una plataforma gubernamental caída siempre genera frustración, obvio, pero creo que estás interpretando un síntoma de éxito como si fuera un diagnóstico de enfermedad terminal."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Éxito, que se caiga el sistema es éxito."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Escúchame. Ese supuesto colapso por 10000 técnicas complejas es la evidencia empírica de una movilización cívica, científica y municipal que simplemente no existía hace una década. Piénsalo de esta manera. Es como un músculo que duele al día siguiente de someterse a un entrenamiento de alta intensidad."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ah, las típicas agujetas de gimnasio."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Exacto. Cuando te duele todo. El dolor en el músculo no significa que el ejercicio haya sido malo ni que el cuerpo esté fallando. Al contrario, el dolor ocurre porque las fibras musculares están sometidas a una tensión nueva. Necesitan romperse para regenerarse, ensancharse y poder soportar una carga mayor en el futuro."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Ya"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "el hecho de que 10,000 entidades hayan inuivado el sistema con polígonos y datos geoespaciales demuestra que la sociedad civil se está tomando super en serio estos hitos legislativos y que el Estado haya congelado el mapa para procesarlos bien en lugar de pasarlos por alto con un filtro automático y en sensible, te garantiza que el expediente de cada municipio Cada humedal y cada bosque se ha evaluado con el rigor que merece. El sistema está creciendo bajo presión."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "A ver, entiendo la lógica del músculo, es buena y te aseguro que celebró profundamente el nivel de participación ciudadana. O sea, ver a municipalidades enteras enviando polígonos de humedales es superanzador."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Lo es."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Pero hay un fallo fatal en tu analogía. Para que un músculo crezca después del estrés del gimnasio, necesita periodos de descarso y recuperación. Y en el contexto de la crisis climática actual, la biodiversidad simplemente no tiene el lujo del tiempo, no tiene periodos de descaso."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Bueno, la urgencia climática es innegable, totalmente."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Pero es que mientras el mapa está congelado, mientras los técnicos del ministerio intentan descifrar cómo ampliar sus servidores o de dónde sacar Lucas para contratar a más analistas de datos, las presiones sobre el territorio físico no hacen pausas."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Mm."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Las excavadoras de las inmobiliarias no se detienen frente a los humedales urbanos porque la página web del gobierno esté en mantenimiento. Las redes de pesca incidental no se congelan mientras esperamos que el SVAP termina de instalarse en todas las regiones del país. Los reportes recientes que hemos estado analizando advierten explícitamente que la biodiversidad sigue bajo presión. Así que aunque celebro que este músculo institucional intente fortalecerse, me aterra que lo estemos obligando a levantar tres veces su peso en medio de un incendio descontrolado. Necesitamos un sistema que ya esté en forma operativa al tiro, no uno que recién esté descubriendo cómo atarse los cordones burocráticos."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Yo creo que tu sentido de la urgencia es absolutamente correcto. Nadie que analice los datos ecológicos de manera objetiva podría sugerir que tenemos tiempo de sobra. Sin embargo, es precisamente esa presión del reloj la que hace que estos hitos recientes sean tan vitales."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "M"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Si nos alejamos un poco y miramos el panorama completo que hemos recorrido hoy, vemos algo extraordinario. En muy poco tiempo, Chile ha consolidado compromisos vinculantes para más de la mitad de su enorme zona oceánica. Ha aprobado una estrategia nacional hacia el 2030 que impone metas de restauración reales. Ya ha materializado físicamente al servicio de biodiversidad en regiones críticas como Los Ríos, asumiendo la pega territorial y ha democratizado el acceso a millones de datos empíricos. Estos no son meros actos discursivos, son el andamiaje legal y estructural definitivo que aunque sufra dolores de crecimiento en el corto plazo, está forzando irreversiblemente a todo el aparato estatal a estar a la altura del desafío ambiental."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Respeto tu visión y mi ura final, mirando exactamente el mismo panorama, es que debemos mantener una vigilancia y un escepticismo sumamente críticos. No niego que la estrategia 2025-2030 y los decretos de áreas marinas marcan el rumbo legal necesario. Son logros diplomáticos y legislativos inmensos, pero los síntomas operativos que vemos sobre el terreno no pueden minimizarse. Cuando un sistema técnico colapsa ante la participación ciudadana y las presiones extractivas continúan sin tregua alguna, nos topamos de de frente con una verdad muy incómoda."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "¿Cuál?"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Que nuestra capacidad de declarar protección va muchísimo más rápido que nuestra capacidad real de ejercerla. Prometer la preservación de un ecosistema en un documento es apenas el calentamiento. La verdadera conservación se mide en litros de combustible para patrullajes, en servidores capaces de procesar la ciencia ciudadana y en botas sobre el terreno. Y ahí el Estado sigue mostrando signos de agotamiento crónico."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Bueno, a pesar de que divergimos fuertemente sobre si la botella de la capacidad estatal está medio llena o medio vacía en este momento de transición. Creo que hay puntos de encuentro innegables en nuestra discusión."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Sí, de todas maneras,"
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "ambos concordamos en que el nacimiento y despliegue del Servicio de Biodiversidad y áreas protegidas es un paso histórico. Centralizar en una sola entidad lo que antes era un laberinto de competencias fragmentadas entre múltiples ministerios es un salto evolutivo indispensable para el país."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Absolutamente de acuerdo. Terminar con esa esquizofrenia institucional era el requisito mínimo para empezar a hablar de conservación seria."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Claro. Y sumaría a esa zona de convergencia que el volumen masivo de datos que ahora reside en el dominio público marca un punto de inflexión. Aunque el Estado esté eh experimentando cuellos de botella para procesar la información entrante, esos 12 millones de registros liberados por la superintendencia ya están ahí afuera."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Así es, nadie los puede volver a esconder. Eso empuja inevitablemente a la política pública, a la justicia ambiental y a las empresas privadas. a operar bajo el escrutinio de la evidencia dura. El estándar de transparencia cambió para siempre."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Totalmente de acuerdo. Ya no dependemos de estimaciones vagas, sino de coordenadas y sensores reales. Y creo que este debate ilumina un aspecto fundamental para cualquiera que siga de cerca las políticas públicas medioambientales. Queda clarísimo que no basta con aplaudir la euforia de los anuncios y las firmas de los grandas decretos internacionales."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "No, para nada."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "El verdadero análisis comienza el día después del titular. Ocurre en en la sala de máquinas del estado, en las lucas del presupuesto asignado, en la capacidad de los servidores informáticos y en el despliegue logístico sobre mares y bosques remotos."
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Es ahí, en el lodo del trabajo técnico y en la capacidad de fiscalización donde realmente se decide si una especie en peligro se salva o desaparece del mapa para siempre."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Y con esa reflexión sobre la inmensa distancia que hay entre el mapa y el territorio, dejamos a quienes nos escuchan con una pregunta abierta. A la luz de esta avalancha de medidas históricas, ¿Puede el peso y la ambición de la ley por sí sola forzar al Estado a construir la realidad operativa que necesitamos con urgencia? ¿O estamos dibujando los mapas ecológicos más avanzados del mundo sobre un terreno que sigue en el fondo profundamente desprotegido?"
+        },
+        {
+          "locutor": "Ignacio",
+          "texto": "Gran pregunta."
+        },
+        {
+          "locutor": "Valeria",
+          "texto": "Los invitamos a revisar los reportes y datos oficiales y a sacar sus propias conclusiones. Hasta la próxima."
+        }
+      ],
+      "visible": true
+    }
+  ],
+  "editorialCmsColumnas": [
+    {
+      "id": "col-1777472968112",
+      "titulo": "Cuando el agua se convierte en un costo, no en un recurso",
+      "autor": "David A. Vásquez Stuardo",
+      "fecha": "2026-04-29",
+      "categoria": "Opinion",
+      "estado": "publicada",
+      "imagen": "https://diarioeldia-s3.cdn.net.ar/s3i233/2024/03/diarioeldia/images/60/95/609581_4431328e74dd906f69a9cf89fe621c5a0d3e39daa6f8414f6118900ec9860602/md.webp",
+      "banner": "https://diarioeldia-s3.cdn.net.ar/s3i233/2024/03/diarioeldia/images/60/95/609581_4431328e74dd906f69a9cf89fe621c5a0d3e39daa6f8414f6118900ec9860602/md.webp",
+      "resumen": "La agricultura en Coquimbo enfrenta una transformación estructural sobre la gobernanza del agua.",
+      "contenido": "La agricultura de Limarí no está muriendo —ni tampoco se está reorganizando por voluntad propia—. Está siendo desmantelada por una combinación de factores sistémicos que, en su conjunto, han creado un nudo crítico en el tejido productivo de la Región de Coquimbo. No se trata de una crisis puntual, sino de un proceso de desacoplamiento estructural entre la oferta agrícola y la capacidad de retorno de los insumos, los recursos y el mercado. La escasez hídrica, que ya no es un fenómeno estacional, se ha convertido en una constante que ha desplazado la rentabilidad de cultivos tradicionales —kiwi, alcachofas, mandarinas— hacia un espacio de subsistencia o de ciclo corto, donde el margen de ganancia es tan delgado que el costo de insumos, como el combustible o el agua, lo anula.\n\nLo que se observa en Río Hurtado, Monte Patria y Tulahuén no es una simple reestructuración de la producción, sino una reconfiguración de la gobernanza del campo. La decisión de reducir 16 hectáreas de mandarina o pasar de dos a una hectárea de paltos no es un ajuste de mercado, sino una respuesta a la certeza jurídica de la falta de agua. El agricultor que dice “no conviene sembrar poco” no habla de la economía del ciclo, sino de la economía de la certeza: si el agua es un recurso que no se puede predecir, la inversión en cultivos de ciclo largo pierde su sentido. La migración hacia la minería no es un desplazamiento de talento, sino una señal de que el capital humano del campo no puede sostenerse en un entorno donde el retorno es incierto y el costo constante.\n\nEl abandono de predios no es un fenómeno de desmotivación, sino de desinversión. La desaparición de la uva, la pérdida de la alcachofa, el silencio de los huertos abandonados —no por negligencia, sino por impotencia— reflejan un sistema que ha perdido su capacidad de generar certeza jurídica en la producción. No hay un solo factor: es la intersección entre la escasez hídrica, la volatilidad de los precios, el aumento de los costos de insumos y la falta de una política de agua que permita una distribución equitativa y predecible. El resultado es un cambio estructural que no se puede revertir con políticas de apoyo a la producción, sino con una redefinición de la relación entre el agua, la tierra y el capital humano.\n\nEl futuro de la agricultura en Limarí no está en la reactivación de cultivos tradicionales, sino en la construcción de un nuevo modelo de producción que integre la gestión del agua como un activo estratégico, no como un recurso disponible. La solución no es la tecnología, sino la gobernanza. La agricultura no puede sobrevivir en un entorno donde el agua no es un recurso, sino un riesgo. El cambio no es un cambio de cultivo, sino un cambio de paradigma: de un modelo extractivo a un modelo de regeneración, donde la tierra no es solo un sustrato, sino un activo que debe ser cuidado, gestionado y valorado. La agricultura de Limarí no puede seguir siendo un negocio de rentabilidad; debe convertirse en un negocio de certeza. Y eso, en este momento, es lo que el mercado no está dispuesto a pagar.",
+      "visible": true
+    }
+  ],
   "editorialCmsPublicaciones": null,
-  "editorialCmsPages": null,
-  "editorialCmsPageContent": null,
+  "editorialCmsPages": {
+    "index": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": "images/hero_bg_1.jpg",
+      "featuredContentType": "episode",
+      "featuredContentId": "ep-1777472808822",
+      "featuredEpisodeId": "ep-1777472808822",
+      "manualHeroTitle": "",
+      "manualHeroMeta": "",
+      "manualHeroAudio": "",
+      "manualHeroTranscriptLink": ""
+    },
+    "programas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "columnas": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "publicaciones": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "about": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
+    "contact": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    }
+  },
+  "editorialCmsPageContent": {
+    "about": {
+      "teamTitle": "Equipo Editorial",
+      "teamMembers": [
+        {
+          "name": "David A. Vásquez Stuardo",
+          "role": "Editor general",
+          "image": "images/person_2.jpg",
+          "bio": "Agrónomo y Máster en Gestión de Recursos Naturales. Especialista en dinámicas territoriales con más de una década en campo. Editor general comprometido con el rigor y la accesibilidad.",
+          "twitter": "#",
+          "instagram": "#",
+          "facebook": "#",
+          "linkedin": "#"
+        }
+      ],
+      "manifestoImage": "images/hero_bg_1.jpg",
+      "manifestoLeft": "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
+      "manifestoRight": "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
+    },
+    "invitados": {
+      "title": "Invitados Destacados",
+      "items": [
+        {
+          "name": "David A. Vásquez Stuardo",
+          "role": "Editor general",
+          "image": "images/person_2.jpg",
+          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación."
+        }
+      ]
+    },
+    "contact": {
+      "firstNameLabel": "Nombre",
+      "lastNameLabel": "Apellido",
+      "emailLabel": "Correo electrónico",
+      "subjectLabel": "Asunto",
+      "messageLabel": "Mensaje",
+      "sendLabel": "Enviar mensaje",
+      "addressLabel": "Dirección",
+      "address": "203 Fake St. Mountain View, San Francisco, California, USA",
+      "phoneLabel": "Teléfono",
+      "phone": "+1 232 3235 324",
+      "emailInfoLabel": "Correo",
+      "emailInfo": "youremail@domain.com",
+      "subscribeTitle": "Suscríbete",
+      "subscribeText": "Recibe novedades, columnas y publicaciones directamente en tu correo.",
+      "subscribePlaceholder": "Ingresa tu email",
+      "subscribeButton": "Enviar",
+      "subscribeImage": "images/hero_bg_1.jpg"
+    }
+  },
   "editorialCmsSections": null,
   "editorialCmsSectionContent": null
 }
