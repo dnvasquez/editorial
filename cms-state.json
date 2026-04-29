@@ -454,7 +454,10 @@
     }
   ],
   "editorialCmsPublicaciones": null,
-  "editorialCmsColumnViews": {},
+  "editorialCmsColumnViews": {
+    "col-1777480207649": 1,
+    "col03": 2
+  },
   "editorialCmsPages": {
     "index": {
       "visible": true,
