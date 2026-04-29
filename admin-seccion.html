@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>CMS Admin | Editor de seccion</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Playfair+Display:700,800">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+  </head>
+  <body class="admin-body admin-dashboard-body">
+    <div class="admin-dashboard">
+      <aside class="admin-sidebar">
+        <div>
+          <span class="admin-eyebrow">Estación Rural</span>
+          <h1>Editor de secciones</h1>
+          <p class="admin-sidebar-copy">
+            Ajusta la visibilidad y el contenido HTML de cada bloque publico desde un editor individual.
+          </p>
+        </div>
+
+        <div class="admin-user-box">
+          <span class="admin-user-label">Sesion activa</span>
+          <strong id="admin-session-user">Administrador</strong>
+        </div>
+
+        <div class="admin-sidebar-nav">
+          <span class="admin-user-label">Secciones CMS</span>
+          <div class="admin-sidebar-links">
+            <a href="admin-columnas.html" class="admin-sidebar-link">Panel de columnas</a>
+          </div>
+          <div id="admin-sections-nav"></div>
+        </div>
+
+        <div class="admin-sidebar-actions">
+          <a id="admin-open-public" href="index.html" class="btn btn-outline-light admin-btn-ghost" target="_blank" rel="noopener">Abrir vista publica</a>
+          <button id="admin-logout" type="button" class="btn btn-light admin-btn-logout">Cerrar sesion</button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <section class="admin-section-head admin-editor-single">
+          <div>
+            <span class="admin-kicker">Seccion activa</span>
+            <h2 id="admin-section-title">Editor de seccion</h2>
+            <p id="admin-section-subtitle" class="admin-muted">
+              Selecciona una seccion desde la barra lateral para editar su contenido y estado de visibilidad.
+            </p>
+          </div>
+        </section>
+
+        <section class="admin-card admin-editor-panel admin-editor-single">
+          <div class="admin-meta-strip">
+            <div class="admin-meta-chip">
+              <span>Pagina</span>
+              <strong id="admin-meta-page">-</strong>
+            </div>
+            <div class="admin-meta-chip">
+              <span>Seccion</span>
+              <strong id="admin-meta-section">-</strong>
+            </div>
+            <div class="admin-meta-chip">
+              <span>Estado</span>
+              <strong id="admin-meta-visibility">Visible</strong>
+            </div>
+          </div>
+
+          <form id="admin-section-form" class="admin-form-stack" novalidate>
+            <label class="admin-section-toggle">
+              <span>Visible en el sitio</span>
+              <input id="admin-section-visible" type="checkbox" checked>
+            </label>
+
+            <div class="admin-field">
+              <label for="admin-section-html">Contenido HTML de reemplazo</label>
+              <textarea id="admin-section-html" class="form-control admin-code-textarea" placeholder="Deja este campo vacio para conservar el HTML original de la pagina."></textarea>
+            </div>
+
+            <div class="admin-actions">
+              <button type="submit" class="btn btn-primary">Guardar seccion</button>
+              <button id="admin-clear-content" type="button" class="btn btn-outline-dark">Usar contenido original</button>
+            </div>
+
+            <p id="admin-section-feedback" class="admin-feedback" aria-live="polite"></p>
+          </form>
+
+          <div class="admin-help-box">
+            Si reemplazas el HTML completo de una seccion dinamica, conviene mantener los IDs o clases que necesite el sitio.
+            Si el campo queda vacio, la pagina seguira usando su contenido original.
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/cms-sections.js"></script>
+    <script src="js/admin-section-editor.js"></script>
+  </body>
+</html>

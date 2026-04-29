@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>CMS Admin | Gestion del sitio</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Playfair+Display:700,800">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+  </head>
+  <body class="admin-body admin-dashboard-body">
+    <div class="admin-dashboard">
+      <aside class="admin-sidebar">
+        <div>
+          <span class="admin-eyebrow">Estacion Rural</span>
+          <h1>Gestión del sitio</h1>
+        </div>
+
+        <div class="admin-sidebar-nav" id="admin-cms-nav"></div>
+
+        <div class="admin-sidebar-actions">
+          <a href="index.html" class="btn btn-outline-light admin-btn-ghost" target="_blank" rel="noopener">Abrir sitio publico</a>
+          <button id="admin-logout" type="button" class="btn btn-light admin-btn-logout">Cerrar sesion</button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <section class="admin-section-head">
+          <div>
+            <span id="admin-view-kicker" class="admin-kicker">Resumen CMS</span>
+            <h2 id="admin-view-title">Gestion del sitio</h2>
+            <p id="admin-view-subtitle" class="admin-muted">
+              Elige una pagina o una biblioteca de contenido desde la barra lateral para empezar a editar.
+            </p>
+          </div>
+        </section>
+
+        <div id="admin-main-content"></div>
+      </main>
+    </div>
+
+    <script src="js/episodes.js"></script>
+    <script src="js/cms-site.js"></script>
+    <script src="js/admin-cms.js"></script>
+  </body>
+</html>

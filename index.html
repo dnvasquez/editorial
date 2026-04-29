@@ -1,0 +1,622 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Estación Rural - Editorial de Contenido</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,700,900">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+      .pub-list-home { margin-top: 20px; border-top: 2px solid #333; }
+      .pub-row-home {
+        display: grid;
+        grid-template-columns: 90px 110px 1fr 160px;
+        gap: 24px;
+        padding: 28px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        align-items: center;
+        transition: background-color 0.25s ease;
+      }
+      .pub-row-home:hover { background-color: rgba(0,0,0,0.02); }
+      .pub-img-home {
+        width: 90px; height: 127px;
+        background-size: cover; background-position: center;
+        border-radius: 4px;
+      }
+      .pub-date-home {
+        font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+        text-transform: uppercase; letter-spacing: 1.5px;
+        color: #e74c3c; font-weight: 600;
+      }
+      .pub-type-home {
+        display: block; font-family: 'Poppins', sans-serif;
+        font-size: 0.75rem; text-transform: uppercase;
+        letter-spacing: 1px; color: #999; margin-bottom: 6px;
+      }
+      .pub-info-home h3 {
+        font-family: 'Poppins', sans-serif; font-size: 1.1rem;
+        font-weight: 300; margin: 0 0 6px 0; color: #2d2d2d;
+      }
+      .pub-info-home p { font-size: 0.9rem; margin: 0; color: #666; line-height: 1.6; }
+      .pub-action-home { text-align: right; }
+      .btn-pub-home {
+        display: inline-block; padding: 10px 20px;
+        border: 1px solid #2d2d2d; color: #2d2d2d;
+        font-family: 'Poppins', sans-serif; font-weight: 600;
+        font-size: 0.8rem; letter-spacing: 0.5px;
+        text-transform: uppercase; text-decoration: none;
+        transition: all 0.25s ease;
+      }
+      .btn-pub-home:hover { background-color: #2d2d2d; color: #fff; text-decoration: none; }
+      @media (max-width: 768px) {
+        .pub-row-home { grid-template-columns: 1fr; gap: 10px; }
+        .pub-action-home { text-align: left; }
+        .pub-img-home { width: 100%; height: 160px; }
+      }
+    </style>
+
+  </head>
+  <body data-cms-page="index">
+
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+
+    <header class="site-navbar py-4 absolute transparent" role="banner" data-cms-section="header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-3" data-aos="fade-down">
+            <h1><a href="index.html" class="text-white h2">Estación Rural</a></h1>
+          </div>
+          <div class="col-9" data-aos="fade-down">
+            <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
+              <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
+              <ul class="site-menu js-clone-nav d-none">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="programas.html">Programas</a></li>
+                <li><a href="columnas.html">Columnas</a></li>
+                <li><a href="publicaciones.html">Publicaciones</a></li>
+                <li><a href="about.html">Nosotros</a></li>
+                <li><a href="contact.html">Contacto</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- HERO: Episodio destacado -->
+    <div id="cms-page-hero" class="site-blocks-cover overlay" style="background-image: url(images/hero_bg_1.jpg);" data-aos="fade" data-stellar-background-ratio="0.5" data-cms-section="hero">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400" id="ep-hero">
+            <!-- Renderizado por js/episodes.js -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: Nuestros Programas -->
+    <main id="cms-page-main">
+    <div class="site-section" data-cms-section="programas">
+      <div class="container">
+        <div class="row mb-5" data-aos="fade-up">
+          <div class="col-md-12 text-center">
+            <h2 class="font-weight-bold text-black">Nuestros Programas</h2>
+            <p class="lead text-muted">Explora toda nuestra oferta de programas de podcast</p>
+          </div>
+        </div>
+        <div class="row" id="prog-grid">
+          <!-- Renderizado por js/episodes.js -->
+        </div>
+        <div class="row">
+          <div class="col-12 text-center" data-aos="fade-up">
+            <a href="programas.html" class="btn btn-outline-primary px-4 py-3">Ver todos los programas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: Ãšltimos Episodios -->
+    <div class="site-section bg-light" data-cms-section="episodios">
+      <div class="container">
+        <div class="row mb-5" data-aos="fade-up">
+          <div class="col-md-12 text-center">
+            <h2 class="font-weight-bold text-black">&Uacute;ltimos Episodios</h2>
+          </div>
+        </div>
+
+        <!-- Renderizado por js/episodes.js -->
+        <div id="ep-latest"></div>
+
+      </div>
+      <div class="container" data-aos="fade-up">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <a href="programas.html" class="btn btn-outline-primary px-4 py-3">Ver todos los episodios</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: Columnas Editoriales -->
+    <div class="site-section" data-cms-section="columnas">
+      <div class="container">
+        <div class="row mb-5" data-aos="fade-up">
+          <div class="col-md-12 text-center">
+            <h2 class="font-weight-bold text-black">Columnas Editoriales</h2>
+            <p class="lead text-muted">Opini&oacute;n y an&aacute;lisis de nuestros columnistas</p>
+          </div>
+        </div>
+        <!-- Renderizado por js/episodes.js -->
+        <div class="row" id="col-grid"></div>
+        <div class="row">
+          <div class="col-12 text-center" data-aos="fade-up">
+            <a href="columnas.html" class="btn btn-outline-primary px-4 py-3">Ver todas las columnas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: Publicaciones -->
+    <div class="site-section bg-light" data-cms-section="publicaciones">
+      <div class="container">
+        <div class="row mb-5" data-aos="fade-up">
+          <div class="col-md-12 text-center">
+            <h2 class="font-weight-bold text-black">Publicaciones</h2>
+            <p class="lead text-muted">Documentos, ensayos y reportes para visualizar</p>
+          </div>
+        </div>
+        <!-- Renderizado por js/episodes.js -->
+        <div id="pub-grid"></div>
+        <div class="row mt-5">
+          <div class="col-12 text-center" data-aos="fade-up">
+            <a href="publicaciones.html" class="btn btn-outline-primary px-4 py-3">Ver todas las publicaciones</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: El Equipo -->
+    <div class="site-section" data-cms-section="equipo">
+      <div class="container" data-aos="fade-up">
+        <div class="row mb-5">
+          <div class="col-md-12 text-center">
+            <h2 id="home-team-title" class="font-weight-bold text-black">El Equipo</h2>
+          </div>
+        </div>
+        <div id="home-team-grid" class="row">
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_1.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">Megan Smith</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Directora Editorial</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_2.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">David A. VÃ¡squez Stuardo</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Director Editorial</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_3.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">Philip Martin</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Editor de Contenido</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_4.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">Steven Ericson</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Columnista</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_5.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">Nathan Dumlao</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Investigador</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+            <div class="team-member">
+              <img src="images/person_6.jpg" alt="Image" class="img-fluid">
+              <div class="text">
+                <h2 class="mb-2 font-weight-light h4">David A. VÃ¡squez Stuardo</h2>
+                <span class="d-block mb-2 text-white-opacity-05">Columnista</span>
+                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
+                <p>
+                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
+                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SECCIÃ“N: Invitados Destacados (carrusel) -->
+    <div class="site-section bg-light block-13" data-cms-section="invitados">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md-12 text-center">
+            <h2 class="font-weight-bold text-black">Invitados Destacados</h2>
+          </div>
+        </div>
+        <div class="nonloop-block-13 owl-carousel">
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_1.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">Megan Smith</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_2.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">David A. VÃ¡squez Stuardo</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_3.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">Philip Martin</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_4.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">Steven Ericson</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_5.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">Nathan Dumlao</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+          <div class="text-center p-3 p-md-5 bg-white">
+            <div class="mb-4"><img src="images/person_6.jpg" alt="Image" class="w-50 mx-auto img-fluid rounded-circle"></div>
+            <div class=""><h3 class="font-weight-light h5">Brook Smith</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iusto. Aliquam illo, cum sed ea? Ducimus quos, ea?</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- BANNER: SuscripciÃ³n -->
+    <div class="site-blocks-cover overlay inner-page-cover" style="background-image: url(images/hero_bg_1.jpg);" data-aos="fade" data-stellar-background-ratio="0.5" data-cms-section="suscripcion">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <h2>Suscr&iacute;bete</h2>
+            <p class="mb-5">Recibe nuestros ep&iacute;sodios, columnas y publicaciones directamente en tu correo.</p>
+            <form action="#" method="post" class="site-block-subscribe">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control border-secondary text-white bg-transparent" placeholder="Ingresa tu email" aria-label="Ingresa tu email" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button" id="button-addon2">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    </main>
+
+    <footer class="site-footer" data-cms-section="footer">
+      <div class="container">
+        <div class="row align-items-start">
+          <div class="col-lg-8 mb-5 mb-lg-0">
+            <h3 class="footer-heading mb-4">Sobre Estaci&oacute;n Rural</h3>
+            <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos podcasts, columnas de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
+          </div>
+          <div class="col-lg-4">
+            <h3 class="footer-heading mb-4">S&iacute;guenos</h3>
+            <div>
+              <a href="#" class="pl-0 pr-3"><span class="icon-facebook"></span></a>
+              <a href="#" class="pl-3 pr-3"><span class="icon-twitter"></span></a>
+              <a href="#" class="pl-3 pr-3"><span class="icon-instagram"></span></a>
+              <a href="#" class="pl-3 pr-3"><span class="icon-linkedin"></span></a>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <p>
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos los derechos reservados | <a href="admin-login.html">Login administraci&oacute;n</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/jquery.countdown.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/mediaelement-and-player.min.js"></script>
+
+  <script src="js/episodes.js"></script>
+  <script src="js/cms-site.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // â”€â”€ Hero: episodio mÃ¡s reciente â”€â”€
+      var ep = EPISODIOS[0];
+      document.getElementById('ep-hero').innerHTML =
+        '<h2 class="text-white font-weight-light mb-2 display-4">Episodio ' + ep.numero + ': ' + ep.titulo + '</h2>' +
+        '<div class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + ep.autor + ' | ' + ep.fecha + ' | ' + ep.duracion + '</small></span></div>' +
+        '<p><a href="single-post.html?id=' + ep.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripciÃ³n</a></p>' +
+        '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + ep.audio + '" type="audio/mp3"></audio></div>';
+
+      // â”€â”€ Programas: primeros 3 â”€â”€
+      var homeConfig = window.EditorialCmsSite ? window.EditorialCmsSite.getPageConfig('index') : null;
+      var selectedEpisodeId = homeConfig && homeConfig.featuredEpisodeId ? homeConfig.featuredEpisodeId : '';
+      if (selectedEpisodeId) {
+        var selectedEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(selectedEpisodeId); });
+        if (selectedEpisode) {
+          document.getElementById('ep-hero').innerHTML =
+            '<h2 class="text-white font-weight-light mb-2 display-4">Episodio ' + selectedEpisode.numero + ': ' + selectedEpisode.titulo + '</h2>' +
+            '<div class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + selectedEpisode.autor + ' | ' + selectedEpisode.fecha + ' | ' + selectedEpisode.duracion + '</small></span></div>' +
+            '<p><a href="single-post.html?id=' + selectedEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripciÃƒÂ³n</a></p>' +
+            '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + selectedEpisode.audio + '" type="audio/mp3"></audio></div>';
+        }
+      }
+
+      var finalFeaturedEpisode = selectedEpisodeId ? EPISODIOS.find(function(item) {
+        return String(item.id) === String(selectedEpisodeId);
+      }) : null;
+      if (finalFeaturedEpisode) {
+        document.getElementById('ep-hero').innerHTML =
+          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + finalFeaturedEpisode.numero + ': ' + finalFeaturedEpisode.titulo + '</h2>' +
+          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + finalFeaturedEpisode.autor + ' | ' + finalFeaturedEpisode.fecha + ' | ' + finalFeaturedEpisode.duracion + '</small></span></div>' +
+          '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + finalFeaturedEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
+          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + finalFeaturedEpisode.audio + '" type="audio/mp3"></audio></div>';
+      } else if (homeConfig && (homeConfig.manualHeroTitle || homeConfig.manualHeroMeta || homeConfig.manualHeroAudio || homeConfig.manualHeroTranscriptLink)) {
+        var manualHeroHtml =
+          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + (homeConfig.manualHeroTitle || 'Contenido destacado') + '</h2>' +
+          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>' + (homeConfig.manualHeroMeta || '') + '</small></span></div>';
+
+        if (homeConfig.manualHeroTranscriptLink) {
+          manualHeroHtml += '<p><a id="cms-hero-transcript-link" href="' + homeConfig.manualHeroTranscriptLink + '" class="btn btn-primary btn-sm py-3 px-4 small">Ver contenido relacionado</a></p>';
+        }
+        if (homeConfig.manualHeroAudio) {
+          manualHeroHtml += '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + homeConfig.manualHeroAudio + '" type="audio/mp3"></audio></div>';
+        }
+
+        document.getElementById('ep-hero').innerHTML = manualHeroHtml;
+      }
+
+      var featuredConfig = window.EditorialCmsSite ? window.EditorialCmsSite.getPageConfig('index') : null;
+      var featuredType = featuredConfig && featuredConfig.featuredContentType ? featuredConfig.featuredContentType : (featuredConfig && featuredConfig.featuredEpisodeId ? 'episode' : '');
+      var featuredId = featuredConfig && featuredConfig.featuredContentId ? featuredConfig.featuredContentId : (featuredConfig && featuredConfig.featuredEpisodeId ? featuredConfig.featuredEpisodeId : '');
+      var finalHeroHtml = '';
+
+      if (featuredType === 'episode' && featuredId) {
+        var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
+        if (heroEpisode) {
+          finalHeroHtml =
+            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + heroEpisode.numero + ': ' + heroEpisode.titulo + '</h2>' +
+            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + heroEpisode.autor + ' | ' + heroEpisode.fecha + ' | ' + heroEpisode.duracion + '</small></span></div>' +
+            '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + heroEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
+            '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + heroEpisode.audio + '" type="audio/mp3"></audio></div>';
+        }
+      } else if (featuredType === 'column' && featuredId) {
+        var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
+        if (heroColumn) {
+          finalHeroHtml =
+            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + heroColumn.titulo + '</h2>' +
+            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Columna de opini&oacute;n | ' + heroColumn.autor + ' | ' + heroColumn.fecha + ' | ' + heroColumn.lectura + '</small></span></div>' +
+            '<p class="text-white mb-4">' + (heroColumn.resumen || '') + '</p>' +
+            '<p><a id="cms-hero-transcript-link" href="columna.html?id=' + heroColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>';
+        }
+      } else if (featuredType === 'publication' && featuredId) {
+        var heroPublication = PUBLICACIONES.find(function(item) { return String(item.id) === String(featuredId); });
+        if (heroPublication) {
+          finalHeroHtml =
+            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + heroPublication.titulo + '</h2>' +
+            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>' + heroPublication.tipo + ' | ' + heroPublication.fecha + '</small></span></div>' +
+            '<p class="text-white mb-4">' + (heroPublication.resumen || '') + '</p>' +
+            '<p><a id="cms-hero-transcript-link" href="' + heroPublication.enlace + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm py-3 px-4 small">Ver publicaci&oacute;n</a></p>';
+        }
+      }
+
+      if (!finalHeroHtml && EPISODIOS[0]) {
+        finalHeroHtml =
+          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + EPISODIOS[0].numero + ': ' + EPISODIOS[0].titulo + '</h2>' +
+          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + EPISODIOS[0].autor + ' | ' + EPISODIOS[0].fecha + ' | ' + EPISODIOS[0].duracion + '</small></span></div>' +
+          '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + EPISODIOS[0].id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
+          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + EPISODIOS[0].audio + '" type="audio/mp3"></audio></div>';
+      }
+
+      if (finalHeroHtml) {
+        document.getElementById('ep-hero').innerHTML = finalHeroHtml;
+      }
+
+      var progHtml = '';
+      PROGRAMAS.slice(0, 3).forEach(function(p, i) {
+        var count = EPISODIOS.filter(function(e) { return e.programaId === p.id; }).length;
+        var delay = i > 0 ? ' data-aos-delay="' + (i * 100) + '"' : '';
+        progHtml +=
+          '<div class="col-md-4">' +
+          '<div class="d-block podcast-entry bg-white mb-5" data-aos="fade-up"' + delay + '>' +
+          '<div class="image program-cover w-100" style="background-image: url(\'' + p.imagen + '\');"></div>' +
+          '<div class="text">' +
+          '<h3 class="font-weight-light"><a href="programa.html?id=' + p.id + '">' + p.nombre + '</a></h3>' +
+          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>' + count + ' episodio' + (count !== 1 ? 's' : '') + '</small></span></div>' +
+          '<p>' + p.descripcion + '</p>' +
+          '<a href="programa.html?id=' + p.id + '" class="btn btn-sm btn-primary py-2 px-3">Ver episodios</a>' +
+          '</div></div></div>';
+      });
+      document.getElementById('prog-grid').innerHTML = progHtml;
+
+      // â”€â”€ Ãšltimos episodios: hasta 3 â”€â”€
+      var latestHtml = '';
+      EPISODIOS.slice(0, 3).forEach(function(e) {
+        var prog = PROGRAMAS.find(function(p) { return p.id === e.programaId; });
+        latestHtml +=
+          '<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">' +
+          '<div class="image" style="background-image: url(\'' + e.imagen + '\');"></div>' +
+          '<div class="text">' +
+          '<h3 class="font-weight-light"><a href="single-post.html?id=' + e.id + '">Episodio ' + e.numero + ': ' + e.titulo + '</a></h3>' +
+          '<div class="text-white mb-3"><span class="text-black-opacity-05"><small>' +
+          (prog ? prog.nombre + ' <span class="sep">/</span> ' : '') +
+          'Por ' + e.autor + ' <span class="sep">/</span> ' + e.fecha + ' <span class="sep">/</span> ' + e.duracion +
+          '</small></span></div>' +
+          '<p class="mb-4">' + e.resumen + '</p>' +
+          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + e.audio + '" type="audio/mp3"></audio></div>' +
+          '</div></div>';
+      });
+      document.getElementById('ep-latest').innerHTML = latestHtml;
+
+      // â”€â”€ Columnas: primeras 3 â”€â”€
+      var colHtml = '';
+      COLUMNAS.slice(0, 3).forEach(function(c, i) {
+        var delay = i > 0 ? ' data-aos-delay="' + (i * 100) + '"' : '';
+        colHtml +=
+          '<div class="col-md-4">' +
+          '<div class="d-block podcast-entry bg-white mb-5" data-aos="fade-up"' + delay + '>' +
+          '<div class="image w-100" style="height: 200px; background-image: url(\'' + c.imagen + '\');"></div>' +
+          '<div class="text">' +
+          '<h3 class="font-weight-light"><a href="columna.html?id=' + c.id + '">' + c.titulo + '</a></h3>' +
+          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>Por ' + c.autor + ' <span class="sep">/</span> ' + c.fecha + '</small></span></div>' +
+          '<p>' + c.resumen.substring(0, 120) + '...</p>' +
+          '<a href="columna.html?id=' + c.id + '" class="btn btn-sm btn-primary py-2 px-3">Leer columna</a>' +
+          '</div></div></div>';
+      });
+      document.getElementById('col-grid').innerHTML = colHtml;
+
+      // â”€â”€ Publicaciones: primeras 3 â”€â”€
+      var pubHtml = '<div class="pub-list-home" data-aos="fade-up">';
+      PUBLICACIONES.slice(0, 3).forEach(function(p) {
+        pubHtml +=
+          '<article class="pub-row-home">' +
+          '<div class="pub-img-home" style="background-image: url(\'' + p.imagen + '\');"></div>' +
+          '<div class="pub-date-home">' + p.fecha + '</div>' +
+          '<div class="pub-info-home">' +
+          '<span class="pub-type-home">' + p.tipo + '</span>' +
+          '<h3><a href="' + p.enlace + '" target="_blank" style="color:inherit;text-decoration:none;">' + p.titulo + '</a></h3>' +
+          '<p>' + p.resumen + '</p>' +
+          '</div>' +
+          '<div class="pub-action-home">' +
+          '<a href="' + p.enlace + '" target="_blank" class="btn-pub-home">Ver publicaci&oacute;n</a>' +
+          '</div>' +
+          '</article>';
+      });
+      pubHtml += '</div>';
+      document.getElementById('pub-grid').innerHTML = pubHtml;
+
+      // â”€â”€ Footer: Ãºltimos 3 episodios â”€â”€
+      var footerEpHtml = '';
+      EPISODIOS.slice(0, 3).forEach(function(ep) {
+        footerEpHtml +=
+          '<li class="mb-3"><a href="single-post.html?id=' + ep.id + '" class="d-flex">' +
+          '<figure class="image mr-4"><img src="' + ep.imagen + '" alt="" class="img-fluid"></figure>' +
+          '<div class="text"><h3 class="heading font-weight-light">Ep. ' + ep.numero + ': ' + ep.titulo + '</h3></div>' +
+          '</a></li>';
+      });
+      var footerEpisodes = document.getElementById('footer-episodios');
+      if (footerEpisodes) {
+        footerEpisodes.innerHTML = footerEpHtml;
+      }
+
+      if (window.EditorialCmsSite) {
+        window.EditorialCmsSite.applyPageConfig(document);
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var mediaElements = document.querySelectorAll('video, audio'), total = mediaElements.length;
+      for (var i = 0; i < total; i++) {
+        new MediaElementPlayer(mediaElements[i], {
+          pluginPath: 'https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/',
+          shimScriptAccess: 'always',
+          success: function () {
+            var target = document.body.querySelectorAll('.player'), targetTotal = target.length;
+            for (var j = 0; j < targetTotal; j++) {
+              target[j].style.visibility = 'visible';
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+  <script src="js/main.js"></script>
+
+  </body>
+</html>

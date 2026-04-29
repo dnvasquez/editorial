@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>CMS Admin | Acceso</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Playfair+Display:700,800">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div class="admin-login-hero">
+        <div class="admin-login-overlay"></div>
+        <div class="admin-login-copy">
+          <span class="admin-eyebrow">Gestión del sitio</span>
+          <h1>Administra tu contenido con una entrada clara y segura.</h1>
+          <p>
+            Ingresa al panel privado para administrar paginas completas, programas,
+            episodios, columnas y publicaciones desde una sola vista.
+          </p>
+                  </div>
+      </div>
+
+      <main class="admin-login-panel">
+        <a href="index.html" class="admin-back-link">Volver al sitio</a>
+        <div class="admin-card admin-card-login">
+          <span class="admin-kicker">Acceso restringido</span>
+          <h2>Iniciar sesion</h2>
+          <p class="admin-muted">
+            Este acceso esta pensado para administradores y editores responsables del
+            contenido completo del sitio.
+          </p>
+
+          <form id="admin-login-form" class="admin-form-stack" novalidate>
+            <div class="admin-field">
+              <label for="username">Usuario</label>
+              <input id="username" name="username" type="text" class="form-control" placeholder="admin" required>
+            </div>
+            <div class="admin-field">
+              <label for="password">Clave</label>
+              <input id="password" name="password" type="password" class="form-control" placeholder="************" required>
+            </div>
+            <div class="admin-field-inline">
+              <label class="admin-check">
+                <input id="remember" name="remember" type="checkbox">
+                <span>Mantener sesion activa en este navegador</span>
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary admin-btn-block">Entrar al CMS</button>
+            <p id="admin-login-feedback" class="admin-feedback" aria-live="polite"></p>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/admin-cms.js"></script>
+  </body>
+</html>
