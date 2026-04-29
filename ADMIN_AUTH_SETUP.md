@@ -29,3 +29,4 @@ If you keep the defaults, `CMS_DATA_REPO` is `dnvasquez/editorial`, `CMS_DATA_BR
 - The login page works on Netlify or Netlify Dev.
 - The old hardcoded front-end credentials were removed from the repo.
 - The CMS now syncs its editable data to a versioned JSON file in GitHub through Netlify Functions.
+- Browser `localStorage` is treated as a cache for convenience, not as the source of truth.
