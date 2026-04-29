@@ -1,43 +1,20 @@
 (function () {
-  var SESSION_KEY = "editorialCmsSession";
-  var DEFAULT_USER = "admin";
-  var DEFAULT_PASSWORD = "editorial2026";
-
-  function getSessionStorage(remember) {
-    return remember ? window.localStorage : window.sessionStorage;
-  }
-
-  function getActiveSession() {
-    var raw = window.sessionStorage.getItem(SESSION_KEY) || window.localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function saveSession(username, remember) {
-    var payload = JSON.stringify({
-      username: username,
-      loggedAt: new Date().toISOString()
-    });
-
-    window.sessionStorage.removeItem(SESSION_KEY);
-    window.localStorage.removeItem(SESSION_KEY);
-    getSessionStorage(remember).setItem(SESSION_KEY, payload);
-  }
-
-  function clearSession() {
-    window.sessionStorage.removeItem(SESSION_KEY);
-    window.localStorage.removeItem(SESSION_KEY);
-  }
+  var AUTH_BASE = "/.netlify/functions";
+  var LOGIN_ENDPOINT = AUTH_BASE + "/admin-login";
+  var SESSION_ENDPOINT = AUTH_BASE + "/admin-session";
+  var LOGOUT_ENDPOINT = AUTH_BASE + "/admin-logout";
 
   function requireSession() {
     if (!document.body.classList.contains("admin-dashboard-body")) return;
-    if (!getActiveSession()) {
-      window.location.href = "admin-login.html";
-    }
+    fetch(SESSION_ENDPOINT, { credentials: "include" })
+      .then(function (response) {
+        if (!response.ok) {
+          window.location.href = "admin-login.html";
+        }
+      })
+      .catch(function () {
+        window.location.href = "admin-login.html";
+      });
   }
 
   function bindLogin() {
@@ -48,21 +25,233 @@
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      var username = form.username.value.trim();
-      var password = form.password.value.trim();
-      var remember = form.remember.checked;
 
-      if (username === DEFAULT_USER && password === DEFAULT_PASSWORD) {
-        saveSession(username, remember);
-        feedback.textContent = "Acceso correcto. Redirigiendo al panel...";
-        window.setTimeout(function () {
-          window.location.href = "admin-columnas.html";
-        }, 300);
+      feedback.textContent = "Validando acceso...";
+
+      fetch(LOGIN_ENDPOINT, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: form.username.value.trim(),
+          password: form.password.value,
+          remember: form.remember.checked
+        })
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            return response.json().catch(function () {
+              return {};
+            }).then(function (payload) {
+              var message = payload && payload.error ? payload.error : "Usuario o clave incorrectos.";
+              throw new Error(message);
+            });
+          }
+
+          return response.json().catch(function () {
+            return {};
+          });
+        })
+        .then(function () {
+          feedback.textContent = "Acceso correcto. Redirigiendo al panel...";
+          window.setTimeout(function () {
+            window.location.href = "admin-columnas.html";
+          }, 300);
+        })
+        .catch(function (error) {
+          feedback.textContent = error && error.message ? error.message : "No se pudo iniciar sesion. Verifica Netlify o Netlify Dev.";
+        });
+    });
+  }
+
+  function createLink(href, label, active) {
+    return '<a href="' + href + '" class="admin-sidebar-link' + (active ? ' is-active' : '') + '">' + label + "</a>";
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function findById(items, id) {
+    return items.find(function (item) {
+      return String(item.id) === String(id);
+    }) || null;
+  }
+
+  function buildFeaturedTypeOptions(selectedType) {
+    var options = [
+      { value: "", label: "Sin destacado" },
+      { value: "episode", label: "Capitulo de podcast" },
+      { value: "column", label: "Columna de opinion" },
+      { value: "publication", label: "Publicacion" }
+    ];
+
+    return options.map(function (option) {
+      return '<option value="' + option.value + '"' + (String(selectedType || "") === option.value ? ' selected' : '') + '>' + option.label + '</option>';
+    }).join("");
+  }
+
+  function buildFeaturedItemOptions(contentType, selectedId) {
+    var options = '<option value=""' + (!selectedId ? ' selected' : '') + '>Sin contenido seleccionado</option>';
+    var items = [];
+
+    if (contentType === "episode") {
+      var programs = window.EditorialCmsSite.getProgramsForAdmin();
+      items = window.EditorialCmsSite.getEpisodesForAdmin().map(function (episode) {
+        var program = findById(programs, episode.programaId);
+        var label = (program ? program.nombre + " - " : "") + "Ep. " + (episode.numero || "-") + ": " + (episode.titulo || "Sin titulo");
+        if (episode.visible === false) {
+          label += " (oculto)";
+        }
+        return { id: episode.id, label: label };
+      });
+    } else if (contentType === "column") {
+      items = window.EditorialCmsSite.getColumnsForAdmin().map(function (column) {
+        var label = (column.autor || "Autor/a") + " - " + (column.titulo || "Sin titulo");
+        if (column.visible === false) {
+          label += " (oculta)";
+        }
+        return { id: column.id, label: label };
+      });
+    } else if (contentType === "publication") {
+      items = window.EditorialCmsSite.getPublicationsForAdmin().map(function (publication) {
+        var label = (publication.tipo || "Publicacion") + " - " + (publication.titulo || "Sin titulo");
+        if (publication.visible === false) {
+          label += " (oculta)";
+        }
+        return { id: publication.id, label: label };
+      });
+    }
+
+    items.forEach(function (item) {
+      options += '<option value="' + escapeHtml(item.id) + '"' + (String(selectedId || "") === String(item.id) ? ' selected' : '') + '>' + escapeHtml(item.label) + '</option>';
+    });
+
+    return options;
+  }
+
+  function getFeaturedContentData(contentType, contentId) {
+    if (!contentType || !contentId) return null;
+
+    if (contentType === "episode") {
+      return findById(window.EditorialCmsSite.getEpisodesForAdmin(), contentId);
+    }
+    if (contentType === "column") {
+      return findById(window.EditorialCmsSite.getColumnsForAdmin(), contentId);
+    }
+    if (contentType === "publication") {
+      return findById(window.EditorialCmsSite.getPublicationsForAdmin(), contentId);
+    }
+
+    return null;
+  }
+
+  function buildPreviewDatum(label, value) {
+    return '' +
+      '<article class="admin-preview-datum">' +
+      '<span class="admin-preview-datum-label">' + escapeHtml(label) + '</span>' +
+      '<div class="admin-preview-datum-value">' + escapeHtml(value) + '</div>' +
+      '</article>';
+  }
+
+  function bindImageUpload(fileInputId, targetInputId, feedbackId, label) {
+    var fileInput = document.getElementById(fileInputId);
+    var targetInput = document.getElementById(targetInputId);
+    var feedback = feedbackId ? document.getElementById(feedbackId) : null;
+    if (!fileInput || !targetInput) return;
+
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      if (file.type && file.type.indexOf("image/") !== 0) {
+        if (feedback) {
+          feedback.textContent = "El archivo seleccionado no es una imagen valida.";
+        }
+        fileInput.value = "";
         return;
       }
 
-      feedback.textContent = "Usuario o clave incorrectos. Prueba con las credenciales demo.";
+      var reader = new FileReader();
+      reader.onload = function () {
+        targetInput.value = String(reader.result || "");
+        targetInput.dispatchEvent(new Event("input", { bubbles: true }));
+        if (feedback) {
+          feedback.textContent = (label || "Imagen") + " cargada desde un archivo local.";
+        }
+      };
+      reader.onerror = function () {
+        if (feedback) {
+          feedback.textContent = "No se pudo leer la imagen seleccionada.";
+        }
+      };
+      reader.readAsDataURL(file);
     });
+  }
+
+  function buildFeaturedContentPreview(contentType, contentId) {
+    var content = getFeaturedContentData(contentType, contentId);
+
+    if (!contentType || !content) {
+      return "";
+    }
+
+    var title = "";
+    var data = [];
+
+    if (contentType === "episode") {
+      title = "Capitulo de podcast destacado";
+      data = [
+        buildPreviewDatum("Titulo", "Episodio " + (content.numero || "-") + ": " + (content.titulo || "Sin titulo")),
+        buildPreviewDatum("Autor", content.autor || ""),
+        buildPreviewDatum("Fecha de publicacion", content.fecha || ""),
+        buildPreviewDatum("Duracion", content.duracion || ""),
+        buildPreviewDatum("Enlace de transcripcion", "single-post.html?id=" + content.id)
+      ];
+    } else if (contentType === "column") {
+      title = "Columna destacada";
+      data = [
+        buildPreviewDatum("Titulo", content.titulo || "Sin titulo"),
+        buildPreviewDatum("Autor", content.autor || ""),
+        buildPreviewDatum("Fecha de publicacion", content.fecha || ""),
+        buildPreviewDatum("Tiempo de lectura", content.lectura || ""),
+        buildPreviewDatum("Categoria", content.categoria || ""),
+        buildPreviewDatum("Enlace", "columna.html?id=" + content.id)
+      ];
+    } else if (contentType === "publication") {
+      title = "Publicacion destacada";
+      data = [
+        buildPreviewDatum("Titulo", content.titulo || "Sin titulo"),
+        buildPreviewDatum("Tipo", content.tipo || ""),
+        buildPreviewDatum("Fecha", content.fecha || ""),
+        buildPreviewDatum("Resumen", content.resumen || ""),
+        buildPreviewDatum("Enlace", content.enlace || "")
+      ];
+    }
+
+    return '' +
+      '<div class="admin-preview-panel">' +
+      '<div class="admin-preview-head"><span class="admin-kicker">Vista previa</span><h3>' + title + '</h3></div>' +
+      '<div class="admin-preview-grid">' + data.join("") + '</div>' +
+      '</div>';
+  }
+
+  function syncFeaturedContentPreview() {
+    var typeSelect = document.getElementById("page-featured-type");
+    var itemSelect = document.getElementById("page-featured-item");
+    var preview = document.getElementById("page-featured-episode-preview");
+    if (!typeSelect || !itemSelect || !preview) return;
+
+    itemSelect.innerHTML = buildFeaturedItemOptions(typeSelect.value, itemSelect.value);
+    preview.innerHTML = buildFeaturedContentPreview(typeSelect.value, itemSelect.value);
+    preview.style.display = typeSelect.value && itemSelect.value ? "" : "none";
   }
 
   function createLink(href, label, active) {
@@ -1007,8 +1196,13 @@
     }
 
     document.getElementById("admin-logout").addEventListener("click", function () {
-      clearSession();
-      window.location.href = "admin-login.html";
+      fetch(LOGOUT_ENDPOINT, { method: "POST", credentials: "include" })
+        .catch(function () {
+          return null;
+        })
+        .finally(function () {
+          window.location.href = "admin-login.html";
+        });
     });
   }
 

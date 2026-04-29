@@ -22,7 +22,10 @@
             Ingresa al panel privado para administrar paginas completas, programas,
             episodios, columnas y publicaciones desde una sola vista.
           </p>
-                  </div>
+          <p class="admin-muted">
+            El acceso se valida en Netlify y la sesion se guarda en una cookie segura.
+          </p>
+        </div>
       </div>
 
       <main class="admin-login-panel">
@@ -38,11 +41,11 @@
           <form id="admin-login-form" class="admin-form-stack" novalidate>
             <div class="admin-field">
               <label for="username">Usuario</label>
-              <input id="username" name="username" type="text" class="form-control" placeholder="admin" required>
+              <input id="username" name="username" type="text" class="form-control" placeholder="Tu usuario" autocomplete="username" required>
             </div>
             <div class="admin-field">
               <label for="password">Clave</label>
-              <input id="password" name="password" type="password" class="form-control" placeholder="************" required>
+              <input id="password" name="password" type="password" class="form-control" placeholder="************" autocomplete="current-password" required>
             </div>
             <div class="admin-field-inline">
               <label class="admin-check">
