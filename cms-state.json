@@ -455,7 +455,76 @@
   ],
   "editorialCmsPublicaciones": null,
   "editorialCmsPages": null,
-  "editorialCmsPageContent": null,
+  "editorialCmsPageContent": {
+    "about": {
+      "teamTitle": "Equipo Editorial",
+      "teamMembers": [
+        {
+          "name": "Jean Smith",
+          "role": "Editora asociada",
+          "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur ab quas facilis obcaecati non ea, est odit repellat distinctio incidunt, quia aliquam eveniet quod deleniti impedit sapiente atque tenetur porro?",
+          "image": "images/person_1.jpg",
+          "twitter": "#",
+          "instagram": "#",
+          "facebook": "#",
+          "linkedin": "#"
+        },
+        {
+          "name": "David A. Vásquez Stuardo",
+          "role": "Editor general",
+          "bio": "Agrónomo y Máster en Gestión de Recursos Naturales. Especialista en dinámicas territoriales con más de una década en campo. Editor general comprometido con el rigor y la accesibilidad.",
+          "image": "images/person_2.jpg",
+          "twitter": "#",
+          "instagram": "#",
+          "facebook": "#",
+          "linkedin": "#"
+        },
+        {
+          "name": "John Smith",
+          "role": "Editor de contenidos",
+          "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur ab quas facilis obcaecati non ea, est odit repellat distinctio incidunt, quia aliquam eveniet quod deleniti impedit sapiente atque tenetur porro?",
+          "image": "images/person_4.jpg",
+          "twitter": "#",
+          "instagram": "#",
+          "facebook": "#",
+          "linkedin": "#"
+        }
+      ],
+      "manifestoImage": "images/hero_bg_1.jpg",
+      "manifestoLeft": "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
+      "manifestoRight": "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
+    },
+    "invitados": {
+      "title": "Invitados Destacados",
+      "items": [
+        {
+          "name": "David A. Vásquez Stuardo",
+          "role": "Editor general",
+          "image": "images/person_2.jpg",
+          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación."
+        }
+      ]
+    },
+    "contact": {
+      "firstNameLabel": "Nombre",
+      "lastNameLabel": "Apellido",
+      "emailLabel": "Correo electrónico",
+      "subjectLabel": "Asunto",
+      "messageLabel": "Mensaje",
+      "sendLabel": "Enviar mensaje",
+      "addressLabel": "Dirección",
+      "address": "203 Fake St. Mountain View, San Francisco, California, USA",
+      "phoneLabel": "Teléfono",
+      "phone": "+1 232 3235 324",
+      "emailInfoLabel": "Correo",
+      "emailInfo": "youremail@domain.com",
+      "subscribeTitle": "Suscríbete",
+      "subscribeText": "Recibe novedades, columnas y publicaciones directamente en tu correo.",
+      "subscribePlaceholder": "Ingresa tu email",
+      "subscribeButton": "Enviar",
+      "subscribeImage": "images/hero_bg_1.jpg"
+    }
+  },
   "editorialCmsSections": null,
   "editorialCmsSectionContent": null
 }
