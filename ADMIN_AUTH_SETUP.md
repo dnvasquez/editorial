@@ -9,8 +9,14 @@ Set these in **Project configuration > Environment variables**:
 - `CMS_ADMIN_USER`
 - `CMS_ADMIN_PASSWORD`
 - `CMS_ADMIN_SESSION_SECRET`
+- `CMS_DATA_GITHUB_TOKEN`
+- `CMS_DATA_REPO`
+- `CMS_DATA_BRANCH`
+- `CMS_DATA_PATH`
 
 Use a long, random value for `CMS_ADMIN_SESSION_SECRET`.
+Use a GitHub token with write access to the repository for `CMS_DATA_GITHUB_TOKEN`.
+If you keep the defaults, `CMS_DATA_REPO` is `dnvasquez/editorial`, `CMS_DATA_BRANCH` is `main` and `CMS_DATA_PATH` is `cms-state.json`.
 
 ## Netlify features to enable
 
@@ -22,4 +28,4 @@ Use a long, random value for `CMS_ADMIN_SESSION_SECRET`.
 - The admin session is stored in an HttpOnly cookie.
 - The login page works on Netlify or Netlify Dev.
 - The old hardcoded front-end credentials were removed from the repo.
-
+- The CMS now syncs its editable data to a versioned JSON file in GitHub through Netlify Functions.

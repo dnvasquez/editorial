@@ -1,6 +1,18 @@
 (function () {
   var STORAGE_KEY = "editorialCmsSections";
   var CONTENT_STORAGE_KEY = "editorialCmsSectionContent";
+  var REMOTE_STATE_ENDPOINT = "/.netlify/functions/cms-state";
+  var REMOTE_STATE_KEYS = [
+    "editorialCmsProgramas",
+    "editorialCmsEpisodios",
+    "editorialCmsColumnas",
+    "editorialCmsPublicaciones",
+    "editorialCmsPages",
+    "editorialCmsPageContent",
+    "editorialCmsSections",
+    "editorialCmsSectionContent"
+  ];
+  var remoteSyncTimer = null;
   var PAGE_DEFINITIONS = [
     {
       page: "index",
@@ -151,6 +163,7 @@
   function saveConfig(config) {
     var normalized = mergeWithDefaults(config);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+    queueRemoteSync();
     return normalized;
   }
 
@@ -179,6 +192,7 @@
   function saveContentConfig(config) {
     var normalized = config && typeof config === "object" ? config : {};
     window.localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(normalized));
+    queueRemoteSync();
     return normalized;
   }
 
@@ -208,6 +222,171 @@
       saveContentConfig(config);
     }
     return config;
+  }
+
+  function sanitizeSectionUrl(value, allowImageData) {
+    var raw = String(value || "").trim();
+    if (!raw) return "";
+    if (allowImageData && /^data:image\//i.test(raw)) return raw;
+
+    try {
+      var parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "mailto:" || parsed.protocol === "tel:") {
+        return parsed.href;
+      }
+    } catch (error) {
+      return "";
+    }
+
+    return "";
+  }
+
+  function sanitizeSectionHtml(html) {
+    var template = document.createElement("template");
+    template.innerHTML = String(html || "");
+
+    var blockedTags = ["script", "style", "iframe", "object", "embed", "form", "input", "button", "textarea", "select", "option", "meta", "link"];
+    blockedTags.forEach(function (tagName) {
+      Array.prototype.forEach.call(template.content.querySelectorAll(tagName), function (node) {
+        node.remove();
+      });
+    });
+
+    Array.prototype.forEach.call(template.content.querySelectorAll("*"), function (element) {
+      Array.prototype.slice.call(element.attributes).forEach(function (attribute) {
+        var name = attribute.name.toLowerCase();
+        var value = attribute.value;
+
+        if (name.indexOf("on") === 0 || name === "style") {
+          element.removeAttribute(attribute.name);
+          return;
+        }
+
+        if (name === "href" || name === "action" || name === "formaction" || name === "poster" || name === "xlink:href") {
+          var safeUrl = sanitizeSectionUrl(value, false);
+          if (safeUrl) {
+            element.setAttribute(attribute.name, safeUrl);
+          } else {
+            element.removeAttribute(attribute.name);
+          }
+          return;
+        }
+
+        if (name === "src") {
+          var safeSrc = sanitizeSectionUrl(value, true);
+          if (safeSrc) {
+            element.setAttribute(attribute.name, safeSrc);
+          } else {
+            element.removeAttribute(attribute.name);
+          }
+        }
+      });
+    });
+
+    return template.content;
+  }
+
+  function renderSectionHtml(container, html) {
+    if (!container) return;
+    container.textContent = "";
+    container.appendChild(sanitizeSectionHtml(html));
+  }
+
+  function readSnapshot() {
+    var snapshot = {};
+
+    REMOTE_STATE_KEYS.forEach(function (key) {
+      try {
+        var raw = window.localStorage.getItem(key);
+        snapshot[key] = raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        snapshot[key] = null;
+      }
+    });
+
+    return snapshot;
+  }
+
+  function hasSnapshotData(snapshot) {
+    return REMOTE_STATE_KEYS.some(function (key) {
+      var value = snapshot && snapshot[key];
+      if (Array.isArray(value)) return value.length > 0;
+      if (value && typeof value === "object") return Object.keys(value).length > 0;
+      return Boolean(value);
+    });
+  }
+
+  function applySnapshotToLocalStorage(snapshot) {
+    if (!snapshot || typeof snapshot !== "object") return;
+
+    REMOTE_STATE_KEYS.forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
+      var value = snapshot[key];
+      if (value === null || value === undefined) {
+        window.localStorage.removeItem(key);
+        return;
+      }
+      window.localStorage.setItem(key, JSON.stringify(value));
+    });
+  }
+
+  function readRemoteStateSync() {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", REMOTE_STATE_ENDPOINT, false);
+      xhr.setRequestHeader("Accept", "application/json");
+      xhr.send(null);
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var payload = JSON.parse(xhr.responseText || "{}");
+        if (payload && typeof payload === "object") {
+          return payload.state && typeof payload.state === "object" ? payload.state : payload;
+        }
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
+  function syncSnapshotToServer(snapshot) {
+    if (!snapshot || typeof snapshot !== "object") return;
+    if (typeof window.fetch !== "function") return;
+
+    window.fetch(REMOTE_STATE_ENDPOINT, {
+      method: "PUT",
+      credentials: "include",
+      keepalive: true,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ state: snapshot })
+    }).catch(function () {});
+  }
+
+  function queueRemoteSync() {
+    if (remoteSyncTimer) {
+      window.clearTimeout(remoteSyncTimer);
+    }
+
+    remoteSyncTimer = window.setTimeout(function () {
+      remoteSyncTimer = null;
+      syncSnapshotToServer(readSnapshot());
+    }, 150);
+  }
+
+  function hydrateRemoteState() {
+    var remoteState = readRemoteStateSync();
+    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
+      applySnapshotToLocalStorage(remoteState);
+      return;
+    }
+
+    var localState = readSnapshot();
+    if (hasSnapshotData(localState)) {
+      syncSnapshotToServer(localState);
+    }
   }
 
   function getSectionDefinition(pageKey, sectionKey) {
@@ -296,7 +475,7 @@
       var sectionKey = element.getAttribute("data-cms-section");
       var html = getSectionContent(pageKey, sectionKey);
       if (html) {
-        element.innerHTML = html;
+        renderSectionHtml(element, html);
       }
     });
   }
@@ -321,6 +500,8 @@
     applySections: applySections,
     applyContentOverrides: applyContentOverrides
   };
+
+  hydrateRemoteState();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {

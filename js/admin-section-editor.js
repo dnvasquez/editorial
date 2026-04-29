@@ -1,27 +1,32 @@
 (function () {
-  var SESSION_KEY = "editorialCmsSession";
+  var AUTH_BASE = "/.netlify/functions";
+  var SESSION_ENDPOINT = AUTH_BASE + "/admin-session";
+  var LOGOUT_ENDPOINT = AUTH_BASE + "/admin-logout";
 
   function getActiveSession() {
-    var raw = window.sessionStorage.getItem(SESSION_KEY) || window.localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-
-    try {
-      return JSON.parse(raw);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function clearSession() {
-    window.sessionStorage.removeItem(SESSION_KEY);
-    window.localStorage.removeItem(SESSION_KEY);
+    return fetch(SESSION_ENDPOINT, { credentials: "include" })
+      .then(function (response) {
+        if (!response.ok) return null;
+        return response.json().catch(function () {
+          return null;
+        });
+      })
+      .then(function (payload) {
+        return payload && payload.user ? payload.user : null;
+      })
+      .catch(function () {
+        return null;
+      });
   }
 
   function requireSession() {
-    if (!document.body.classList.contains("admin-dashboard-body")) return;
-    if (!getActiveSession()) {
-      window.location.href = "admin-login.html";
-    }
+    if (!document.body.classList.contains("admin-dashboard-body")) return Promise.resolve(null);
+    return getActiveSession().then(function (session) {
+      if (!session) {
+        window.location.href = "admin-login.html";
+      }
+      return session;
+    });
   }
 
   function bindEditor() {
@@ -40,7 +45,6 @@
       sectionKey = definition.section;
     }
 
-    var session = getActiveSession();
     var sessionUser = document.getElementById("admin-session-user");
     var sectionsNav = document.getElementById("admin-sections-nav");
     var title = document.getElementById("admin-section-title");
@@ -55,10 +59,6 @@
     var clearButton = document.getElementById("admin-clear-content");
     var publicLink = document.getElementById("admin-open-public");
     var logoutButton = document.getElementById("admin-logout");
-
-    if (session && sessionUser) {
-      sessionUser.textContent = session.username;
-    }
 
     if (sectionsNav) {
       window.EditorialCmsSections.renderAdminSectionNav(sectionsNav, pageKey, sectionKey);
@@ -101,11 +101,18 @@
     });
 
     logoutButton.addEventListener("click", function () {
-      clearSession();
-      window.location.href = "admin-login.html";
+      fetch(LOGOUT_ENDPOINT, { method: "POST", credentials: "include" })
+        .finally(function () {
+          window.location.href = "admin-login.html";
+        });
     });
   }
 
-  requireSession();
-  bindEditor();
+  requireSession().then(function (session) {
+    var sessionUser = document.getElementById("admin-session-user");
+    if (session && sessionUser) {
+      sessionUser.textContent = session.username;
+    }
+    bindEditor();
+  });
 })();

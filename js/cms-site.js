@@ -7,6 +7,18 @@
     columns: "editorialCmsColumnas",
     publications: "editorialCmsPublicaciones"
   };
+  var REMOTE_STATE_ENDPOINT = "/.netlify/functions/cms-state";
+  var REMOTE_STATE_KEYS = [
+    "editorialCmsProgramas",
+    "editorialCmsEpisodios",
+    "editorialCmsColumnas",
+    "editorialCmsPublicaciones",
+    "editorialCmsPages",
+    "editorialCmsPageContent",
+    "editorialCmsSections",
+    "editorialCmsSectionContent"
+  ];
+  var remoteSyncTimer = null;
 
   var PAGE_DEFINITIONS = [
     { id: "index", label: "Inicio", file: "index.html" },
@@ -59,6 +71,107 @@
     var payload = value && typeof value === "object" ? value : {};
     window.localStorage.setItem(key, JSON.stringify(payload));
     return payload;
+  }
+
+  function isPlainObject(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function readSnapshot() {
+    var snapshot = {};
+
+    REMOTE_STATE_KEYS.forEach(function (key) {
+      try {
+        var raw = window.localStorage.getItem(key);
+        snapshot[key] = raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        snapshot[key] = null;
+      }
+    });
+
+    return snapshot;
+  }
+
+  function hasSnapshotData(snapshot) {
+    return REMOTE_STATE_KEYS.some(function (key) {
+      var value = snapshot && snapshot[key];
+      if (Array.isArray(value)) return value.length > 0;
+      if (isPlainObject(value)) return Object.keys(value).length > 0;
+      return Boolean(value);
+    });
+  }
+
+  function applySnapshotToLocalStorage(snapshot) {
+    if (!snapshot || typeof snapshot !== "object") return;
+
+    REMOTE_STATE_KEYS.forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
+      var value = snapshot[key];
+      if (value === null || value === undefined) {
+        window.localStorage.removeItem(key);
+        return;
+      }
+      window.localStorage.setItem(key, JSON.stringify(value));
+    });
+  }
+
+  function readRemoteStateSync() {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", REMOTE_STATE_ENDPOINT, false);
+      xhr.setRequestHeader("Accept", "application/json");
+      xhr.send(null);
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var payload = JSON.parse(xhr.responseText || "{}");
+        if (payload && typeof payload === "object") {
+          return payload.state && typeof payload.state === "object" ? payload.state : payload;
+        }
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
+  function syncSnapshotToServer(snapshot) {
+    if (!snapshot || typeof snapshot !== "object") return;
+    if (typeof window.fetch !== "function") return;
+
+    window.fetch(REMOTE_STATE_ENDPOINT, {
+      method: "PUT",
+      credentials: "include",
+      keepalive: true,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ state: snapshot })
+    }).catch(function () {});
+  }
+
+  function queueRemoteSync() {
+    if (remoteSyncTimer) {
+      window.clearTimeout(remoteSyncTimer);
+    }
+
+    remoteSyncTimer = window.setTimeout(function () {
+      remoteSyncTimer = null;
+      syncSnapshotToServer(readSnapshot());
+    }, 150);
+  }
+
+  function hydrateRemoteState() {
+    var remoteState = readRemoteStateSync();
+    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
+      applySnapshotToLocalStorage(remoteState);
+      return;
+    }
+
+    var localState = readSnapshot();
+    if (hasSnapshotData(localState)) {
+      syncSnapshotToServer(localState);
+    }
   }
 
   function normalizeDate(dateValue) {
@@ -216,6 +329,7 @@
     }
 
     writeArray(STORAGE_KEYS.programs, localItems);
+    queueRemoteSync();
     return payload;
   }
 
@@ -232,6 +346,7 @@
     }
 
     writeArray(STORAGE_KEYS.programs, localItems);
+    queueRemoteSync();
   }
 
   function getEpisodes() {
@@ -274,6 +389,7 @@
     }
 
     writeArray(STORAGE_KEYS.episodes, localItems);
+    queueRemoteSync();
     return payload;
   }
 
@@ -290,6 +406,7 @@
     }
 
     writeArray(STORAGE_KEYS.episodes, localItems);
+    queueRemoteSync();
   }
 
   function normalizeColumnForSite(column) {
@@ -365,6 +482,7 @@
     }
 
     writeArray(STORAGE_KEYS.columns, localItems);
+    queueRemoteSync();
     return payload;
   }
 
@@ -381,6 +499,7 @@
     }
 
     writeArray(STORAGE_KEYS.columns, localItems);
+    queueRemoteSync();
   }
 
   function getPublicationsForAdmin() {
@@ -416,6 +535,7 @@
     }
 
     writeArray(STORAGE_KEYS.publications, localItems);
+    queueRemoteSync();
     return payload;
   }
 
@@ -432,6 +552,7 @@
     }
 
     writeArray(STORAGE_KEYS.publications, localItems);
+    queueRemoteSync();
   }
 
   function buildDefaultPageContent() {
@@ -559,19 +680,78 @@
     if (!all[sectionId]) return null;
     all[sectionId] = clone(data);
     writeObject(CONTENT_STORAGE_KEY, all);
+    queueRemoteSync();
     return all[sectionId];
   }
 
-  function buildParagraphMarkup(text) {
-    return String(text || "")
+  function sanitizeImageUrl(value, fallback) {
+    var raw = String(value || "").trim();
+    if (!raw) return fallback || "";
+
+    if (/^data:image\//i.test(raw)) {
+      return raw;
+    }
+
+    try {
+      var parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "blob:") {
+        return parsed.href;
+      }
+    } catch (error) {
+      return fallback || "";
+    }
+
+    return fallback || "";
+  }
+
+  function sanitizeLinkUrl(value) {
+    var raw = String(value || "").trim();
+    if (!raw) return "#";
+    if (raw === "#") return raw;
+
+    try {
+      var parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "mailto:" || parsed.protocol === "tel:") {
+        return parsed.href;
+      }
+    } catch (error) {
+      return "#";
+    }
+
+    return "#";
+  }
+
+  function setSafeBackgroundImage(element, value, fallback) {
+    if (!element) return;
+    var safeUrl = sanitizeImageUrl(value, fallback || "");
+    element.style.backgroundImage = safeUrl ? 'url("' + safeUrl.replace(/"/g, "%22") + '")' : "";
+  }
+
+  function setSafeImageSource(image, value, fallback, altText) {
+    if (!image) return;
+    image.src = sanitizeImageUrl(value, fallback || "");
+    image.alt = altText || image.alt || "";
+  }
+
+  function appendParagraphs(container, text) {
+    if (!container) return;
+    container.textContent = "";
+
+    String(text || "")
       .split(/\n\s*\n|\r\n\s*\r\n/)
       .map(function (paragraph) { return paragraph.trim(); })
       .filter(Boolean)
-      .map(function (paragraph) { return "<p>" + paragraph + "</p>"; })
-      .join("");
+      .forEach(function (paragraph) {
+        var p = document.createElement("p");
+        p.textContent = paragraph;
+        container.appendChild(p);
+      });
   }
 
-  function renderSocialLinks(member, linkClass, iconClass) {
+  function appendSocialLinks(container, member, linkClass) {
+    if (!container) return;
+    container.textContent = "";
+
     var socialMap = [
       { key: "twitter", icon: "icon-twitter" },
       { key: "instagram", icon: "icon-instagram" },
@@ -579,12 +759,17 @@
       { key: "linkedin", icon: "icon-linkedin" }
     ];
 
-    return socialMap
+    socialMap
       .filter(function (item) { return member[item.key]; })
-      .map(function (item) {
-        return '<a href="' + member[item.key] + '" class="' + linkClass + '"><span class="' + item.icon + " " + iconClass + '"></span></a>';
-      })
-      .join("");
+      .forEach(function (item) {
+        var link = document.createElement("a");
+        link.href = sanitizeLinkUrl(member[item.key]);
+        link.className = linkClass;
+        var icon = document.createElement("span");
+        icon.className = item.icon;
+        link.appendChild(icon);
+        container.appendChild(link);
+      });
   }
 
   function getTeamMemberColumnClass(totalMembers, isHome) {
@@ -621,40 +806,89 @@
     var visibleMembers = (about.teamMembers || []).slice(0, 6);
     if (aboutGrid) {
       aboutGrid.className = "row justify-content-center";
-      aboutGrid.innerHTML = visibleMembers.map(function (member) {
-        return '' +
-          '<div class="' + getTeamMemberColumnClass(visibleMembers.length, false) + '" data-aos="fade-up">' +
-          '<img src="' + (member.image || "images/person_1.jpg") + '" alt="' + (member.name || "Miembro del equipo") + '" class="cms-team-member-photo rounded-circle mb-3">' +
-          '<h2 class="text-black font-weight-light mb-2">' + (member.name || "Sin nombre") + '</h2>' +
-          '<div class="text-muted mb-3">' + (member.role || "") + '</div>' +
-          '<p>' + (member.bio || "") + '</p>' +
-          '<p>' + renderSocialLinks(member, "pl-0 pr-3", "") + '</p>' +
-          '</div>';
-      }).join("");
+      aboutGrid.textContent = "";
+      visibleMembers.forEach(function (member) {
+        var column = document.createElement("div");
+        column.className = getTeamMemberColumnClass(visibleMembers.length, false);
+        column.setAttribute("data-aos", "fade-up");
+
+        var image = document.createElement("img");
+        image.className = "cms-team-member-photo rounded-circle mb-3";
+        setSafeImageSource(image, member.image, "images/person_1.jpg", member.name || "Miembro del equipo");
+
+        var name = document.createElement("h2");
+        name.className = "text-black font-weight-light mb-2";
+        name.textContent = member.name || "Sin nombre";
+
+        var role = document.createElement("div");
+        role.className = "text-muted mb-3";
+        role.textContent = member.role || "";
+
+        var bio = document.createElement("p");
+        bio.textContent = member.bio || "";
+
+        var socials = document.createElement("p");
+        appendSocialLinks(socials, member, "pl-0 pr-3");
+
+        column.appendChild(image);
+        column.appendChild(name);
+        column.appendChild(role);
+        column.appendChild(bio);
+        column.appendChild(socials);
+        aboutGrid.appendChild(column);
+      });
     }
     if (homeTeamGrid) {
       homeTeamGrid.className = "row justify-content-center";
-      homeTeamGrid.innerHTML = visibleMembers.map(function (member) {
-        return '' +
-          '<div class="' + getTeamMemberColumnClass(visibleMembers.length, true) + '">' +
-          '<div class="team-member">' +
-          '<img src="' + (member.image || "images/person_1.jpg") + '" alt="' + (member.name || "Miembro del equipo") + '" class="img-fluid">' +
-          '<div class="text">' +
-          '<h2 class="mb-2 font-weight-light h4">' + (member.name || "Sin nombre") + '</h2>' +
-          '<span class="d-block mb-2 text-white-opacity-05">' + (member.role || "") + '</span>' +
-          '<p class="mb-4">' + (member.bio || "") + '</p>' +
-          '<p>' + renderSocialLinks(member, "text-white p-2", "") + '</p>' +
-          '</div></div></div>';
-      }).join("");
+      homeTeamGrid.textContent = "";
+      visibleMembers.forEach(function (member) {
+        var column = document.createElement("div");
+        column.className = getTeamMemberColumnClass(visibleMembers.length, true);
+
+        var card = document.createElement("div");
+        card.className = "team-member";
+
+        var image = document.createElement("img");
+        image.className = "img-fluid";
+        setSafeImageSource(image, member.image, "images/person_1.jpg", member.name || "Miembro del equipo");
+
+        var text = document.createElement("div");
+        text.className = "text";
+
+        var name = document.createElement("h2");
+        name.className = "mb-2 font-weight-light h4";
+        name.textContent = member.name || "Sin nombre";
+
+        var role = document.createElement("span");
+        role.className = "d-block mb-2 text-white-opacity-05";
+        role.textContent = member.role || "";
+
+        var bio = document.createElement("p");
+        bio.className = "mb-4";
+        bio.textContent = member.bio || "";
+
+        var socials = document.createElement("p");
+        appendSocialLinks(socials, member, "text-white p-2");
+
+        text.appendChild(name);
+        text.appendChild(role);
+        text.appendChild(bio);
+        text.appendChild(socials);
+
+        card.appendChild(image);
+        card.appendChild(text);
+        column.appendChild(card);
+        homeTeamGrid.appendChild(column);
+      });
     }
     if (manifestoImage) {
-      manifestoImage.src = about.manifestoImage || "images/hero_bg_1.jpg";
+      setSafeImageSource(manifestoImage, about.manifestoImage, "images/hero_bg_1.jpg", "Manifiesto");
     }
     if (manifestoLeft) {
-      manifestoLeft.innerHTML = buildParagraphMarkup(about.manifestoLeft);
+      appendParagraphs(manifestoLeft, about.manifestoLeft);
     }
     if (manifestoRight) {
-      manifestoRight.innerHTML = buildParagraphMarkup(about.manifestoRight);
+      appendParagraphs(manifestoRight, about.manifestoRight);
     }
   }
 
@@ -671,13 +905,40 @@
     }
 
     if (carousel) {
-      carousel.innerHTML = items.map(function (guest) {
-        return '' +
-          '<div class="text-center p-3 p-md-5 bg-white">' +
-          '<div class="mb-4"><img src="' + (guest.image || "images/person_1.jpg") + '" alt="' + (guest.name || "Invitado destacado") + '" class="w-50 mx-auto img-fluid rounded-circle"></div>' +
-          '<div class=""><h3 class="font-weight-light h5">' + (guest.name || "Sin nombre") + '</h3><p>' + (guest.bio || "") + '</p><p class="text-muted mb-0">' + (guest.role || "") + '</p></div>' +
-          '</div>';
-      }).join("");
+      carousel.textContent = "";
+      items.forEach(function (guest) {
+        var card = document.createElement("div");
+        card.className = "text-center p-3 p-md-5 bg-white";
+
+        var media = document.createElement("div");
+        media.className = "mb-4";
+
+        var image = document.createElement("img");
+        image.className = "w-50 mx-auto img-fluid rounded-circle";
+        setSafeImageSource(image, guest.image, "images/person_1.jpg", guest.name || "Invitado destacado");
+        media.appendChild(image);
+
+        var content = document.createElement("div");
+
+        var name = document.createElement("h3");
+        name.className = "font-weight-light h5";
+        name.textContent = guest.name || "Sin nombre";
+
+        var bio = document.createElement("p");
+        bio.textContent = guest.bio || "";
+
+        var role = document.createElement("p");
+        role.className = "text-muted mb-0";
+        role.textContent = guest.role || "";
+
+        content.appendChild(name);
+        content.appendChild(bio);
+        content.appendChild(role);
+
+        card.appendChild(media);
+        card.appendChild(content);
+        carousel.appendChild(card);
+      });
     }
   }
 
@@ -735,7 +996,7 @@
 
     var subscribeBanner = body.querySelector("#contact-subscribe-banner");
     if (subscribeBanner && contact.subscribeImage) {
-      subscribeBanner.style.backgroundImage = "url(" + contact.subscribeImage + ")";
+      setSafeBackgroundImage(subscribeBanner, contact.subscribeImage, "images/hero_bg_1.jpg");
     }
   }
 
@@ -810,6 +1071,7 @@
       all[pageId].manualHeroTranscriptLink = String(config.manualHeroTranscriptLink || "");
     }
     writeObject(PAGE_STORAGE_KEY, all);
+    queueRemoteSync();
     return all[pageId];
   }
 
@@ -978,6 +1240,7 @@
     applyPageConfig: applyPageConfig
   };
 
+  hydrateRemoteState();
   hydrateGlobals();
 
   if (document.readyState === "loading") {
