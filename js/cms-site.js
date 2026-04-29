@@ -348,6 +348,9 @@
     var payload = clone(column);
     payload.id = id;
     if (typeof payload.visible !== "boolean") payload.visible = true;
+    if (!payload.imagen && payload.banner) {
+      payload.imagen = payload.banner;
+    }
     payload.banner = payload.banner || payload.imagen;
     delete payload._deleted;
 

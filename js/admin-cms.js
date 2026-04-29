@@ -160,6 +160,41 @@
       '</article>';
   }
 
+  function bindImageUpload(fileInputId, targetInputId, feedbackId, label) {
+    var fileInput = document.getElementById(fileInputId);
+    var targetInput = document.getElementById(targetInputId);
+    var feedback = feedbackId ? document.getElementById(feedbackId) : null;
+    if (!fileInput || !targetInput) return;
+
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      if (file.type && file.type.indexOf("image/") !== 0) {
+        if (feedback) {
+          feedback.textContent = "El archivo seleccionado no es una imagen valida.";
+        }
+        fileInput.value = "";
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        targetInput.value = String(reader.result || "");
+        targetInput.dispatchEvent(new Event("input", { bubbles: true }));
+        if (feedback) {
+          feedback.textContent = (label || "Imagen") + " cargada desde un archivo local.";
+        }
+      };
+      reader.onerror = function () {
+        if (feedback) {
+          feedback.textContent = "No se pudo leer la imagen seleccionada.";
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function buildFeaturedContentPreview(contentType, contentId) {
     var content = getFeaturedContentData(contentType, contentId);
 
@@ -822,8 +857,8 @@
         '<div class="admin-field"><label for="column-date">Fecha</label><input id="column-date" class="form-control" value="' + escapeHtml(selected.fecha) + '" placeholder="2026-04-01"></div>' +
         '<div class="admin-field"><label for="column-category">Categoria</label><select id="column-category" class="form-control"><option value="Analisis"' + (selected.categoria === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + (selected.categoria === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (selected.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (selected.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (selected.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
         '<div class="admin-field"><label for="column-status">Estado</label><select id="column-status" class="form-control"><option value="borrador"' + (selected.estado === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (selected.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
-        '<div class="admin-field"><label for="column-image">Imagen</label><input id="column-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
-        '<div class="admin-field"><label for="column-banner">Banner</label><input id="column-banner" class="form-control" value="' + escapeHtml(selected.banner || selected.imagen) + '"></div>' +
+        '<div class="admin-field"><label for="column-image">Imagen</label><input id="column-image" class="form-control" value="' + escapeHtml(selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
+        '<div class="admin-field"><label for="column-banner">Banner</label><input id="column-banner" class="form-control" value="' + escapeHtml(selected.banner || selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-banner-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
         '<div class="admin-field"><label for="column-summary">Resumen</label><textarea id="column-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
         '<div class="admin-field"><label for="column-content">Contenido</label><textarea id="column-content" class="form-control admin-code-textarea">' + escapeHtml(selected.contenido) + '</textarea></div>' +
         '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar columna</button>' + (selected.id ? '<button id="delete-column" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
@@ -838,6 +873,8 @@
         document.getElementById("add-column").addEventListener("click", function () {
           window.location.href = "admin-columnas.html?view=column";
         });
+        bindImageUpload("column-image-file", "column-image", "column-feedback", "La imagen");
+        bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
         document.getElementById("column-form").addEventListener("submit", function (event) {
           event.preventDefault();
           var saved = window.EditorialCmsSite.saveColumn({
