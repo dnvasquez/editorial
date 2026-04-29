@@ -464,6 +464,7 @@
     html += createLink("admin-columnas.html?view=episodes", "Episodios", currentView === "episodes" || currentView === "episode");
     html += createLink("admin-columnas.html?view=columns", "Columnas", currentView === "columns" || currentView === "column");
     html += createLink("admin-columnas.html?view=publications", "Publicaciones", currentView === "publications" || currentView === "publication");
+    html += createLink("admin-columnas.html?view=invitados-content", "Invitados destacados", currentView === "invitados-content");
     html += createLink("admin-columnas.html?view=about-content", "Nosotros", currentView === "about-content");
     html += createLink("admin-columnas.html?view=contact-content", "Contacto", currentView === "contact-content");
     html += '</div></div>';
@@ -651,6 +652,15 @@
     };
   }
 
+  function getEmptyGuest() {
+    return {
+      name: "",
+      role: "",
+      bio: "",
+      image: ""
+    };
+  }
+
   function readAboutContentDraft(fallbackContent) {
     var form = document.getElementById("admin-about-content-form");
     if (!form) return JSON.parse(JSON.stringify(fallbackContent));
@@ -672,6 +682,26 @@
         instagram: document.getElementById("about-member-instagram").value,
         facebook: document.getElementById("about-member-facebook").value,
         linkedin: document.getElementById("about-member-linkedin").value
+      };
+    }
+
+    return draft;
+  }
+
+  function readGuestsContentDraft(fallbackContent) {
+    var form = document.getElementById("admin-guests-content-form");
+    if (!form) return JSON.parse(JSON.stringify(fallbackContent));
+
+    var draft = JSON.parse(JSON.stringify(fallbackContent));
+    draft.title = document.getElementById("guests-title").value;
+
+    var selectedIndex = Number(form.getAttribute("data-selected-guest-index") || 0);
+    if (draft.items[selectedIndex]) {
+      draft.items[selectedIndex] = {
+        name: document.getElementById("guests-item-name").value,
+        role: document.getElementById("guests-item-role").value,
+        image: document.getElementById("guests-item-image").value,
+        bio: document.getElementById("guests-item-bio").value
       };
     }
 
@@ -781,6 +811,91 @@
         renderAboutContentEditor(Math.max(0, selectedIndex - 1), draft);
       });
     }
+  }
+
+  function renderGuestsContentEditor(selectedGuestIndex, contentOverride) {
+    var content = contentOverride || window.EditorialCmsSite.getPageContentSection("invitados");
+    var items = Array.isArray(content.items) ? content.items.slice() : [];
+    if (!items.length) {
+      items = [getEmptyGuest()];
+    }
+
+    var selectedIndex = Math.max(0, Math.min(typeof selectedGuestIndex === "number" ? selectedGuestIndex : 0, items.length - 1));
+    var selectedGuest = items[selectedIndex] || getEmptyGuest();
+
+    setHeader(
+      "Contenido",
+      "Invitados destacados",
+      "Edita el carrusel de invitados visibles en la portada. Cada tarjeta puede llevar imagen, cargo y descripción."
+    );
+
+    document.getElementById("admin-main-content").innerHTML =
+      '<section class="admin-card admin-editor-panel admin-editor-single">' +
+      '<form id="admin-guests-content-form" class="admin-form-stack" data-selected-guest-index="' + selectedIndex + '" novalidate>' +
+      '<div class="admin-field"><label for="guests-title">Título de sección</label><input id="guests-title" class="form-control" value="' + escapeHtml(content.title) + '"></div>' +
+      '<section class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Invitados</span><h3>Tarjetas</h3></div><button id="guests-add-item" type="button" class="btn btn-primary">Agregar invitado</button></div>' +
+      '<div class="admin-entity-list" id="guests-item-list">' + items.map(function (item, index) {
+        return '<button type="button" class="admin-entity-row' + (index === selectedIndex ? ' is-active' : '') + '" data-index="' + index + '">' +
+          '<strong>' + escapeHtml(item.name || ("Invitado " + (index + 1))) + '</strong>' +
+          '<span>' + escapeHtml(item.role || "Sin cargo") + '</span></button>';
+      }).join("") + '</div>' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Editor</span><h3>Ficha del invitado</h3></div>' + (items.length > 1 ? '<button id="guests-remove-item" type="button" class="btn btn-outline-dark">Quitar invitado</button>' : '') + '</div>' +
+      '<div class="admin-form-stack">' +
+      '<div class="admin-field"><label for="guests-item-name">Nombre</label><input id="guests-item-name" class="form-control" value="' + escapeHtml(selectedGuest.name) + '"></div>' +
+      '<div class="admin-field"><label for="guests-item-role">Cargo</label><input id="guests-item-role" class="form-control" value="' + escapeHtml(selectedGuest.role) + '"></div>' +
+      '<div class="admin-field"><label for="guests-item-image">Imagen</label><input id="guests-item-image" class="form-control" value="' + escapeHtml(selectedGuest.image) + '" placeholder="URL de imagen o data:image/..."><input id="guests-item-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
+      '<div class="admin-field"><label for="guests-item-bio">Descripción</label><textarea id="guests-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedGuest.bio) + '</textarea></div>' +
+      '</div></section>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="index.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
+      '<p id="guests-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form></section>';
+
+    document.getElementById("admin-guests-content-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var next = readGuestsContentDraft({
+        title: content.title,
+        items: items
+      });
+      window.EditorialCmsSite.savePageContentSection("invitados", next);
+      document.getElementById("guests-content-feedback").textContent = "Contenido guardado. La portada reflejará estos cambios.";
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll("#guests-item-list .admin-entity-row"), function (button) {
+      button.addEventListener("click", function () {
+        var draft = readGuestsContentDraft({
+          title: content.title,
+          items: items
+        });
+        renderGuestsContentEditor(Number(button.getAttribute("data-index")), draft);
+      });
+    });
+
+    var addButton = document.getElementById("guests-add-item");
+    if (addButton) {
+      addButton.addEventListener("click", function () {
+        var draft = readGuestsContentDraft({
+          title: content.title,
+          items: items
+        });
+        draft.items.push(getEmptyGuest());
+        renderGuestsContentEditor(draft.items.length - 1, draft);
+      });
+    }
+
+    var removeButton = document.getElementById("guests-remove-item");
+    if (removeButton) {
+      removeButton.addEventListener("click", function () {
+        var draft = readGuestsContentDraft({
+          title: content.title,
+          items: items
+        });
+        draft.items.splice(selectedIndex, 1);
+        renderGuestsContentEditor(Math.max(0, selectedIndex - 1), draft);
+      });
+    }
+
+    bindImageUpload("guests-item-image-file", "guests-item-image", "guests-content-feedback", "La imagen");
   }
 
   function renderContactContentEditor() {
@@ -1179,6 +1294,8 @@
 
     if (view === "page") {
       renderPageEditor(id || "index");
+    } else if (view === "invitados-content") {
+      renderGuestsContentEditor();
     } else if (view === "about-content") {
       renderAboutContentEditor();
     } else if (view === "contact-content") {

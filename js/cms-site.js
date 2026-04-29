@@ -474,6 +474,47 @@
         manifestoLeft: "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
         manifestoRight: "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
       },
+      invitados: {
+        title: "Invitados Destacados",
+        items: [
+          {
+            name: "Megan Smith",
+            role: "Directora Editorial",
+            bio: "Especialista en narrativa digital y curaduría de contenidos editoriales.",
+            image: "images/person_1.jpg"
+          },
+          {
+            name: "David A. Vásquez Stuardo",
+            role: "Editor general",
+            bio: "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación.",
+            image: "images/person_2.jpg"
+          },
+          {
+            name: "Philip Martin",
+            role: "Editor de contenidos",
+            bio: "Acompaña procesos de edición, guion y despliegue de publicaciones multiformato.",
+            image: "images/person_3.jpg"
+          },
+          {
+            name: "Steven Ericson",
+            role: "Colaborador invitado",
+            bio: "Analiza tendencias, formatos y distribución de contenidos editoriales.",
+            image: "images/person_4.jpg"
+          },
+          {
+            name: "Nathan Dumlao",
+            role: "Investigador invitado",
+            bio: "Se enfoca en innovación, entrevistas y mediación entre academia y público general.",
+            image: "images/person_5.jpg"
+          },
+          {
+            name: "Brook Smith",
+            role: "Columnista invitado",
+            bio: "Escribe sobre política pública, territorio y cultura editorial contemporánea.",
+            image: "images/person_6.jpg"
+          }
+        ]
+      },
       contact: {
         firstNameLabel: "Nombre",
         lastNameLabel: "Apellido",
@@ -614,6 +655,29 @@
     }
     if (manifestoRight) {
       manifestoRight.innerHTML = buildParagraphMarkup(about.manifestoRight);
+    }
+  }
+
+  function renderGuestsContent(body) {
+    var guests = getPageContentSection("invitados");
+    if (!guests) return;
+
+    var title = body.querySelector("#home-guests-title");
+    var carousel = body.querySelector(".nonloop-block-13");
+    var items = Array.isArray(guests.items) ? guests.items : [];
+
+    if (title) {
+      title.textContent = guests.title || "Invitados Destacados";
+    }
+
+    if (carousel) {
+      carousel.innerHTML = items.map(function (guest) {
+        return '' +
+          '<div class="text-center p-3 p-md-5 bg-white">' +
+          '<div class="mb-4"><img src="' + (guest.image || "images/person_1.jpg") + '" alt="' + (guest.name || "Invitado destacado") + '" class="w-50 mx-auto img-fluid rounded-circle"></div>' +
+          '<div class=""><h3 class="font-weight-light h5">' + (guest.name || "Sin nombre") + '</h3><p>' + (guest.bio || "") + '</p><p class="text-muted mb-0">' + (guest.role || "") + '</p></div>' +
+          '</div>';
+      }).join("");
     }
   }
 
@@ -776,6 +840,7 @@
     if (!config) return;
 
     renderAboutContent(body);
+    renderGuestsContent(body);
     renderContactContent(body);
 
     applyNavigationVisibility(body);
