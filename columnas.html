@@ -73,26 +73,42 @@
     <main id="cms-page-main">
     <div class="site-section bg-light" data-cms-section="listado-columnas">
       <div class="container">
+        <div class="columns-intro mb-5" data-aos="fade-up">
+          <div class="columns-intro__eyebrow">Archivo editorial</div>
+          <div class="row align-items-end">
+            <div class="col-lg-7">
+              <h2 class="columns-intro__title text-black mb-3">Columnas con opinión, contexto y territorio</h2>
+              <p class="columns-intro__lead mb-0">Una selección curada de textos para leer con calma: análisis, mirada crítica y piezas que conectan la contingencia con procesos más profundos.</p>
+            </div>
+            <div class="col-lg-5 mt-4 mt-lg-0">
+              <div class="columns-stats">
+                <div class="columns-stat">
+                  <strong id="column-count">0</strong>
+                  <span>Columnas publicadas</span>
+                </div>
+                <div class="columns-stat">
+                  <strong id="column-latest-date">-</strong>
+                  <span>Última actualización</span>
+                </div>
+                <div class="columns-stat">
+                  <strong>Lectura</strong>
+                  <span>Formato breve y analítico</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- Renderizado por js/episodes.js -->
         <div id="col-lista"></div>
 
       </div>
       <div class="container" data-aos="fade-up">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <div class="site-block-27">
-              <ul>
-                <li><a href="#">&lt;</a></li>
-                <li class="active"><span>1</span></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">&gt;</a></li>
-              </ul>
-            </div>
+        <div class="column-page-note">
+          <div>
+            <strong>Archivo en crecimiento</strong>
+            <p class="mb-0">Las columnas más recientes aparecen primero. Cada publicación se suma automáticamente al archivo editorial.</p>
           </div>
+          <a href="#col-lista" class="btn btn-outline-primary px-4 py-3">Volver al inicio</a>
         </div>
       </div>
     </div>
@@ -199,22 +215,93 @@
   <script src="js/cms-site.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // â”€â”€ Listado de columnas â”€â”€
+      function formatViews(count) {
+        var value = parseInt(count, 10);
+        var total = isFinite(value) && value > 0 ? value : 0;
+        return total + ' vista' + (total === 1 ? '' : 's');
+      }
+
+      function renderColumnCard(column, index) {
+        var delay = index > 0 ? ' data-aos-delay="' + (index * 80) + '"' : '';
+        return (
+          '<article class="column-archive-card" data-aos="fade-up"' + delay + '>' +
+          '<a href="columna.html?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + column.imagen + '\');">' +
+          '<span class="column-archive-card__badge">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : formatViews(column.vistas || 0)) + '</span>' +
+          '</a>' +
+          '<div class="column-archive-card__body">' +
+          '<div class="column-archive-card__meta">' +
+          '<span>' + column.fecha + '</span>' +
+          '<span>•</span>' +
+          '<span>' + (column.lectura || 'Lectura breve') + '</span>' +
+          '</div>' +
+          '<h3 class="column-archive-card__title"><a href="columna.html?id=' + column.id + '">' + column.titulo + '</a></h3>' +
+          '<p class="column-archive-card__excerpt">' + column.resumen + '</p>' +
+          '<div class="column-archive-card__footer">' +
+          '<span class="column-archive-card__author">Por ' + column.autor + '</span>' +
+          '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Leer columna</a>' +
+          '</div>' +
+          '</div>' +
+          '</article>'
+        );
+      }
+
       var listaHtml = '';
-      COLUMNAS.forEach(function(c) {
+      if (COLUMNAS.length) {
+        var featured = COLUMNAS[0];
+
         listaHtml +=
-          '<div class="d-block d-md-flex podcast-entry cms-column-card bg-white mb-5" data-aos="fade-up">' +
-          '<div class="image" style="background-image: url(\'' + c.imagen + '\');"></div>' +
-          '<div class="text">' +
-          '<h3 class="font-weight-light"><a href="columna.html?id=' + c.id + '">' + c.titulo + '</a></h3>' +
-          '<div class="text-white mb-3"><span class="text-black-opacity-05"><small>' +
-          'Por ' + c.autor + ' <span class="sep">/</span> ' + c.fecha + ' <span class="sep">/</span> ' + c.lectura + ' lectura' +
-          '</small></span></div>' +
-          '<p class="mb-4">' + c.resumen + '</p>' +
-          '<a href="columna.html?id=' + c.id + '" class="btn btn-primary btn-sm py-2 px-4">Leer columna</a>' +
-          '</div></div>';
-      });
+          '<section class="column-feature" data-aos="fade-up">' +
+          '<div class="row no-gutters">' +
+          '<div class="col-lg-7">' +
+          '<a href="columna.html?id=' + featured.id + '" class="column-feature__media" style="background-image:url(\'' + featured.imagen + '\');">' +
+          '<span class="column-feature__eyebrow">Columna destacada</span>' +
+          '<div class="column-feature__overlay">' +
+          '<h3>' + featured.titulo + '</h3>' +
+          '<p>' + featured.resumen + '</p>' +
+          '<span class="column-feature__meta">Por ' + featured.autor + ' / ' + featured.fecha + ' / ' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</span>' +
+          '</div>' +
+          '</a>' +
+          '</div>' +
+          '<div class="col-lg-5">' +
+          '<div class="column-feature__side">' +
+          '<span class="column-feature__side-label">Lectura recomendada</span>' +
+          '<h3>' + featured.titulo + '</h3>' +
+          '<p>' + featured.resumen + '</p>' +
+          '<div class="column-feature__facts">' +
+          '<div><strong>' + featured.autor + '</strong><span>Autor</span></div>' +
+          '<div><strong>' + featured.fecha + '</strong><span>Fecha</span></div>' +
+          '<div><strong>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</strong><span>Vistas</span></div>' +
+          '</div>' +
+          '<a href="columna.html?id=' + featured.id + '" class="btn btn-primary btn-sm py-3 px-4">Leer columna</a>' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '</section>';
+      }
+
+      if (COLUMNAS.length > 1) {
+        listaHtml += '<div class="columns-archive-grid">';
+        COLUMNAS.slice(1).forEach(function(c, index) {
+          listaHtml += renderColumnCard(c, index);
+        });
+        listaHtml += '</div>';
+      }
+
+      if (!COLUMNAS.length) {
+        listaHtml = '<div class="text-center py-5"><h3 class="text-black">No hay columnas publicadas todavía.</h3><p class="text-muted mb-0">Cuando el CMS publique contenido, aparecerá aquí automáticamente.</p></div>';
+      }
+
       document.getElementById('col-lista').innerHTML = listaHtml;
+
+      var countNode = document.getElementById('column-count');
+      if (countNode) {
+        countNode.textContent = String(COLUMNAS.length);
+      }
+
+      var latestDateNode = document.getElementById('column-latest-date');
+      if (latestDateNode && COLUMNAS[0]) {
+        latestDateNode.textContent = COLUMNAS[0].fecha;
+      }
 
       // â”€â”€ Footer: Ãºltimas 3 columnas â”€â”€
       var footerHtml = '';
