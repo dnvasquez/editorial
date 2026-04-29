@@ -469,10 +469,10 @@
       "manualHeroTranscriptLink": ""
     },
     "programas": {
-      "visible": true,
-      "heroTitle": "",
-      "heroSubtitle": "",
-      "heroImage": ""
+      "visible": false,
+      "heroTitle": "Nuestros Programas",
+      "heroSubtitle": "Explora todos nuestros programas y encuentra el que más te inspire",
+      "heroImage": "images/hero_bg_2.jpg"
     },
     "columnas": {
       "visible": true,
@@ -522,40 +522,10 @@
       "title": "Invitados Destacados",
       "items": [
         {
-          "name": "Megan Smith",
-          "role": "Directora Editorial",
-          "bio": "Especialista en narrativa digital y curaduría de contenidos editoriales.",
-          "image": "images/person_1.jpg"
-        },
-        {
           "name": "David A. Vásquez Stuardo",
           "role": "Editor general",
-          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación.",
-          "image": "images/person_2.jpg"
-        },
-        {
-          "name": "Philip Martin",
-          "role": "Editor de contenidos",
-          "bio": "Acompaña procesos de edición, guion y despliegue de publicaciones multiformato.",
-          "image": "images/person_3.jpg"
-        },
-        {
-          "name": "Steven Ericson",
-          "role": "Colaborador invitado",
-          "bio": "Analiza tendencias, formatos y distribución de contenidos editoriales.",
-          "image": "images/person_4.jpg"
-        },
-        {
-          "name": "Nathan Dumlao",
-          "role": "Investigador invitado",
-          "bio": "Se enfoca en innovación, entrevistas y mediación entre academia y público general.",
-          "image": "images/person_5.jpg"
-        },
-        {
-          "name": "Brook Smith",
-          "role": "Columnista invitado",
-          "bio": "Escribe sobre política pública, territorio y cultura editorial contemporánea.",
-          "image": "images/person_6.jpg"
+          "image": "images/person_2.jpg",
+          "bio": "Agrónomo y gestor territorial con foco en ambiente, ciencia y divulgación."
         }
       ]
     },
