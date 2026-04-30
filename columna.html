@@ -162,7 +162,7 @@
         '<p class="text-white"><small>Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> ' + col.lectura + ' lectura <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span></small></p>';
 
       // Contenido de la columna
-      var html = '<p class="lead mb-5 text-muted">' + col.resumen + '</p>';
+      var html = '<blockquote class="column-summary mb-5"><p class="mb-0">' + col.resumen + '</p></blockquote>';
       col.contenido.forEach(function(parrafo) {
         html += '<p>' + parrafo + '</p>';
       });
