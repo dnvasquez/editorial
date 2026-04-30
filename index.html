@@ -20,51 +20,60 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-      .pub-list-home { margin-top: 20px; border-top: 2px solid #333; }
-      .pub-row-home {
-        display: grid;
-        grid-template-columns: 90px 110px 1fr 160px;
-        gap: 24px;
-        padding: 28px 0;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
+      .home-publications-carousel {
+        margin-top: 1.5rem;
+      }
+      .home-publication-slide {
+        display: block;
+        text-decoration: none !important;
+        color: inherit;
+      }
+      .home-publication-slide__media {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 28px -22px rgba(0,0,0,0.24);
+      }
+      .home-publication-slide__media:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.16) 100%);
+        border-radius: 18px;
+      }
+      .home-publication-slide__label {
+        position: absolute;
+        left: 0.9rem;
+        bottom: 0.9rem;
+        z-index: 1;
+        display: inline-flex;
         align-items: center;
-        transition: background-color 0.25s ease;
+        padding: 0.32rem 0.48rem;
+        background: rgba(255,255,255,0.92);
+        color: #111;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
       }
-      .pub-row-home:hover { background-color: rgba(0,0,0,0.02); }
-      .pub-img-home {
-        width: 90px; height: 127px;
-        background-size: cover; background-position: center;
-        border-radius: 4px;
-      }
-      .pub-date-home {
-        font-family: 'Poppins', sans-serif; font-size: 0.8rem;
-        text-transform: uppercase; letter-spacing: 1.5px;
-        color: #e74c3c; font-weight: 600;
-      }
-      .pub-type-home {
-        display: block; font-family: 'Poppins', sans-serif;
-        font-size: 0.75rem; text-transform: uppercase;
-        letter-spacing: 1px; color: #999; margin-bottom: 6px;
-      }
-      .pub-info-home h3 {
-        font-family: 'Poppins', sans-serif; font-size: 1.1rem;
-        font-weight: 300; margin: 0 0 6px 0; color: #2d2d2d;
-      }
-      .pub-info-home p { font-size: 0.9rem; margin: 0; color: #666; line-height: 1.6; }
-      .pub-action-home { text-align: right; }
-      .btn-pub-home {
-        display: inline-block; padding: 10px 20px;
-        border: 1px solid #2d2d2d; color: #2d2d2d;
-        font-family: 'Poppins', sans-serif; font-weight: 600;
-        font-size: 0.8rem; letter-spacing: 0.5px;
-        text-transform: uppercase; text-decoration: none;
-        transition: all 0.25s ease;
-      }
-      .btn-pub-home:hover { background-color: #2d2d2d; color: #fff; text-decoration: none; }
       @media (max-width: 768px) {
-        .pub-row-home { grid-template-columns: 1fr; gap: 10px; }
-        .pub-action-home { text-align: left; }
-        .pub-img-home { width: 100%; height: 160px; }
+        .home-publications-carousel {
+          margin-top: 1.1rem;
+        }
+        .home-publication-slide__media {
+          aspect-ratio: 1 / 1.08;
+        }
+        .home-publication-slide__label {
+          left: 0.7rem;
+          bottom: 0.7rem;
+          font-size: 0.62rem;
+        }
       }
     </style>
 
@@ -141,10 +150,9 @@
         <div class="row mb-5" data-aos="fade-up">
           <div class="col-md-12 text-center">
             <h2 class="font-weight-bold text-black">Columnas Editoriales</h2>
-            <p class="lead text-muted">Opini&oacute;n y an&aacute;lisis de nuestros columnistas</p>
+            <p class="lead text-muted">Elige una columna para ver su enfoque, resumen y acceso directo.</p>
           </div>
         </div>
-        <!-- Renderizado por js/episodes.js -->
         <div class="row" id="col-grid"></div>
         <div class="row mt-5 pt-3">
           <div class="col-12 text-center" data-aos="fade-up">
@@ -161,10 +169,9 @@
         <div class="row mb-5" data-aos="fade-up">
           <div class="col-md-12 text-center">
             <h2 class="font-weight-bold text-black">Publicaciones</h2>
-            <p class="lead text-muted">Documentos, ensayos y reportes para visualizar</p>
+            <p class="lead text-muted">Portadas recientes que puedes recorrer en formato carrusel.</p>
           </div>
         </div>
-        <!-- Renderizado por js/episodes.js -->
         <div id="pub-grid"></div>
         <div class="row mt-5">
           <div class="col-12 text-center" data-aos="fade-up">
@@ -462,12 +469,15 @@
       }
 
       var programsEpisodesPanel = document.getElementById('home-programs-episodes');
+      var activeProgramId = PROGRAMAS[0] ? String(PROGRAMAS[0].id) : '';
 
       function renderProgramsAndEpisodes(selectedProgramId) {
         if (!programsEpisodesPanel) return;
 
+        activeProgramId = String(selectedProgramId || activeProgramId || '');
+
         var currentProgram = PROGRAMAS.find(function (program) {
-          return String(program.id) === String(selectedProgramId);
+          return String(program.id) === activeProgramId;
         }) || PROGRAMAS[0] || null;
 
         if (!currentProgram) {
@@ -481,7 +491,7 @@
         var latestEpisodes = currentEpisodes.slice(0, 3);
         var hasMoreEpisodes = currentEpisodes.length > 3;
 
-        var leftHtml = PROGRAMAS.map(function (program, index) {
+        var leftHtml = PROGRAMAS.map(function (program) {
           var count = EPISODIOS.filter(function (episode) {
             return String(episode.programaId) === String(program.id);
           }).length;
@@ -532,46 +542,113 @@
             renderProgramsAndEpisodes(button.getAttribute('data-program-id'));
           });
         });
+
+        var selectorGrid = programsEpisodesPanel.querySelector('.home-program-selector-grid');
+        var activeButton = programsEpisodesPanel.querySelector('[data-program-id="' + activeProgramId + '"]');
+        if (activeButton && selectorGrid) {
+          var targetScrollLeft = activeButton.offsetLeft - ((selectorGrid.clientWidth - activeButton.offsetWidth) / 2);
+          selectorGrid.scrollLeft = Math.max(0, targetScrollLeft);
+        }
       }
 
       renderProgramsAndEpisodes(PROGRAMAS[0] ? PROGRAMAS[0].id : '');
 
-      // â”€â”€ Columnas: primeras 3 â”€â”€
-      var colHtml = '';
-      COLUMNAS.slice(0, 3).forEach(function(c, i) {
-        var delay = i > 0 ? ' data-aos-delay="' + (i * 100) + '"' : '';
-        colHtml +=
-          '<div class="col-md-4">' +
-          '<div class="d-block podcast-entry cms-column-card h-100 bg-white mb-5" data-aos="fade-up"' + delay + '>' +
-          '<div class="image w-100" style="height: 200px; background-image: url(\'' + c.imagen + '\');"></div>' +
-          '<div class="text">' +
-          '<h3 class="font-weight-light"><a href="columna.html?id=' + c.id + '">' + c.titulo + '</a></h3>' +
-          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>Por ' + c.autor + ' <span class="sep">/</span> ' + c.fecha + ' <span class="sep">/</span> <span class="column-view-count">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(c.vistas || 0) : ((c.vistas || 0) + " vistas")) + '</span></small></span></div>' +
-          '<p>' + c.resumen.substring(0, 120) + '...</p>' +
-          '<a href="columna.html?id=' + c.id + '" class="btn btn-sm btn-primary py-2 px-3">Leer columna</a>' +
-          '</div></div></div>';
-      });
-      document.getElementById('col-grid').innerHTML = colHtml;
+      // â”€â”€ Columnas: selector + detalle â”€â”€
+      var colGrid = document.getElementById('col-grid');
+      function renderHomeColumns(selectedColumnId) {
+        if (!colGrid) return;
 
-      // â”€â”€ Publicaciones: primeras 3 â”€â”€
-      var pubHtml = '<div class="pub-list-home" data-aos="fade-up">';
-      PUBLICACIONES.slice(0, 3).forEach(function(p) {
-        pubHtml +=
-          '<article class="pub-row-home">' +
-          '<div class="pub-img-home" style="background-image: url(\'' + p.imagen + '\');"></div>' +
-          '<div class="pub-date-home">' + p.fecha + '</div>' +
-          '<div class="pub-info-home">' +
-          '<span class="pub-type-home">' + p.tipo + '</span>' +
-          '<h3><a href="' + p.enlace + '" target="_blank" style="color:inherit;text-decoration:none;">' + p.titulo + '</a></h3>' +
-          '<p>' + p.resumen + '</p>' +
-          '</div>' +
-          '<div class="pub-action-home">' +
-          '<a href="' + p.enlace + '" target="_blank" class="btn-pub-home">Ver publicaci&oacute;n</a>' +
+        var currentColumn = COLUMNAS.find(function (item) {
+          return String(item.id) === String(selectedColumnId);
+        }) || COLUMNAS[0] || null;
+
+        if (!currentColumn) {
+          colGrid.innerHTML = '<div class="col-12 text-center py-5"><h3 class="text-black">No hay columnas disponibles.</h3></div>';
+          return;
+        }
+
+        var selectorHtml = COLUMNAS.map(function (column) {
+          var isActive = String(column.id) === String(currentColumn.id);
+          return '' +
+            '<button type="button" class="home-column-card home-column-card--selector' + (isActive ? ' is-active' : '') + '" data-column-id="' + column.id + '">' +
+            '<div class="home-column-card__media" style="background-image: url(\'' + (column.banner || column.imagen) + '\');">' +
+            '<span class="home-column-card__count">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : ((column.vistas || 0) + ' vistas')) + '</span>' +
+            '</div>' +
+            '<div class="home-column-card__caption">' +
+            '<span>' + column.titulo + '</span>' +
+            '</div>' +
+            '</button>';
+        }).join('');
+
+        var detailHtml =
+          '<article class="home-column-detail">' +
+          '<a href="columna.html?id=' + currentColumn.id + '" class="home-column-detail__media" style="background-image: url(\'' + (currentColumn.banner || currentColumn.imagen) + '\');" aria-label="Abrir columna ' + currentColumn.titulo + '"></a>' +
+          '<div class="home-column-detail__body">' +
+          '<span class="home-column-detail__kicker">Columnas editoriales</span>' +
+          '<h3><a href="columna.html?id=' + currentColumn.id + '">' + currentColumn.titulo + '</a></h3>' +
+          '<div class="home-column-detail__meta"><span>Por ' + currentColumn.autor + '</span><span>•</span><span>' + currentColumn.fecha + '</span><span>•</span><span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(currentColumn.vistas || 0) : ((currentColumn.vistas || 0) + ' vistas')) + '</span></div>' +
+          '<p>' + currentColumn.resumen + '</p>' +
+          '<a href="columna.html?id=' + currentColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a>' +
           '</div>' +
           '</article>';
-      });
-      pubHtml += '</div>';
-      document.getElementById('pub-grid').innerHTML = pubHtml;
+
+        colGrid.innerHTML = '' +
+          '<div class="home-column-layout">' +
+          '<div class="home-column-layout__left">' +
+          '<div class="home-column-selector-grid">' + selectorHtml + '</div>' +
+          '</div>' +
+          '<div class="home-column-layout__right">' + detailHtml + '</div>' +
+          '</div>';
+
+        Array.prototype.forEach.call(colGrid.querySelectorAll('[data-column-id]'), function (button) {
+          button.addEventListener('click', function () {
+            var columnId = button.getAttribute('data-column-id');
+            var isMobile = window.matchMedia && window.matchMedia('(max-width: 767.98px)').matches;
+
+            if (isMobile) {
+              window.location.href = 'columna.html?id=' + encodeURIComponent(columnId);
+              return;
+            }
+
+            renderHomeColumns(columnId);
+          });
+        });
+      }
+
+      renderHomeColumns(COLUMNAS[0] ? COLUMNAS[0].id : '');
+
+      // â”€â”€ Publicaciones: solo portadas en carrusel â”€â”€
+      var pubSlides = PUBLICACIONES.map(function (p) {
+        return '' +
+          '<a href="' + p.enlace + '" target="_blank" rel="noopener" class="home-publication-slide" aria-label="Ver publicaci&oacute;n ' + p.titulo + '">' +
+          '<div class="home-publication-slide__media" style="background-image: url(\'' + p.imagen + '\');">' +
+          '<span class="home-publication-slide__label">' + p.tipo + '</span>' +
+          '</div>' +
+          '</a>';
+      }).join('');
+      document.getElementById('pub-grid').innerHTML = '<div class="home-publications-carousel owl-carousel" data-aos="fade-up">' + pubSlides + '</div>';
+
+      if (window.jQuery && $.fn && $.fn.owlCarousel && $('.home-publications-carousel').length > 0) {
+        $('.home-publications-carousel').owlCarousel({
+          center: false,
+          items: 1,
+          loop: false,
+          stagePadding: 0,
+          margin: 18,
+          nav: true,
+          navText: ['<span class="icon-arrow_back">', '<span class="icon-arrow_forward">'],
+          responsive: {
+            600: {
+              items: 2,
+              margin: 18
+            },
+            1000: {
+              items: 3,
+              margin: 20
+            }
+          }
+        });
+      }
 
       // â”€â”€ Footer: Ãºltimos 3 episodios â”€â”€
       var footerEpHtml = '';
