@@ -98,6 +98,30 @@
     }).join("");
   }
 
+  function buildColumnAuthorOptions(selectedColumn) {
+    var columnistas = window.EditorialCmsSite.getColumnistasForAdmin ? window.EditorialCmsSite.getColumnistasForAdmin() : [];
+    var selectedValue = selectedColumn && selectedColumn.autorId ? String(selectedColumn.autorId) : "";
+    var selectedName = selectedColumn && selectedColumn.autor ? String(selectedColumn.autor) : "";
+    var selectedLookup = selectedValue || window.EditorialCmsSite.slugify(selectedName);
+    var options = '<option value=""' + (!selectedLookup ? ' selected' : '') + '>Selecciona un columnista</option>';
+    var currentMatches = false;
+
+    columnistas.forEach(function (item) {
+      var value = String(item.id || window.EditorialCmsSite.slugify(item.name));
+      var label = item.name + (item.role ? " - " + item.role : "");
+      if (selectedLookup && String(selectedLookup) === value) {
+        currentMatches = true;
+      }
+      options += '<option value="' + escapeHtml(value) + '"' + (String(selectedLookup) === value ? ' selected' : '') + '>' + escapeHtml(label) + '</option>';
+    });
+
+    if (selectedName && !currentMatches) {
+      options += '<option value="' + escapeHtml(selectedLookup || window.EditorialCmsSite.slugify(selectedName)) + '" selected>' + escapeHtml(selectedName) + '</option>';
+    }
+
+    return options;
+  }
+
   function buildFeaturedItemOptions(contentType, selectedId) {
     var options = '<option value=""' + (!selectedId ? ' selected' : '') + '>Sin contenido seleccionado</option>';
     var items = [];
@@ -464,6 +488,7 @@
     html += createLink("admin-columnas.html?view=episodes", "Episodios", currentView === "episodes" || currentView === "episode");
     html += createLink("admin-columnas.html?view=columns", "Columnas", currentView === "columns" || currentView === "column");
     html += createLink("admin-columnas.html?view=publications", "Publicaciones", currentView === "publications" || currentView === "publication");
+    html += createLink("admin-columnas.html?view=columnistas-content", "Columnistas", currentView === "columnistas-content");
     html += createLink("admin-columnas.html?view=invitados-content", "Invitados destacados", currentView === "invitados-content");
     html += createLink("admin-columnas.html?view=about-content", "Nosotros", currentView === "about-content");
     html += createLink("admin-columnas.html?view=contact-content", "Contacto", currentView === "contact-content");
@@ -661,6 +686,20 @@
     };
   }
 
+  function getEmptyColumnist() {
+    return {
+      id: "",
+      name: "",
+      role: "",
+      bio: "",
+      image: "",
+      twitter: "",
+      instagram: "",
+      facebook: "",
+      linkedin: ""
+    };
+  }
+
   function readAboutContentDraft(fallbackContent) {
     var form = document.getElementById("admin-about-content-form");
     if (!form) return JSON.parse(JSON.stringify(fallbackContent));
@@ -702,6 +741,32 @@
         role: document.getElementById("guests-item-role").value,
         image: document.getElementById("guests-item-image").value,
         bio: document.getElementById("guests-item-bio").value
+      };
+    }
+
+    return draft;
+  }
+
+  function readColumnistasContentDraft(fallbackContent) {
+    var form = document.getElementById("admin-columnistas-content-form");
+    if (!form) return JSON.parse(JSON.stringify(fallbackContent));
+
+    var draft = JSON.parse(JSON.stringify(fallbackContent));
+    draft.title = document.getElementById("columnistas-title").value;
+
+    var selectedIndex = Number(form.getAttribute("data-selected-columnista-index") || 0);
+    if (draft.items[selectedIndex]) {
+      var itemId = String(draft.items[selectedIndex].id || "");
+      draft.items[selectedIndex] = {
+        id: itemId || window.EditorialCmsSite.slugify(document.getElementById("columnistas-item-name").value) || ("columnista-" + Date.now()),
+        name: document.getElementById("columnistas-item-name").value,
+        role: document.getElementById("columnistas-item-role").value,
+        bio: document.getElementById("columnistas-item-bio").value,
+        image: document.getElementById("columnistas-item-image").value,
+        twitter: document.getElementById("columnistas-item-twitter").value,
+        instagram: document.getElementById("columnistas-item-instagram").value,
+        facebook: document.getElementById("columnistas-item-facebook").value,
+        linkedin: document.getElementById("columnistas-item-linkedin").value
       };
     }
 
@@ -896,6 +961,101 @@
     }
 
     bindImageUpload("guests-item-image-file", "guests-item-image", "guests-content-feedback", "La imagen");
+  }
+
+  function renderColumnistasContentEditor(selectedColumnistaIndex, contentOverride) {
+    var content = contentOverride || window.EditorialCmsSite.getPageContentSection("columnistas");
+    var items = Array.isArray(content.items) ? content.items.slice() : [];
+    if (!items.length) {
+      items = [getEmptyColumnist()];
+    }
+
+    items = items.map(function (item, index) {
+      return Object.assign({}, getEmptyColumnist(), item, {
+        id: String(item.id || window.EditorialCmsSite.slugify(item.name) || ("columnista-" + (index + 1)))
+      });
+    });
+
+    var selectedIndex = Math.max(0, Math.min(typeof selectedColumnistaIndex === "number" ? selectedColumnistaIndex : 0, items.length - 1));
+    var selectedItem = items[selectedIndex] || getEmptyColumnist();
+
+    setHeader(
+      "Contenido",
+      "Nuestros columnistas",
+      "Edita las fichas visibles en la sección Columnistas de la página Columnas. Esta lista alimenta también el selector de autor en nuevas columnas."
+    );
+
+    document.getElementById("admin-main-content").innerHTML =
+      '<section class="admin-card admin-editor-panel admin-editor-single">' +
+      '<form id="admin-columnistas-content-form" class="admin-form-stack" data-selected-columnista-index="' + selectedIndex + '" novalidate>' +
+      '<div class="admin-field"><label for="columnistas-title">Titulo de seccion</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(content.title || "Nuestros Columnistas") + '"></div>' +
+      '<section class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Columnistas</span><h3>Fichas</h3></div><button id="columnistas-add-item" type="button" class="btn btn-primary">Agregar columnista</button></div>' +
+      '<div class="admin-entity-list" id="columnistas-item-list">' + items.map(function (item, index) {
+        return '<button type="button" class="admin-entity-row' + (index === selectedIndex ? ' is-active' : '') + '" data-index="' + index + '">' +
+          '<strong>' + escapeHtml(item.name || ("Columnista " + (index + 1))) + '</strong>' +
+          '<span>' + escapeHtml(item.role || "Sin especialidad") + '</span></button>';
+      }).join("") + '</div>' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Editor</span><h3>Ficha del columnista</h3></div>' + (items.length > 1 ? '<button id="columnistas-remove-item" type="button" class="btn btn-outline-dark">Quitar columnista</button>' : '') + '</div>' +
+      '<div class="admin-form-stack">' +
+      '<div class="admin-field"><label for="columnistas-item-name">Nombre</label><input id="columnistas-item-name" class="form-control" value="' + escapeHtml(selectedItem.name) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-role">Especialidad / Rol</label><input id="columnistas-item-role" class="form-control" value="' + escapeHtml(selectedItem.role) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-image">Imagen</label><input id="columnistas-item-image" class="form-control" value="' + escapeHtml(selectedItem.image) + '" placeholder="URL de imagen o data:image/..."><input id="columnistas-item-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
+      '<div class="admin-field"><label for="columnistas-item-bio">Biografia</label><textarea id="columnistas-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedItem.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="columnistas-item-twitter">Twitter / X</label><input id="columnistas-item-twitter" class="form-control" value="' + escapeHtml(selectedItem.twitter) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-instagram">Instagram</label><input id="columnistas-item-instagram" class="form-control" value="' + escapeHtml(selectedItem.instagram) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-facebook">Facebook</label><input id="columnistas-item-facebook" class="form-control" value="' + escapeHtml(selectedItem.facebook) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-linkedin">LinkedIn</label><input id="columnistas-item-linkedin" class="form-control" value="' + escapeHtml(selectedItem.linkedin) + '"></div>' +
+      '</div></section>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="columnas.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pagina publica</a></div>' +
+      '<p id="columnistas-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form></section>';
+
+    document.getElementById("admin-columnistas-content-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var next = readColumnistasContentDraft({
+        title: content.title || "Nuestros Columnistas",
+        items: items
+      });
+      window.EditorialCmsSite.savePageContentSection("columnistas", next);
+      document.getElementById("columnistas-content-feedback").textContent = "Contenido guardado. La pagina Columnas reflejara estos cambios.";
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll("#columnistas-item-list .admin-entity-row"), function (button) {
+      button.addEventListener("click", function () {
+        var draft = readColumnistasContentDraft({
+          title: content.title || "Nuestros Columnistas",
+          items: items
+        });
+        renderColumnistasContentEditor(Number(button.getAttribute("data-index")), draft);
+      });
+    });
+
+    var addButton = document.getElementById("columnistas-add-item");
+    if (addButton) {
+      addButton.addEventListener("click", function () {
+        var draft = readColumnistasContentDraft({
+          title: content.title || "Nuestros Columnistas",
+          items: items
+        });
+        draft.items.push(getEmptyColumnist());
+        renderColumnistasContentEditor(draft.items.length - 1, draft);
+      });
+    }
+
+    var removeButton = document.getElementById("columnistas-remove-item");
+    if (removeButton) {
+      removeButton.addEventListener("click", function () {
+        var draft = readColumnistasContentDraft({
+          title: content.title || "Nuestros Columnistas",
+          items: items
+        });
+        draft.items.splice(selectedIndex, 1);
+        renderColumnistasContentEditor(Math.max(0, selectedIndex - 1), draft);
+      });
+    }
+
+    bindImageUpload("columnistas-item-image-file", "columnistas-item-image", "columnistas-content-feedback", "La imagen");
   }
 
   function renderContactContentEditor() {
@@ -1130,6 +1290,7 @@
       id: "",
       titulo: "",
       autor: "",
+      autorId: "",
       fecha: "",
       categoria: "Opinion",
       resumen: "",
@@ -1157,7 +1318,7 @@
         '<input id="column-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
         '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="column-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
         '<div class="admin-field"><label for="column-title">Titulo</label><input id="column-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
-        '<div class="admin-field"><label for="column-author">Autor</label><input id="column-author" class="form-control" value="' + escapeHtml(selected.autor) + '"></div>' +
+        '<div class="admin-field"><label for="column-author">Autor</label><select id="column-author" class="form-control">' + buildColumnAuthorOptions(selected) + '</select></div>' +
         '<div class="admin-field"><label for="column-date">Fecha</label><input id="column-date" class="form-control" value="' + escapeHtml(selected.fecha) + '" placeholder="2026-04-01"></div>' +
         '<div class="admin-field"><label for="column-category">Categoria</label><select id="column-category" class="form-control"><option value="Analisis"' + (selected.categoria === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + (selected.categoria === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (selected.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (selected.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (selected.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
         '<div class="admin-field"><label for="column-status">Estado</label><select id="column-status" class="form-control"><option value="borrador"' + (selected.estado === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (selected.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
@@ -1181,10 +1342,13 @@
         bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
         document.getElementById("column-form").addEventListener("submit", function (event) {
           event.preventDefault();
+          var authorSelect = document.getElementById("column-author");
+          var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
           var saved = window.EditorialCmsSite.saveColumn({
             id: document.getElementById("column-id").value,
             titulo: document.getElementById("column-title").value,
-            autor: document.getElementById("column-author").value,
+            autorId: authorSelect ? authorSelect.value : "",
+            autor: authorOption ? authorOption.textContent.replace(/\s*-\s*.*$/, "") : "",
             fecha: document.getElementById("column-date").value,
             categoria: document.getElementById("column-category").value,
             estado: document.getElementById("column-status").value,
@@ -1194,7 +1358,14 @@
             contenido: document.getElementById("column-content").value,
             visible: document.getElementById("column-visible").checked
           });
-          window.location.href = "admin-columnas.html?view=column&id=" + encodeURIComponent(saved.id);
+          var redirectUrl = "admin-columnas.html?view=column&id=" + encodeURIComponent(saved.id);
+          var feedback = document.getElementById("column-feedback");
+          if (feedback) {
+            feedback.textContent = "Columna guardada. Actualizando la vista...";
+          }
+          window.setTimeout(function () {
+            window.location.href = redirectUrl;
+          }, 250);
         });
         var deleteButton = document.getElementById("delete-column");
         if (deleteButton) {
@@ -1296,6 +1467,8 @@
       renderPageEditor(id || "index");
     } else if (view === "invitados-content") {
       renderGuestsContentEditor();
+    } else if (view === "columnistas-content") {
+      renderColumnistasContentEditor();
     } else if (view === "about-content") {
       renderAboutContentEditor();
     } else if (view === "contact-content") {

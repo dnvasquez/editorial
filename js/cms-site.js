@@ -152,6 +152,10 @@
     }).catch(function () {});
   }
 
+  function flushRemoteSync() {
+    syncSnapshotToServer(readSnapshot());
+  }
+
   function queueRemoteSync() {
     if (remoteSyncTimer) {
       window.clearTimeout(remoteSyncTimer);
@@ -159,7 +163,7 @@
 
     remoteSyncTimer = window.setTimeout(function () {
       remoteSyncTimer = null;
-      syncSnapshotToServer(readSnapshot());
+      flushRemoteSync();
     }, 150);
   }
 
@@ -220,6 +224,56 @@
   function estimateReadingLabel(text) {
     var words = String(text || "").trim().split(/\s+/).filter(Boolean).length;
     return Math.max(1, Math.ceil(words / 220)) + " min";
+  }
+
+  function normalizeColumnistItem(item, index) {
+    var member = item && typeof item === "object" ? clone(item) : {};
+    member.id = String(member.id || slugify(member.name) || ("columnista-" + (index + 1)));
+    member.name = String(member.name || "");
+    member.role = String(member.role || "");
+    member.bio = String(member.bio || "");
+    member.image = String(member.image || "");
+    member.twitter = String(member.twitter || "");
+    member.instagram = String(member.instagram || "");
+    member.facebook = String(member.facebook || "");
+    member.linkedin = String(member.linkedin || "");
+    return member;
+  }
+
+  function normalizeColumnistList(items) {
+    return (Array.isArray(items) ? items : []).map(function (item, index) {
+      return normalizeColumnistItem(item, index);
+    });
+  }
+
+  function getColumnistasForAdmin() {
+    var content = getPageContentSection("columnistas");
+    if (!content) return [];
+    return normalizeColumnistList(content.items);
+  }
+
+  function getColumnistaById(columnistId) {
+    if (!columnistId) return null;
+    return getColumnistasForAdmin().find(function (item) {
+      return String(item.id) === String(columnistId);
+    }) || null;
+  }
+
+  function resolveColumnAuthor(column) {
+    if (!column) return "Autor/a";
+
+    var columnista = null;
+    if (column.autorId) {
+      columnista = getColumnistaById(column.autorId);
+    }
+    if (!columnista && column.autor) {
+      var inferredId = slugify(column.autor);
+      columnista = getColumnistaById(inferredId) || getColumnistasForAdmin().find(function (item) {
+        return slugify(item.name) === inferredId;
+      }) || null;
+    }
+
+    return columnista && columnista.name ? columnista.name : (column.autor || "Autor/a");
   }
 
   function toParagraphArray(content) {
@@ -332,6 +386,7 @@
     }
 
     writeArray(STORAGE_KEYS.programs, localItems);
+    flushRemoteSync();
     queueRemoteSync();
     return payload;
   }
@@ -349,6 +404,7 @@
     }
 
     writeArray(STORAGE_KEYS.programs, localItems);
+    flushRemoteSync();
     queueRemoteSync();
   }
 
@@ -392,6 +448,7 @@
     }
 
     writeArray(STORAGE_KEYS.episodes, localItems);
+    flushRemoteSync();
     queueRemoteSync();
     return payload;
   }
@@ -409,6 +466,7 @@
     }
 
     writeArray(STORAGE_KEYS.episodes, localItems);
+    flushRemoteSync();
     queueRemoteSync();
   }
 
@@ -419,7 +477,8 @@
     return {
       id: column.id,
       titulo: column.titulo || "Sin titulo",
-      autor: column.autor || "Autor/a",
+      autor: resolveColumnAuthor(column),
+      autorId: column.autorId || slugify(column.autor || ""),
       fecha: formatDisplayDate(column.fecha),
       lectura: column.lectura || estimateReadingLabel(contentArray.join(" ")),
       imagen: column.imagen || "images/col01_img.jpg",
@@ -453,10 +512,12 @@
 
   function getColumnsForAdmin() {
     return mergeById(getBaseColumns().map(function (column) {
+      var autorId = column.autorId || slugify(column.autor || "");
       return {
         id: column.id,
         titulo: column.titulo,
-        autor: column.autor,
+        autor: resolveColumnAuthor(column),
+        autorId: autorId,
         fecha: normalizeDate(column.fecha),
         lectura: column.lectura,
         imagen: column.imagen,
@@ -488,6 +549,7 @@
     var id = column.id || ("col-" + Date.now());
     var payload = clone(column);
     payload.id = id;
+    payload.autorId = String(payload.autorId || slugify(payload.autor || ""));
     if (typeof payload.visible !== "boolean") payload.visible = true;
     if (!payload.imagen && payload.banner) {
       payload.imagen = payload.banner;
@@ -506,6 +568,7 @@
     }
 
     writeArray(STORAGE_KEYS.columns, localItems);
+    flushRemoteSync();
     queueRemoteSync();
     return payload;
   }
@@ -528,6 +591,7 @@
       delete views[String(id)];
       writeObject(STORAGE_KEYS.columnViews, views);
     }
+    flushRemoteSync();
     queueRemoteSync();
   }
 
@@ -564,6 +628,7 @@
     }
 
     writeArray(STORAGE_KEYS.publications, localItems);
+    flushRemoteSync();
     queueRemoteSync();
     return payload;
   }
@@ -581,6 +646,7 @@
     }
 
     writeArray(STORAGE_KEYS.publications, localItems);
+    flushRemoteSync();
     queueRemoteSync();
   }
 
@@ -623,6 +689,44 @@
         manifestoImage: "images/hero_bg_1.jpg",
         manifestoLeft: "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
         manifestoRight: "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
+      },
+      columnistas: {
+        title: "Nuestros Columnistas",
+        items: [
+          {
+            id: "megan-smith",
+            name: "Megan Smith",
+            role: "FilosofÃ­a PolÃ­tica",
+            bio: "Doctora en FilosofÃ­a por la Universidad de Buenos Aires. Escribe sobre pensamiento crÃ­tico y democracia.",
+            image: "images/person_1.jpg",
+            twitter: "#",
+            instagram: "#",
+            facebook: "#",
+            linkedin: "#"
+          },
+          {
+            id: "ana-garcia",
+            name: "Ana GarcÃ­a",
+            role: "EconomÃ­a Laboral",
+            bio: "Economista especializada en mercado de trabajo y tecnologÃ­a. Investiga el impacto de la automatizaciÃ³n.",
+            image: "images/person_4.jpg",
+            twitter: "#",
+            instagram: "#",
+            facebook: "#",
+            linkedin: "#"
+          },
+          {
+            id: "carlos-ruiz",
+            name: "Carlos Ruiz",
+            role: "ComunicaciÃ³n y PolÃ­tica",
+            bio: "Periodista y analista polÃ­tico. Cubre la intersecciÃ³n entre medios digitales, redes sociales y democracia.",
+            image: "images/person_5.jpg",
+            twitter: "#",
+            instagram: "#",
+            facebook: "#",
+            linkedin: "#"
+          }
+        ]
       },
       invitados: {
         title: "Invitados Destacados",
@@ -709,6 +813,7 @@
     if (!all[sectionId]) return null;
     all[sectionId] = clone(data);
     writeObject(CONTENT_STORAGE_KEY, all);
+    flushRemoteSync();
     queueRemoteSync();
     return all[sectionId];
   }
@@ -1002,6 +1107,81 @@
     }
   }
 
+  function renderColumnistasContent(body) {
+    var columnistas = getPageContentSection("columnistas");
+    if (!columnistas) return;
+
+    var section = body.querySelector('[data-cms-section="columnistas"]');
+    if (!section) return;
+
+    var items = normalizeColumnistList(columnistas.items);
+    section.textContent = "";
+
+    var container = document.createElement("div");
+    container.className = "container";
+    container.setAttribute("data-aos", "fade-up");
+
+    var titleRow = document.createElement("div");
+    titleRow.className = "row mb-5";
+
+    var titleColumn = document.createElement("div");
+    titleColumn.className = "col-md-12 text-center";
+
+    var title = document.createElement("h2");
+    title.className = "font-weight-bold text-black";
+    title.textContent = columnistas.title || "Nuestros Columnistas";
+
+    titleColumn.appendChild(title);
+    titleRow.appendChild(titleColumn);
+    container.appendChild(titleRow);
+
+    var grid = document.createElement("div");
+    grid.className = "row";
+
+    items.forEach(function (item) {
+      var column = document.createElement("div");
+      column.className = "col-md-6 col-lg-4 mb-5";
+
+      var card = document.createElement("div");
+      card.className = "team-member";
+
+      var image = document.createElement("img");
+      image.className = "img-fluid";
+      setSafeImageSource(image, item.image, "images/person_1.jpg", item.name || "Columnista");
+
+      var text = document.createElement("div");
+      text.className = "text";
+
+      var name = document.createElement("h2");
+      name.className = "mb-2 font-weight-light h4";
+      name.textContent = item.name || "Sin nombre";
+
+      var role = document.createElement("span");
+      role.className = "d-block mb-2 text-white-opacity-05";
+      role.textContent = item.role || "";
+
+      var bio = document.createElement("p");
+      bio.className = "mb-4";
+      bio.textContent = item.bio || "";
+
+      var socials = document.createElement("p");
+      appendSocialLinks(socials, item, "text-white p-2");
+
+      text.appendChild(name);
+      text.appendChild(role);
+      text.appendChild(bio);
+      text.appendChild(socials);
+
+      card.appendChild(image);
+      card.appendChild(text);
+      column.appendChild(card);
+      grid.appendChild(column);
+    });
+
+    container.appendChild(grid);
+    section.appendChild(container);
+  }
+
   function renderContactContent(body) {
     var contact = getPageContentSection("contact");
     if (!contact) return;
@@ -1131,6 +1311,7 @@
       all[pageId].manualHeroTranscriptLink = String(config.manualHeroTranscriptLink || "");
     }
     writeObject(PAGE_STORAGE_KEY, all);
+    flushRemoteSync();
     queueRemoteSync();
     return all[pageId];
   }
@@ -1163,6 +1344,7 @@
 
     renderAboutContent(body);
     renderGuestsContent(body);
+    renderColumnistasContent(body);
     renderContactContent(body);
 
     applyNavigationVisibility(body);
@@ -1291,6 +1473,7 @@
     getPageContent: getPageContent,
     getPageContentSection: getPageContentSection,
     savePageContentSection: savePageContentSection,
+    getColumnistasForAdmin: getColumnistasForAdmin,
     getPageConfigs: getPageConfigs,
     getPageConfig: getPageConfig,
     savePageConfig: savePageConfig,
