@@ -3,7 +3,13 @@ body {
   line-height: 1.7;
   color: #4d4d4d;
   font-weight: 200;
-  font-size: 1.1rem; }
+  font-size: 1.1rem;
+  max-width: 100%;
+  overflow-x: hidden; }
+
+html {
+  max-width: 100%;
+  overflow-x: hidden; }
 
 ::-moz-selection {
   background: #000;
@@ -40,6 +46,10 @@ a {
   bottom: 0;
   opacity: 0;
   visibility: hidden; }
+
+.site-wrap {
+  position: relative;
+  overflow-x: hidden; }
 
 .offcanvas-menu .site-wrap {
   position: absolute;
@@ -1161,6 +1171,45 @@ footer[data-cms-section="footer"] {
     width: 100%;
     justify-content: center; } }
 
+@media (max-width: 767.98px) {
+  #cms-page-hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important; }
+  #cms-page-hero .row {
+    min-height: 100vh;
+    min-height: 100svh; }
+  #cms-page-hero .container {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 4.2rem;
+    padding-bottom: 1.25rem; }
+  #ep-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: calc(100vh - 6rem);
+    min-height: calc(100svh - 6rem);
+    text-align: left; }
+  #ep-hero h2 {
+    font-size: clamp(1.35rem, 5.4vw, 2rem);
+    line-height: 1.03;
+    max-width: 16ch; }
+  #ep-hero #cms-hero-subtitle {
+    font-size: 0.72rem;
+    margin-bottom: 0.15rem; }
+  #ep-hero .btn {
+    width: 100%;
+    justify-content: center; }
+  #ep-hero .player {
+    margin-top: 0.15rem; }
+  .site-section {
+    padding-top: 2.05em;
+    padding-bottom: 2.05em; } }
+
 @media (max-width: 575.98px) {
   .home-column-selector-grid {
     padding-left: 12px;
@@ -1179,7 +1228,7 @@ footer[data-cms-section="footer"] {
     right: 0.55rem;
     font-size: 0.6rem; }
   .home-publication-slide__media {
-    aspect-ratio: 1 / 1.08; }
+    aspect-ratio: 3 / 4.05; }
   .home-program-selector-grid {
     padding-left: 12px;
     margin-right: -12px;
@@ -2242,8 +2291,8 @@ footer[data-cms-section="footer"] {
   .home-column-layout {
     grid-template-columns: 1fr; }
   .home-column-card {
-    flex-basis: 82%;
-    max-width: 82%; }
+    flex-basis: 72%;
+    max-width: 72%; }
   .home-column-card__caption {
     font-size: 0.74rem;
     padding-top: 0.4rem; }
@@ -2270,17 +2319,17 @@ footer[data-cms-section="footer"] {
     width: 100%;
     justify-content: center; }
   .home-publications-carousel {
-    margin-left: -4px;
-    margin-right: -4px; }
+    margin-left: -2px;
+    margin-right: -2px; }
   .home-publications-carousel .owl-stage-outer {
-    padding: 0 4px; }
+    padding: 0 2px; }
   .home-publication-slide {
-    padding: 0 4px; }
+    padding: 0 2px; }
   .home-publication-slide__media {
-    aspect-ratio: 3 / 4.25;
-    border-radius: 18px; }
+    aspect-ratio: 3 / 3.95;
+    border-radius: 16px; }
   .home-publication-slide__media:before {
-    border-radius: 18px; }
+    border-radius: 16px; }
   .home-publication-slide__label {
     border-radius: 999px; }
   .site-section {
@@ -2310,7 +2359,10 @@ footer[data-cms-section="footer"] {
   .site-navbar .site-menu-toggle .icon-menu {
     font-size: 1.1rem; }
   #cms-page-hero .container {
-    padding-top: 3.75rem; }
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 3.85rem;
+    padding-bottom: 1rem; }
   .site-blocks-cover,
   .site-blocks-cover .row {
     min-height: 320px; }
@@ -2322,24 +2374,25 @@ footer[data-cms-section="footer"] {
     font-size: 1.35rem;
     line-height: 1.1; }
   #cms-page-hero {
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    min-height: 350px; }
+    min-height: 100vh;
+    min-height: 100svh; }
   #cms-page-hero .row {
-    min-height: 350px; }
+    min-height: 100vh;
+    min-height: 100svh; }
   #ep-hero {
     gap: 0.25rem;
     padding-top: 0;
+    min-height: calc(100vh - 5.5rem);
+    min-height: calc(100svh - 5.5rem);
     text-align: left; }
   #ep-hero h2 {
-    font-size: 1.08rem;
+    font-size: clamp(1.2rem, 5.8vw, 1.85rem);
     line-height: 1.08;
     max-width: 100%;
     margin: 0; }
   #ep-hero #cms-hero-subtitle {
     font-size: 0.68rem;
-    margin-bottom: 0.2rem; }
+    margin-bottom: 0.25rem; }
   #ep-hero .btn {
     font-size: 0.68rem;
     padding: 0.55rem 0.75rem !important; }
