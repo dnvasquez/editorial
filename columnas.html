@@ -250,32 +250,20 @@
         var featured = COLUMNAS[0];
 
         listaHtml +=
-          '<section class="column-feature" data-aos="fade-up">' +
-          '<div class="row no-gutters">' +
-          '<div class="col-lg-7">' +
-          '<a href="columna.html?id=' + featured.id + '" class="column-feature__media" style="background-image:url(\'' + featured.imagen + '\');">' +
+          '<section class="column-feature column-feature--featured" data-aos="fade-up">' +
+          '<a href="columna.html?id=' + featured.id + '" class="column-feature__media column-feature__media--featured" style="background-image:url(\'' + featured.imagen + '\');">' +
           '<span class="column-feature__eyebrow">Columna destacada</span>' +
-          '<div class="column-feature__overlay">' +
+          '<div class="column-feature__overlay column-feature__overlay--featured">' +
+          '<div class="column-feature__meta">' +
+          '<span>Por ' + featured.autor + '</span>' +
+          '<span>' + featured.fecha + '</span>' +
+          '<span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</span>' +
+          '</div>' +
           '<h3>' + featured.titulo + '</h3>' +
           '<p>' + featured.resumen + '</p>' +
-          '<span class="column-feature__meta">Por ' + featured.autor + ' / ' + featured.fecha + ' / ' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</span>' +
+          '<span class="column-feature__cta btn btn-primary btn-sm py-3 px-4">Leer columna</span>' +
           '</div>' +
           '</a>' +
-          '</div>' +
-          '<div class="col-lg-5">' +
-          '<div class="column-feature__side">' +
-          '<span class="column-feature__side-label">Lectura recomendada</span>' +
-          '<h3>' + featured.titulo + '</h3>' +
-          '<p>' + featured.resumen + '</p>' +
-          '<div class="column-feature__facts">' +
-          '<div><strong>' + featured.autor + '</strong><span>Autor</span></div>' +
-          '<div><strong>' + featured.fecha + '</strong><span>Fecha</span></div>' +
-          '<div><strong>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</strong><span>Vistas</span></div>' +
-          '</div>' +
-          '<a href="columna.html?id=' + featured.id + '" class="btn btn-primary btn-sm py-3 px-4">Leer columna</a>' +
-          '</div>' +
-          '</div>' +
-          '</div>' +
           '</section>';
       }
 
