@@ -1426,18 +1426,27 @@
     if (!body || body.getAttribute("data-cms-page") !== "index") return;
 
     var sectionMap = {
-      programas: ["programas", "episodios"],
+      programas: ["programas-episodios"],
+      episodios: ["programas-episodios"],
       columnas: ["columnas"],
       publicaciones: ["publicaciones"],
       about: ["equipo"]
     };
 
+    var sectionVisibility = {};
     Object.keys(sectionMap).forEach(function (pageId) {
       var pageConfig = getPageConfig(pageId);
       var visible = !pageConfig || pageConfig.visible !== false;
       sectionMap[pageId].forEach(function (sectionId) {
-        setElementVisibility(body.querySelector('[data-cms-section="' + sectionId + '"]'), visible);
+        if (!Object.prototype.hasOwnProperty.call(sectionVisibility, sectionId)) {
+          sectionVisibility[sectionId] = true;
+        }
+        sectionVisibility[sectionId] = sectionVisibility[sectionId] && visible;
       });
+    });
+
+    Object.keys(sectionVisibility).forEach(function (sectionId) {
+      setElementVisibility(body.querySelector('[data-cms-section="' + sectionId + '"]'), sectionVisibility[sectionId]);
     });
   }
 

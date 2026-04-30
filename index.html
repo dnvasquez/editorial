@@ -119,47 +119,18 @@
     </div>
 
 
-    <!-- SECCIÃ“N: Nuestros Programas -->
+    <!-- SECCIÃ“N: Nuestros Programas y Ãšltimos Episodios -->
     <main id="cms-page-main">
-    <div class="site-section" data-cms-section="programas">
+    <div class="site-section bg-light" data-cms-section="programas-episodios">
       <div class="container">
         <div class="row mb-5" data-aos="fade-up">
           <div class="col-md-12 text-center">
-            <h2 class="font-weight-bold text-black">Nuestros Programas</h2>
-            <p class="lead text-muted">Explora toda nuestra oferta de programas de podcast</p>
-          </div>
-        </div>
-        <div class="row" id="prog-grid">
-          <!-- Renderizado por js/episodes.js -->
-        </div>
-        <div class="row">
-          <div class="col-12 text-center" data-aos="fade-up">
-            <a href="programas.html" class="btn btn-outline-primary px-4 py-3">Ver todos los programas</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- SECCIÃ“N: Ãšltimos Episodios -->
-    <div class="site-section bg-light" data-cms-section="episodios">
-      <div class="container">
-        <div class="row mb-5" data-aos="fade-up">
-          <div class="col-md-12 text-center">
-            <h2 class="font-weight-bold text-black">&Uacute;ltimos Episodios</h2>
+            <h2 class="font-weight-bold text-black">Nuestros Programas y &Uacute;ltimos Episodios</h2>
+            <p class="lead text-muted">Selecciona un programa para ver sus tres episodios m&aacute;s recientes.</p>
           </div>
         </div>
 
-        <!-- Renderizado por js/episodes.js -->
-        <div id="ep-latest"></div>
-
-      </div>
-      <div class="container" data-aos="fade-up">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <a href="programas.html" class="btn btn-outline-primary px-4 py-3">Ver todos los episodios</a>
-          </div>
-        </div>
+        <div id="home-programs-episodes"></div>
       </div>
     </div>
 
@@ -513,41 +484,80 @@
         document.getElementById('ep-hero').innerHTML = finalHeroHtml;
       }
 
-      var progHtml = '';
-      PROGRAMAS.slice(0, 3).forEach(function(p, i) {
-        var count = EPISODIOS.filter(function(e) { return e.programaId === p.id; }).length;
-        var delay = i > 0 ? ' data-aos-delay="' + (i * 100) + '"' : '';
-        progHtml +=
-          '<div class="col-md-4">' +
-          '<div class="d-block podcast-entry bg-white mb-5" data-aos="fade-up"' + delay + '>' +
-          '<div class="image program-cover w-100" style="background-image: url(\'' + p.imagen + '\');"></div>' +
-          '<div class="text">' +
-          '<h3 class="font-weight-light"><a href="programa.html?id=' + p.id + '">' + p.nombre + '</a></h3>' +
-          '<div class="text-white mb-2"><span class="text-black-opacity-05"><small>' + count + ' episodio' + (count !== 1 ? 's' : '') + '</small></span></div>' +
-          '<p>' + p.descripcion + '</p>' +
-          '<a href="programa.html?id=' + p.id + '" class="btn btn-sm btn-primary py-2 px-3">Ver episodios</a>' +
-          '</div></div></div>';
-      });
-      document.getElementById('prog-grid').innerHTML = progHtml;
+      var programsEpisodesPanel = document.getElementById('home-programs-episodes');
 
-      // â”€â”€ Ãšltimos episodios: hasta 3 â”€â”€
-      var latestHtml = '';
-      EPISODIOS.slice(0, 3).forEach(function(e) {
-        var prog = PROGRAMAS.find(function(p) { return p.id === e.programaId; });
-        latestHtml +=
-          '<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">' +
-          '<div class="image" style="background-image: url(\'' + e.imagen + '\');"></div>' +
-          '<div class="text">' +
-          '<h3 class="font-weight-light"><a href="single-post.html?id=' + e.id + '">Episodio ' + e.numero + ': ' + e.titulo + '</a></h3>' +
-          '<div class="text-white mb-3"><span class="text-black-opacity-05"><small>' +
-          (prog ? prog.nombre + ' <span class="sep">/</span> ' : '') +
-          'Por ' + e.autor + ' <span class="sep">/</span> ' + e.fecha + ' <span class="sep">/</span> ' + e.duracion +
-          '</small></span></div>' +
-          '<p class="mb-4">' + e.resumen + '</p>' +
-          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + e.audio + '" type="audio/mp3"></audio></div>' +
-          '</div></div>';
-      });
-      document.getElementById('ep-latest').innerHTML = latestHtml;
+      function renderProgramsAndEpisodes(selectedProgramId) {
+        if (!programsEpisodesPanel) return;
+
+        var currentProgram = PROGRAMAS.find(function (program) {
+          return String(program.id) === String(selectedProgramId);
+        }) || PROGRAMAS[0] || null;
+
+        if (!currentProgram) {
+          programsEpisodesPanel.innerHTML = '<div class="text-center py-5"><h3 class="text-black">No hay programas disponibles.</h3></div>';
+          return;
+        }
+
+        var currentEpisodes = EPISODIOS.filter(function (episode) {
+          return String(episode.programaId) === String(currentProgram.id);
+        });
+        var latestEpisodes = currentEpisodes.slice(0, 3);
+        var hasMoreEpisodes = currentEpisodes.length > 3;
+
+        var leftHtml = PROGRAMAS.map(function (program, index) {
+          var count = EPISODIOS.filter(function (episode) {
+            return String(episode.programaId) === String(program.id);
+          }).length;
+          return '' +
+            '<button type="button" class="home-program-card home-program-card--selector' + (String(currentProgram.id) === String(program.id) ? ' is-active' : '') + '" data-program-id="' + program.id + '">' +
+            '<div class="home-program-card__media" style="background-image: url(\'' + program.imagen + '\');">' +
+            '<span class="home-program-card__count">' + count + ' capitulo' + (count !== 1 ? 's' : '') + '</span>' +
+            '</div>' +
+            '<div class="home-program-card__caption">' +
+            '<span>' + program.nombre + '</span>' +
+            '</div>' +
+            '</button>';
+        }).join('');
+
+        var rightHtml = '' +
+          '<div class="home-program-episodes-panel__header">' +
+          '<div>' +
+          '<span class="home-program-episodes-panel__kicker">Últimos episodios</span>' +
+          '<h3>' + currentProgram.nombre + '</h3>' +
+          '</div>' +
+          '<span class="home-program-episodes-panel__count">' + currentEpisodes.length + ' episodio' + (currentEpisodes.length !== 1 ? 's' : '') + '</span>' +
+          '</div>' +
+          '<div class="home-episode-list">' + latestEpisodes.map(function (episode) {
+            return '' +
+              '<article class="home-episode-row">' +
+              '<a href="single-post.html?id=' + episode.id + '" class="home-episode-row__media" style="background-image: url(\'' + episode.imagen + '\');" aria-label="Abrir episodio ' + episode.numero + ': ' + episode.titulo + '">' +
+              '<span class="home-episode-row__number">Ep. ' + episode.numero + '</span>' +
+              '</a>' +
+              '<div class="home-episode-row__body">' +
+              '<div class="home-episode-row__meta"><span>' + episode.fecha + '</span><span>•</span><span>' + episode.duracion + '</span></div>' +
+              '<h3><a href="single-post.html?id=' + episode.id + '">' + episode.titulo + '</a></h3>' +
+              '<p>' + episode.resumen + '</p>' +
+              '</div>' +
+              '</article>';
+          }).join('') + '</div>' +
+          (hasMoreEpisodes ? '<div class="home-program-episodes-panel__actions"><a href="programa.html?id=' + currentProgram.id + '" class="btn btn-outline-primary px-4 py-3">Ver todos los episodios</a></div>' : '');
+
+        programsEpisodesPanel.innerHTML = '' +
+          '<div class="home-program-episodes-layout">' +
+          '<div class="home-program-episodes-layout__left">' +
+          '<div class="home-program-selector-grid">' + leftHtml + '</div>' +
+          '</div>' +
+          '<div class="home-program-episodes-layout__right">' + rightHtml + '</div>' +
+          '</div>';
+
+        Array.prototype.forEach.call(programsEpisodesPanel.querySelectorAll('[data-program-id]'), function (button) {
+          button.addEventListener('click', function () {
+            renderProgramsAndEpisodes(button.getAttribute('data-program-id'));
+          });
+        });
+      }
+
+      renderProgramsAndEpisodes(PROGRAMAS[0] ? PROGRAMAS[0].id : '');
 
       // â”€â”€ Columnas: primeras 3 â”€â”€
       var colHtml = '';
