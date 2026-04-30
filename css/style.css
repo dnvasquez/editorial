@@ -161,6 +161,62 @@ a {
   border: 1px solid rgba(242, 58, 46, 0.16);
   white-space: nowrap; }
 
+.featured-column-cover {
+  position: relative;
+  min-height: 72vh;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important; }
+  .featured-column-cover:before {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.72) 100%); }
+  .featured-column-cover .container,
+  .featured-column-cover .row {
+    height: 100%; }
+  .featured-column-cover .row {
+    padding-top: 5rem;
+    padding-bottom: 5rem; }
+  .featured-column-cover #ep-hero {
+    max-width: 100%;
+    width: 100%; }
+
+.featured-column-panel {
+  width: min(100%, 760px);
+  text-align: left;
+  margin: 0 auto;
+  padding: 2.25rem 2.25rem 2rem;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.42) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-box-shadow: 0 28px 60px -30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 28px 60px -30px rgba(0, 0, 0, 0.6); }
+
+.featured-column-kicker {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.85rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(242, 58, 46, 0.92);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase; }
+
+.featured-column-meta {
+  margin-bottom: 1rem; }
+  .featured-column-meta .text-white-opacity-05 {
+    color: rgba(255, 255, 255, 0.78) !important; }
+
+.featured-column-summary {
+  margin-bottom: 1.5rem;
+  max-width: 42rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.07rem;
+  line-height: 1.85; }
+
 .column-summary {
   position: relative;
   margin: 0 0 2rem;
@@ -985,6 +1041,13 @@ a {
   .column-page-note {
     flex-direction: column;
     align-items: flex-start; }
+  .featured-column-cover {
+    min-height: 78vh; }
+  .featured-column-cover .row {
+    padding-top: 3rem;
+    padding-bottom: 3rem; }
+  .featured-column-panel {
+    padding: 1.5rem 1.25rem 1.25rem; }
   .column-summary {
     padding-left: 1.05rem; }
   .column-summary:before {

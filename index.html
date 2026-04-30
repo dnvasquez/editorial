@@ -476,11 +476,19 @@
       } else if (featuredType === 'column' && featuredId) {
         var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
         if (heroColumn) {
+          var heroSection = document.getElementById('cms-page-hero');
+          if (heroSection) {
+            heroSection.classList.add('featured-column-cover');
+            heroSection.style.backgroundImage = "url('" + (heroColumn.banner || heroColumn.imagen) + "')";
+          }
           finalHeroHtml =
-            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + heroColumn.titulo + '</h2>' +
-            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Columna de opini&oacute;n | ' + heroColumn.autor + ' | ' + heroColumn.fecha + ' | ' + heroColumn.lectura + '</small></span></div>' +
-            '<p class="text-white mb-4">' + (heroColumn.resumen || '') + '</p>' +
-            '<p><a id="cms-hero-transcript-link" href="columna.html?id=' + heroColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>';
+            '<article class="featured-column-panel">' +
+            '<span class="featured-column-kicker">Columna destacada</span>' +
+            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-3 display-4">' + heroColumn.titulo + '</h2>' +
+            '<div id="cms-hero-subtitle" class="featured-column-meta mb-4"><span class="text-white-opacity-05"><small>Por ' + heroColumn.autor + ' <span class="sep">/</span> ' + heroColumn.fecha + ' <span class="sep">/</span> ' + heroColumn.lectura + '</small></span></div>' +
+            '<p class="featured-column-summary text-white mb-4">' + (heroColumn.resumen || '') + '</p>' +
+            '<p class="mb-0"><a id="cms-hero-transcript-link" href="columna.html?id=' + heroColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>' +
+            '</article>';
         }
       } else if (featuredType === 'publication' && featuredId) {
         var heroPublication = PUBLICACIONES.find(function(item) { return String(item.id) === String(featuredId); });
