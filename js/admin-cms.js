@@ -86,6 +86,7 @@
   }
 
   function routeAdmin(view, id, replaceState) {
+    closeAdminModal();
     var url = getAdminRoute(view, id);
     if (window.history && window.history[replaceState ? "replaceState" : "pushState"]) {
       window.history[replaceState ? "replaceState" : "pushState"]({ view: view, id: id }, "", url);
@@ -1198,6 +1199,136 @@
     options.bind();
   }
 
+  function closeAdminModal() {
+    var existing = document.getElementById("admin-modal-overlay");
+    if (existing && existing.parentNode) {
+      existing.parentNode.removeChild(existing);
+    }
+    document.body.classList.remove("admin-modal-open");
+  }
+
+  function openAdminModal(html, className) {
+    closeAdminModal();
+
+    var overlay = document.createElement("div");
+    overlay.id = "admin-modal-overlay";
+    overlay.className = "admin-modal-overlay";
+    overlay.innerHTML =
+      '<div class="admin-modal ' + (className || "") + '" role="dialog" aria-modal="true" aria-label="Crear columna">' +
+      '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">×</button>' +
+      html +
+      '</div>';
+
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay || event.target.closest("[data-admin-modal-close]")) {
+        event.preventDefault();
+        closeAdminModal();
+      }
+    });
+
+    document.body.appendChild(overlay);
+    document.body.classList.add("admin-modal-open");
+
+    var focusTarget = overlay.querySelector("input, select, textarea, button");
+    if (focusTarget && typeof focusTarget.focus === "function") {
+      window.setTimeout(function () {
+        focusTarget.focus();
+      }, 0);
+    }
+
+    return overlay;
+  }
+
+  function buildColumnFields(prefix, selected) {
+    var safe = selected || {};
+    var id = prefix || "column";
+    var authorOptions = buildColumnAuthorOptions({
+      autorId: safe.autorId || "",
+      autor: safe.autor || ""
+    });
+
+    return '' +
+      '<div class="admin-form-grid">' +
+      '<label class="admin-section-toggle admin-field-full"><span>Visible en el sitio</span><input id="' + id + '-visible" type="checkbox"' + (safe.visible !== false ? ' checked' : '') + '></label>' +
+      '<div class="admin-field"><label for="' + id + '-title">Titulo</label><input id="' + id + '-title" class="form-control" value="' + escapeHtml(safe.titulo || "") + '" required></div>' +
+      '<div class="admin-field"><label for="' + id + '-author">Autor</label><select id="' + id + '-author" class="form-control">' + authorOptions + '</select></div>' +
+      '<div class="admin-field"><label for="' + id + '-date">Fecha</label><input id="' + id + '-date" class="form-control" value="' + escapeHtml(safe.fecha || "") + '" placeholder="2026-04-01"></div>' +
+      '<div class="admin-field"><label for="' + id + '-category">Categoria</label><select id="' + id + '-category" class="form-control"><option value="Analisis"' + ((safe.categoria || "Opinion") === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + ((safe.categoria || "Opinion") === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (safe.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (safe.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (safe.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
+      '<div class="admin-field"><label for="' + id + '-status">Estado</label><select id="' + id + '-status" class="form-control"><option value="borrador"' + ((safe.estado || "borrador") === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (safe.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
+      '<div class="admin-field"><label for="' + id + '-image">Imagen</label><input id="' + id + '-image" class="form-control" value="' + escapeHtml(safe.imagen || "") + '" placeholder="URL de imagen o data:image/..."><input id="' + id + '-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Portada principal de la columna.</small></div>' +
+      '<div class="admin-field"><label for="' + id + '-banner">Banner</label><input id="' + id + '-banner" class="form-control" value="' + escapeHtml(safe.banner || safe.imagen || "") + '" placeholder="URL de imagen o data:image/..."><input id="' + id + '-banner-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Imagen superior para la ficha publica.</small></div>' +
+      '<div class="admin-field admin-field-full"><label for="' + id + '-summary">Resumen</label><textarea id="' + id + '-summary" class="form-control admin-textarea-sm">' + escapeHtml(safe.resumen || "") + '</textarea></div>' +
+      '<div class="admin-field admin-field-full"><label for="' + id + '-hashtags">Hashtags</label><textarea id="' + id + '-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(Array.isArray(safe.hashtags) ? safe.hashtags.join(", ") : String(safe.hashtags || "")) + '</textarea><small class="text-muted">Separados por comas o saltos de linea.</small></div>' +
+      '<div class="admin-field admin-field-full"><label for="' + id + '-content">Contenido</label><textarea id="' + id + '-content" class="form-control admin-code-textarea">' + escapeHtml(Array.isArray(safe.contenido) ? safe.contenido.join("\n\n") : String(safe.contenido || "")) + '</textarea></div>' +
+      '</div>';
+  }
+
+  function openColumnCreateModal() {
+    var html =
+      '<div class="admin-modal-head">' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>Nueva columna</h3><p>Completa los datos esenciales para publicar una nueva pieza.</p></div>' +
+      '</div>' +
+      '<form id="column-create-form" class="admin-form-stack" novalidate>' +
+      buildColumnFields("new-column", {
+        titulo: "",
+        autor: "",
+        autorId: "",
+        fecha: "",
+        categoria: "Opinion",
+        resumen: "",
+        hashtags: "",
+        contenido: "",
+        imagen: "",
+        banner: "",
+        estado: "borrador",
+        visible: true
+      }) +
+      '<div class="admin-actions admin-modal-actions">' +
+      '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
+      '<button type="submit" class="btn btn-primary">Crear columna</button>' +
+      '</div>' +
+      '<p id="new-column-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form>';
+
+    var modal = openAdminModal(html, "admin-modal-column");
+    if (!modal) return;
+
+    var form = modal.querySelector("#column-create-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var authorSelect = modal.querySelector("#new-column-author");
+      var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
+      var feedback = modal.querySelector("#new-column-feedback");
+      var saved = window.EditorialCmsSite.saveColumn({
+        id: "",
+        titulo: modal.querySelector("#new-column-title").value,
+        autorId: authorSelect ? authorSelect.value : "",
+        autor: authorOption ? authorOption.textContent.replace(/\s*-\s*.*$/, "") : "",
+        fecha: modal.querySelector("#new-column-date").value,
+        categoria: modal.querySelector("#new-column-category").value,
+        estado: modal.querySelector("#new-column-status").value,
+        imagen: modal.querySelector("#new-column-image").value,
+        banner: modal.querySelector("#new-column-banner").value,
+        resumen: modal.querySelector("#new-column-summary").value,
+        hashtags: modal.querySelector("#new-column-hashtags").value,
+        contenido: modal.querySelector("#new-column-content").value,
+        visible: modal.querySelector("#new-column-visible").checked
+      });
+
+      if (feedback) {
+        feedback.textContent = "Columna creada. Abriendo el editor...";
+      }
+
+      closeAdminModal();
+      routeAdmin("column", saved.id, true);
+    });
+
+    bindImageUpload("new-column-image-file", "new-column-image", "new-column-feedback", "La imagen");
+    bindImageUpload("new-column-banner-file", "new-column-banner", "new-column-feedback", "El banner");
+  }
+
   function renderPrograms(selectedId) {
     var programs = window.EditorialCmsSite.getProgramsForAdmin();
     var selected = findById(programs, selectedId) || {
@@ -1371,6 +1502,15 @@
       estado: "borrador",
       visible: true
     };
+    var columnRowsHtml = columns.length ? columns.map(function (column) {
+      return '<button type="button" class="admin-column-row' + (selected.id === column.id ? ' is-editing' : '') + '" data-id="' + escapeHtml(column.id) + '">' +
+        '<div class="admin-column-main"><strong>' + escapeHtml(column.titulo) + '</strong><span>' + escapeHtml(column.resumen || "Sin resumen") + '</span></div>' +
+        '<div class="admin-column-cell">' + escapeHtml(column.autor || "Autor/a") + '</div>' +
+        '<div class="admin-column-cell">' + escapeHtml(column.fecha || "Sin fecha") + '</div>' +
+        '<div><span class="admin-column-status' + (column.estado === "borrador" ? ' is-borrador' : '') + '">' + escapeHtml(column.estado || "borrador") + '</span></div>' +
+        '<div class="admin-column-cell">Abrir</div>' +
+        '</button>';
+    }).join("") : '<div class="admin-empty-state">No hay columnas creadas todavia. Usa <strong>Nueva columna</strong> para crear la primera.</div>';
 
     renderEntityEditor({
       kicker: "Contenido",
@@ -1380,38 +1520,27 @@
         '<section class="admin-library-layout admin-library-split">' +
         '<div class="admin-card admin-library-card">' +
         '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Columnas</h3></div><button id="add-column" type="button" class="btn btn-primary">Nueva columna</button></div>' +
-        '<div class="admin-entity-list" id="column-list">' + columns.map(function (column) {
-          return '<button type="button" class="admin-entity-row' + (selected.id === column.id ? ' is-active' : '') + '" data-id="' + escapeHtml(column.id) + '">' +
-            '<strong>' + escapeHtml(column.titulo) + '</strong><span>' + escapeHtml((column.autor || "") + " / " + (column.estado || "")) + '</span></button>';
-        }).join("") + '</div></div>' +
+        '<div class="admin-library-meta"><span>' + columns.length + ' columnas</span><span>Selecciona una fila para editar</span></div>' +
+        '<div class="admin-table-head admin-column-table-head">' +
+        '<span>Titulo</span><span>Autor</span><span>Fecha</span><span>Estado</span><span></span>' +
+        '</div>' +
+        '<div class="admin-column-list" id="column-list">' + columnRowsHtml + '</div></div>' +
         '<div class="admin-card admin-editor-panel">' +
         '<form id="column-form" class="admin-form-stack" novalidate>' +
         '<input id="column-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
-        '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="column-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
-        '<div class="admin-field"><label for="column-title">Titulo</label><input id="column-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
-        '<div class="admin-field"><label for="column-author">Autor</label><select id="column-author" class="form-control">' + buildColumnAuthorOptions(selected) + '</select></div>' +
-        '<div class="admin-field"><label for="column-date">Fecha</label><input id="column-date" class="form-control" value="' + escapeHtml(selected.fecha) + '" placeholder="2026-04-01"></div>' +
-        '<div class="admin-field"><label for="column-category">Categoria</label><select id="column-category" class="form-control"><option value="Analisis"' + (selected.categoria === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + (selected.categoria === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (selected.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (selected.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (selected.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
-        '<div class="admin-field"><label for="column-status">Estado</label><select id="column-status" class="form-control"><option value="borrador"' + (selected.estado === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (selected.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
-        '<div class="admin-field"><label for="column-image">Imagen</label><input id="column-image" class="form-control" value="' + escapeHtml(selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
-        '<div class="admin-field"><label for="column-banner">Banner</label><input id="column-banner" class="form-control" value="' + escapeHtml(selected.banner || selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-banner-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
-        '<div class="admin-field"><label for="column-summary">Resumen</label><textarea id="column-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
-        '<div class="admin-field"><label for="column-hashtags">Hashtags</label><textarea id="column-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(selected.hashtags || "") + '</textarea><small class="text-muted">Escribe etiquetas separadas por comas o saltos de linea. Se mostraran como hashtags en la columna publica.</small></div>' +
-        '<div class="admin-field"><label for="column-content">Contenido</label><textarea id="column-content" class="form-control admin-code-textarea">' + escapeHtml(selected.contenido) + '</textarea></div>' +
+        buildColumnFields("column", selected) +
         '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar columna</button>' + (selected.id ? '<button id="delete-column" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
         '<p id="column-feedback" class="admin-feedback" aria-live="polite"></p>' +
         '</form></div></section>',
       bind: function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#column-list .admin-entity-row"), function (button) {
+        Array.prototype.forEach.call(document.querySelectorAll("#column-list .admin-column-row"), function (button) {
           button.addEventListener("click", function () {
             routeAdmin("column", button.getAttribute("data-id"));
           });
         });
         document.getElementById("add-column").addEventListener("click", function () {
-          routeAdmin("column", "");
+          openColumnCreateModal();
         });
-        bindImageUpload("column-image-file", "column-image", "column-feedback", "La imagen");
-        bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
         document.getElementById("column-form").addEventListener("submit", function (event) {
           event.preventDefault();
           var authorSelect = document.getElementById("column-author");
@@ -1449,6 +1578,9 @@
         }
       }
     });
+
+    bindImageUpload("column-image-file", "column-image", "column-feedback", "La imagen");
+    bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
   }
 
   function renderPublications(selectedId) {
