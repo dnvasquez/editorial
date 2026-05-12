@@ -280,6 +280,10 @@ footer[data-cms-section="footer"] {
 .author-page {
   background: #fcfcf6; }
 
+.author-page.is-loading .site-wrap {
+  visibility: hidden;
+  opacity: 0; }
+
 .author-page .site-navbar.absolute {
   background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);

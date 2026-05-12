@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body class="author-page">
+  <body class="author-page is-loading">
 
     <div class="site-wrap">
       <div class="site-mobile-menu">
@@ -190,6 +190,26 @@
           });
         }
 
+        function renderMissingAuthor(authorRef) {
+          document.title = 'Columnista no encontrado - Estacion Rural';
+          document.getElementById('author-photo').src = 'images/person_1.jpg';
+          document.getElementById('author-photo').alt = 'Columnista no encontrado';
+          document.getElementById('author-name').textContent = 'Columnista no encontrado';
+          document.getElementById('author-role').textContent = '';
+          document.getElementById('author-bio').textContent = 'No pudimos encontrar la ficha editorial asociada a este enlace.';
+          document.getElementById('author-count').textContent = '0';
+          document.getElementById('author-latest').textContent = '-';
+          document.getElementById('author-columns-title').textContent = 'Columnas del autor';
+          renderSocials(document.getElementById('author-socials'), null);
+
+          var listNode = document.getElementById('author-columns-list');
+          if (listNode) {
+            listNode.innerHTML = '<div class="author-page__empty"><h3>Autor no encontrado</h3><p>Revisa el enlace o vuelve a la pagina de columnas para abrir un columnista valido.</p></div>';
+          }
+
+          document.body.classList.remove('is-loading');
+        }
+
         function renderColumnCard(column, index) {
           return (
             '<article class="author-column-card">' +
@@ -220,25 +240,9 @@
           ? window.EditorialCmsSite.getColumnistaById(authorRef)
           : null;
 
-        if (!author && catalog.length) {
-          var firstColumn = catalog[0];
-          author = {
-            id: firstColumn.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(firstColumn.autor || '') : ''),
-            name: firstColumn.autor || 'Columnista',
-            role: '',
-            bio: '',
-            image: 'images/person_1.jpg'
-          };
-        }
-
         if (!author) {
-          author = {
-            id: authorRef || 'columnista',
-            name: 'Columnista',
-            role: '',
-            bio: 'Ficha editorial del autor y archivo de columnas publicadas.',
-            image: 'images/person_1.jpg'
-          };
+          renderMissingAuthor(authorRef);
+          return;
         }
 
         var authorPageUrl = getAuthorUrl(author);
@@ -272,6 +276,8 @@
             listNode.innerHTML = '<div class="author-page__empty"><h3>No hay columnas publicadas todavia</h3><p>Cuando este autor publique nuevas columnas, apareceran aqui automaticamente.</p></div>';
           }
         }
+
+        document.body.classList.remove('is-loading');
       });
     </script>
   </body>

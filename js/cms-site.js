@@ -139,11 +139,11 @@
     return null;
   }
 
-  function syncSnapshotToServer(snapshot) {
-    if (!snapshot || typeof snapshot !== "object") return;
-    if (typeof window.fetch !== "function") return;
+  function syncSnapshotToServer(snapshot, silent) {
+    if (!snapshot || typeof snapshot !== "object") return Promise.resolve();
+    if (typeof window.fetch !== "function") return Promise.resolve();
 
-    window.fetch(REMOTE_STATE_ENDPOINT, {
+    var request = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "PUT",
       credentials: "include",
       keepalive: true,
@@ -151,11 +151,21 @@
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ state: snapshot })
-    }).catch(function () {});
+    });
+
+    if (silent) {
+      request.catch(function () {});
+    }
+
+    return request;
   }
 
   function flushRemoteSync() {
-    syncSnapshotToServer(readSnapshot());
+    syncSnapshotToServer(readSnapshot(), true);
+  }
+
+  function syncStateNow() {
+    return syncSnapshotToServer(readSnapshot(), false);
   }
 
   function queueRemoteSync() {
@@ -852,6 +862,7 @@
     if (!all[sectionId]) return null;
     all[sectionId] = clone(data);
     writeObject(CONTENT_STORAGE_KEY, all);
+    hydrateGlobals();
     flushRemoteSync();
     queueRemoteSync();
     return all[sectionId];
@@ -1526,6 +1537,7 @@
     getPageContent: getPageContent,
     getPageContentSection: getPageContentSection,
     savePageContentSection: savePageContentSection,
+    syncStateNow: syncStateNow,
     getColumnistasForAdmin: getColumnistasForAdmin,
     getColumnistaById: getColumnistaById,
     getColumnistaPageUrl: getColumnistaPageUrl,
