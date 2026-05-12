@@ -1263,6 +1263,29 @@
       '</div>';
   }
 
+  function readColumnModalDraft(modal, prefix, base) {
+    var id = prefix || "column-modal";
+    var source = base || {};
+    var authorSelect = modal.querySelector("#" + id + "-author");
+    var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
+
+    return {
+      id: source.id || "",
+      titulo: modal.querySelector("#" + id + "-title").value,
+      autorId: authorSelect ? authorSelect.value : "",
+      autor: authorOption ? authorOption.textContent.replace(/\s*-\s*.*$/, "") : "",
+      fecha: modal.querySelector("#" + id + "-date").value,
+      categoria: modal.querySelector("#" + id + "-category").value,
+      estado: modal.querySelector("#" + id + "-status").value,
+      imagen: modal.querySelector("#" + id + "-image").value,
+      banner: modal.querySelector("#" + id + "-banner").value,
+      resumen: modal.querySelector("#" + id + "-summary").value,
+      hashtags: modal.querySelector("#" + id + "-hashtags").value,
+      contenido: modal.querySelector("#" + id + "-content").value,
+      visible: modal.querySelector("#" + id + "-visible").checked
+    };
+  }
+
   function openColumnEditorModal(column) {
     var isNew = !column || !column.id;
     var selected = column || {
