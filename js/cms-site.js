@@ -151,6 +151,19 @@
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ state: snapshot })
+    }).then(function (response) {
+      if (response.ok) {
+        return response;
+      }
+
+      return response.text().then(function (text) {
+        var message = text || ("HTTP " + response.status);
+        try {
+          var parsed = JSON.parse(text);
+          message = parsed && (parsed.error || parsed.message) ? (parsed.error || parsed.message) : message;
+        } catch (error) {}
+        throw new Error(message);
+      });
     });
 
     if (silent) {

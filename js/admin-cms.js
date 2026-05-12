@@ -1088,9 +1088,11 @@
           if (feedback) {
             feedback.textContent = "Contenido guardado y sincronizado. La pagina Columnas reflejara estos cambios.";
           }
-        }).catch(function () {
+        }).catch(function (error) {
           if (feedback) {
-            feedback.textContent = "Contenido guardado localmente, pero no se pudo sincronizar al servidor.";
+            feedback.textContent = error && error.message
+              ? "Contenido guardado localmente, pero no se pudo sincronizar al servidor: " + error.message
+              : "Contenido guardado localmente, pero no se pudo sincronizar al servidor.";
           }
         });
       } else if (feedback) {
