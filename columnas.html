@@ -186,8 +186,37 @@
         return total + ' vista' + (total === 1 ? '' : 's');
       }
 
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, function (char) {
+          var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          };
+          return map[char] || char;
+        });
+      }
+
+      function getAuthorUrl(column) {
+        if (!column) return '';
+        if (window.EditorialCmsSite && typeof window.EditorialCmsSite.getColumnistaPageUrl === 'function') {
+          return window.EditorialCmsSite.getColumnistaPageUrl({
+            id: column.autorId || '',
+            name: column.autor || ''
+          });
+        }
+        var lookup = column.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(column.autor || '') : '');
+        return lookup ? 'columnista.html?id=' + encodeURIComponent(lookup) : '';
+      }
+
       function renderColumnCard(column, index) {
         var delay = index > 0 ? ' data-aos-delay="' + (index * 80) + '"' : '';
+        var authorUrl = getAuthorUrl(column);
+        var authorHtml = authorUrl
+          ? '<a href="' + authorUrl + '" class="column-archive-card__author">Por ' + escapeHtml(column.autor || '') + '</a>'
+          : '<span class="column-archive-card__author">Por ' + escapeHtml(column.autor || '') + '</span>';
         return (
           '<article class="column-archive-card" data-aos="fade-up"' + delay + '>' +
           '<a href="columna.html?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + column.imagen + '\');">' +
@@ -195,14 +224,14 @@
           '</a>' +
           '<div class="column-archive-card__body">' +
           '<div class="column-archive-card__meta">' +
-          '<span>' + column.fecha + '</span>' +
+          '<span>' + escapeHtml(column.fecha || '') + '</span>' +
           '<span>•</span>' +
-          '<span>' + (column.lectura || 'Lectura breve') + '</span>' +
+          '<span>' + escapeHtml(column.lectura || 'Lectura breve') + '</span>' +
           '</div>' +
-          '<h3 class="column-archive-card__title"><a href="columna.html?id=' + column.id + '">' + column.titulo + '</a></h3>' +
-          '<p class="column-archive-card__excerpt">' + column.resumen + '</p>' +
+          '<h3 class="column-archive-card__title"><a href="columna.html?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
+          '<p class="column-archive-card__excerpt">' + escapeHtml(column.resumen || '') + '</p>' +
           '<div class="column-archive-card__footer">' +
-          '<span class="column-archive-card__author">Por ' + column.autor + '</span>' +
+          authorHtml +
           '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Leer columna</a>' +
           '</div>' +
           '</div>' +
@@ -213,6 +242,10 @@
       var listaHtml = '';
       if (COLUMNAS.length) {
         var featured = COLUMNAS[0];
+        var featuredAuthorUrl = getAuthorUrl(featured);
+        var featuredAuthorHtml = featuredAuthorUrl
+          ? '<a href="' + featuredAuthorUrl + '" class="columnista-link column-feature__author-link">Por ' + escapeHtml(featured.autor || '') + '</a>'
+          : '<span>Por ' + escapeHtml(featured.autor || '') + '</span>';
 
         listaHtml +=
           '<section class="column-feature column-feature--featured" data-aos="fade-up">' +
@@ -220,14 +253,14 @@
           '<div class="column-feature__featured-copy">' +
           '<div class="column-feature__kicker">Opinión / Territorio / Actualidad</div>' +
           '<div class="column-feature__meta">' +
-          '<span>Por ' + featured.autor + '</span>' +
+          featuredAuthorHtml +
           '<span class="column-feature__meta-sep" aria-hidden="true">•</span>' +
-          '<span>' + featured.fecha + '</span>' +
+          '<span>' + escapeHtml(featured.fecha || '') + '</span>' +
           '<span class="column-feature__meta-sep" aria-hidden="true">•</span>' +
           '<span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(featured.vistas || 0) : formatViews(featured.vistas || 0)) + '</span>' +
           '</div>' +
-          '<h3>' + featured.titulo + '</h3>' +
-          '<p>' + featured.resumen + '</p>' +
+          '<h3>' + escapeHtml(featured.titulo || '') + '</h3>' +
+          '<p>' + escapeHtml(featured.resumen || '') + '</p>' +
           '<a href="columna.html?id=' + featured.id + '" class="btn btn-primary btn-sm py-2 px-4 column-feature__cta">Leer columna</a>' +
           '</div>' +
           '<a href="columna.html?id=' + featured.id + '" class="column-feature__featured-media" style="background-image:url(\'' + featured.imagen + '\');" aria-label="Abrir columna destacada"></a>' +

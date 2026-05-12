@@ -254,11 +254,23 @@
     return normalizeColumnistList(content.items);
   }
 
-  function getColumnistaById(columnistId) {
-    if (!columnistId) return null;
+  function findColumnistaByRef(columnistRef) {
+    if (!columnistRef) return null;
+    var lookup = String(columnistRef);
     return getColumnistasForAdmin().find(function (item) {
-      return String(item.id) === String(columnistId);
+      return String(item.id) === lookup || slugify(item.name) === lookup;
     }) || null;
+  }
+
+  function getColumnistaById(columnistId) {
+    return findColumnistaByRef(columnistId);
+  }
+
+  function getColumnistaPageUrl(columnist) {
+    if (!columnist) return "columnista.html";
+    var ref = columnist.id || slugify(columnist.name || "");
+    if (!ref) return "";
+    return "columnista.html?id=" + encodeURIComponent(ref);
   }
 
   function resolveColumnAuthor(column) {
@@ -1181,7 +1193,11 @@
 
       var name = document.createElement("h2");
       name.className = "mb-2 font-weight-light h4";
-      name.textContent = item.name || "Sin nombre";
+      var nameLink = document.createElement("a");
+      nameLink.href = getColumnistaPageUrl(item);
+      nameLink.textContent = item.name || "Sin nombre";
+      nameLink.className = "columnista-link";
+      name.appendChild(nameLink);
 
       var role = document.createElement("span");
       role.className = "d-block mb-2 text-white-opacity-05";
@@ -1511,6 +1527,8 @@
     getPageContentSection: getPageContentSection,
     savePageContentSection: savePageContentSection,
     getColumnistasForAdmin: getColumnistasForAdmin,
+    getColumnistaById: getColumnistaById,
+    getColumnistaPageUrl: getColumnistaPageUrl,
     getPageConfigs: getPageConfigs,
     getPageConfig: getPageConfig,
     savePageConfig: savePageConfig,

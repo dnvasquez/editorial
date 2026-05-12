@@ -154,6 +154,19 @@
         return total + ' vista' + (total === 1 ? '' : 's');
       }
 
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, function (char) {
+          var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          };
+          return map[char] || char;
+        });
+      }
+
       function persistViewCount(id, count) {
         try {
           var storageKey = window.EditorialCmsSite && window.EditorialCmsSite.STORAGE_KEYS ? window.EditorialCmsSite.STORAGE_KEYS.columnViews : 'editorialCmsColumnViews';
@@ -178,8 +191,23 @@
       // Portada editorial
       document.getElementById('col-title').textContent = col.titulo;
       document.getElementById('col-summary').textContent = col.resumen || '';
+      var authorUrl = '';
+      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.getColumnistaPageUrl === 'function') {
+        authorUrl = window.EditorialCmsSite.getColumnistaPageUrl({
+          id: col.autorId || '',
+          name: col.autor || ''
+        });
+      } else if (col.autorId || col.autor) {
+        authorUrl = 'columnista.html?id=' + encodeURIComponent(col.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(col.autor) : col.autor || ''));
+      }
+
+      var authorLabel = col.autor || 'Autor/a';
+      var authorMarkup = authorUrl && authorUrl.indexOf('id=') !== -1
+        ? '<a href="' + authorUrl + '" class="columnista-link column-author-link">' + escapeHtml(authorLabel) + '</a>'
+        : '<span>' + escapeHtml(authorLabel) + '</span>';
+
       document.getElementById('col-meta').innerHTML =
-        'Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span>';
+        'Por ' + authorMarkup + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span>';
 
       var bannerImage = document.getElementById('col-banner-image');
       if (bannerImage) {
