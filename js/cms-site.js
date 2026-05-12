@@ -286,6 +286,27 @@
       .filter(Boolean);
   }
 
+  function toHashtagArray(value) {
+    if (Array.isArray(value)) {
+      return value.map(function (item) {
+        return String(item || "").trim();
+      }).filter(Boolean);
+    }
+
+    return String(value || "")
+      .split(/[\n,]+/)
+      .map(function (tag) { return tag.trim(); })
+      .filter(Boolean);
+  }
+
+  function normalizeHashtag(tag) {
+    var value = String(tag || "").trim();
+    if (!value) return "";
+    value = value.replace(/^#+/, "");
+    value = value.replace(/\s+/g, "-");
+    return "#" + value;
+  }
+
   function parseTranscript(text) {
     return String(text || "")
       .split(/\r?\n/)
@@ -476,6 +497,7 @@
     var views = getColumnViews();
     var columnId = String(column.id);
     var contentArray = toParagraphArray(column.contenido);
+    var hashtags = toHashtagArray(column.hashtags).map(normalizeHashtag).filter(Boolean);
     return {
       id: column.id,
       titulo: column.titulo || "Sin titulo",
@@ -487,6 +509,7 @@
       banner: column.banner || column.imagen || "images/col01_img.jpg",
       resumen: column.resumen || "",
       contenido: contentArray,
+      hashtags: hashtags,
       vistas: views[columnId] || 0,
       categoria: column.categoria || "Opinion",
       estado: column.estado || "publicada",
@@ -525,6 +548,7 @@
         imagen: column.imagen,
         banner: column.banner || column.imagen,
         resumen: column.resumen,
+        hashtags: Array.isArray(column.hashtags) ? column.hashtags.join(", ") : String(column.hashtags || ""),
         contenido: Array.isArray(column.contenido) ? column.contenido.join("\n\n") : (column.contenido || ""),
         categoria: column.categoria || "Opinion",
         estado: "publicada",
@@ -557,6 +581,7 @@
       payload.imagen = payload.banner;
     }
     payload.banner = payload.banner || payload.imagen;
+    payload.hashtags = Array.isArray(payload.hashtags) ? payload.hashtags : toHashtagArray(payload.hashtags);
     delete payload._deleted;
 
     var index = localItems.findIndex(function (item) {
@@ -1477,6 +1502,7 @@
     getColumnsForAdmin: getColumnsForAdmin,
     saveColumn: saveColumn,
     deleteColumn: deleteColumn,
+    toHashtagArray: toHashtagArray,
     getPublications: getPublications,
     getPublicationsForAdmin: getPublicationsForAdmin,
     savePublication: savePublication,

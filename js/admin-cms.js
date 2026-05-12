@@ -1294,6 +1294,7 @@
       fecha: "",
       categoria: "Opinion",
       resumen: "",
+      hashtags: "",
       contenido: "",
       imagen: "",
       banner: "",
@@ -1325,6 +1326,7 @@
         '<div class="admin-field"><label for="column-image">Imagen</label><input id="column-image" class="form-control" value="' + escapeHtml(selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
         '<div class="admin-field"><label for="column-banner">Banner</label><input id="column-banner" class="form-control" value="' + escapeHtml(selected.banner || selected.imagen) + '" placeholder="URL de imagen o data:image/..."><input id="column-banner-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
         '<div class="admin-field"><label for="column-summary">Resumen</label><textarea id="column-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
+        '<div class="admin-field"><label for="column-hashtags">Hashtags</label><textarea id="column-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(selected.hashtags || "") + '</textarea><small class="text-muted">Escribe etiquetas separadas por comas o saltos de linea. Se mostraran como hashtags en la columna publica.</small></div>' +
         '<div class="admin-field"><label for="column-content">Contenido</label><textarea id="column-content" class="form-control admin-code-textarea">' + escapeHtml(selected.contenido) + '</textarea></div>' +
         '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar columna</button>' + (selected.id ? '<button id="delete-column" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
         '<p id="column-feedback" class="admin-feedback" aria-live="polite"></p>' +
@@ -1355,6 +1357,7 @@
             imagen: document.getElementById("column-image").value,
             banner: document.getElementById("column-banner").value,
             resumen: document.getElementById("column-summary").value,
+            hashtags: document.getElementById("column-hashtags").value,
             contenido: document.getElementById("column-content").value,
             visible: document.getElementById("column-visible").checked
           });

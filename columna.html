@@ -56,12 +56,21 @@
     </header>
 
 
-    <!-- HERO de la columna (renderizado por JS) -->
-    <div class="site-blocks-cover overlay inner-page-cover" id="col-hero-bg" style="background-image: url(images/hero_bg_3.jpg);" data-aos="fade" data-stellar-background-ratio="0.5" data-cms-section="hero">
+    <!-- PORTADA editorial de la columna -->
+    <div class="site-section column-article-hero" data-cms-section="hero">
       <div class="container">
-        <div class="row align-items-center justify-content-center text-center">
-          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400" id="col-cover">
-            <!-- Renderizado por JS -->
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8" data-aos="fade-up" data-aos-delay="250">
+            <div class="column-article-hero__inner">
+              <div class="column-article-hero__tag">Columna</div>
+              <h1 id="col-title" class="column-article-hero__title"></h1>
+              <p id="col-summary" class="column-article-hero__summary"></p>
+              <div id="col-hashtags" class="column-article-hero__hashtags"></div>
+              <p id="col-meta" class="column-article-hero__meta"></p>
+              <figure class="column-article-hero__banner">
+                <img id="col-banner-image" src="images/col01_img.jpg" alt="" class="img-fluid">
+              </figure>
+            </div>
           </div>
         </div>
       </div>
@@ -166,14 +175,33 @@
       // TÃ­tulo de la pÃ¡gina
       document.title = col.titulo + ' â€” EstaciÃ³n Rural';
 
-      // Hero: usar banner de la columna como fondo
-      document.getElementById('col-hero-bg').style.backgroundImage = "url('" + col.banner + "')";
-      document.getElementById('col-cover').innerHTML =
-        '<h2 class="text-white font-weight-light mb-2 display-4">' + col.titulo + '</h2>' +
-        '<p class="text-white"><small>Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> ' + col.lectura + ' lectura <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span></small></p>';
+      // Portada editorial
+      document.getElementById('col-title').textContent = col.titulo;
+      document.getElementById('col-summary').textContent = col.resumen || '';
+      document.getElementById('col-meta').innerHTML =
+        'Por ' + col.autor + ' <span class="sep">/</span> ' + col.fecha + ' <span class="sep">/</span> <span id="col-views" class="column-view-count">' + formatViews(col.vistas || 0) + '</span>';
+
+      var bannerImage = document.getElementById('col-banner-image');
+      if (bannerImage) {
+        bannerImage.src = col.banner || col.imagen || 'images/col01_img.jpg';
+        bannerImage.alt = col.titulo || 'Banner de la columna';
+      }
+
+      var hashtagsNode = document.getElementById('col-hashtags');
+      if (hashtagsNode) {
+        var hashtags = Array.isArray(col.hashtags) ? col.hashtags : [];
+        hashtagsNode.textContent = '';
+        hashtags.forEach(function(tag) {
+          var chip = document.createElement('span');
+          chip.className = 'column-article-hero__hashtag';
+          chip.textContent = tag;
+          hashtagsNode.appendChild(chip);
+        });
+        hashtagsNode.style.display = hashtags.length ? '' : 'none';
+      }
 
       // Contenido de la columna
-      var html = '<blockquote class="column-summary mb-5"><p class="mb-0">' + col.resumen + '</p></blockquote>';
+      var html = '';
       col.contenido.forEach(function(parrafo) {
         html += '<p>' + parrafo + '</p>';
       });
