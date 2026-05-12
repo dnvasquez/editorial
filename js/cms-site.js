@@ -142,11 +142,13 @@
   function syncSnapshotToServer(snapshot, silent) {
     if (!snapshot || typeof snapshot !== "object") return Promise.resolve();
     if (typeof window.fetch !== "function") return Promise.resolve();
+    if (window.location && window.location.protocol === "file:") {
+      return Promise.reject(new Error("El CMS no puede sincronizar desde archivos locales. Abre el sitio desde Netlify o Netlify Dev."));
+    }
 
     var request = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "PUT",
       credentials: "include",
-      keepalive: true,
       headers: {
         "Content-Type": "application/json"
       },
