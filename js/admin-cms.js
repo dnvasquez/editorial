@@ -1071,32 +1071,23 @@
     document.getElementById("admin-columnistas-content-form").addEventListener("submit", function (event) {
       event.preventDefault();
       var feedback = document.getElementById("columnistas-content-feedback");
+      var selectedIndex = Number(document.getElementById("admin-columnistas-content-form").getAttribute("data-selected-columnista-index") || 0);
       var next = readColumnistasContentDraft({
         title: content.title || "Nuestros Columnistas",
         items: items
       });
-      window.EditorialCmsSite.savePageContentSection("columnistas", next);
+      var saved = window.EditorialCmsSite.savePageContentSection("columnistas", next);
       if (window.EditorialCmsSite && typeof window.EditorialCmsSite.hydrateGlobals === "function") {
         window.EditorialCmsSite.hydrateGlobals();
       }
       if (feedback) {
-        feedback.textContent = "Guardando contenido...";
+        feedback.textContent = "Contenido guardado. Sincronizando en segundo plano...";
       }
 
-      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.syncStateNow === "function") {
-        window.EditorialCmsSite.syncStateNow().then(function () {
-          if (feedback) {
-            feedback.textContent = "Contenido guardado y sincronizado. La pagina Columnas reflejara estos cambios.";
-          }
-        }).catch(function (error) {
-          if (feedback) {
-            feedback.textContent = error && error.message
-              ? "Contenido guardado localmente, pero no se pudo sincronizar al servidor: " + error.message
-              : "Contenido guardado localmente, pero no se pudo sincronizar al servidor.";
-          }
-        });
-      } else if (feedback) {
-        feedback.textContent = "Contenido guardado. La pagina Columnas reflejara estos cambios.";
+      if (saved) {
+        window.setTimeout(function () {
+          renderColumnistasContentEditor(selectedIndex, saved);
+        }, 0);
       }
     });
 

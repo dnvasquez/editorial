@@ -85,7 +85,6 @@
             <div class="author-page__section-head">
               <div>
                 <div class="author-page__section-kicker">Repositorio</div>
-                <h2 id="author-columns-title" class="author-page__section-title">Columnas del autor</h2>
               </div>
               <p class="author-page__section-text">Todas las columnas publicadas por este autor aparecen ordenadas para lectura y consulta.</p>
             </div>
@@ -199,7 +198,6 @@
           document.getElementById('author-bio').textContent = 'No pudimos encontrar la ficha editorial asociada a este enlace.';
           document.getElementById('author-count').textContent = '0';
           document.getElementById('author-latest').textContent = '-';
-          document.getElementById('author-columns-title').textContent = 'Columnas del autor';
           renderSocials(document.getElementById('author-socials'), null);
 
           var listNode = document.getElementById('author-columns-list');
@@ -211,6 +209,12 @@
         }
 
         function renderColumnCard(column, index) {
+          var hashtags = Array.isArray(column.hashtags) ? column.hashtags : [];
+          var hashtagsHtml = hashtags.length
+            ? hashtags.map(function (tag) {
+                return '<span class="author-column-card__hashtag">' + escapeHtml(tag) + '</span>';
+              }).join('')
+            : '<span class="author-column-card__hashtag author-column-card__hashtag--empty">Sin hashtags</span>';
           return (
             '<article class="author-column-card">' +
             '<a href="columna.html?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.banner || column.imagen || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir columna') + '"></a>' +
@@ -225,7 +229,7 @@
             '<h3 class="author-column-card__title"><a href="columna.html?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
             '<p class="author-column-card__excerpt">' + escapeHtml(column.resumen || '') + '</p>' +
             '<div class="author-column-card__footer">' +
-            '<a href="' + (authorPageUrl || '#') + '" class="author-column-card__author">' + escapeHtml(column.autor || '') + '</a>' +
+            '<div class="author-column-card__hashtags" aria-label="Hashtags de la columna">' + hashtagsHtml + '</div>' +
             '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Leer columna</a>' +
             '</div>' +
             '</div>' +
@@ -245,8 +249,6 @@
           return;
         }
 
-        var authorPageUrl = getAuthorUrl(author);
-
         var authorColumns = catalog.filter(function (column) {
           var refs = [
             String(column.autorId || ''),
@@ -263,7 +265,6 @@
         document.getElementById('author-bio').textContent = author.bio || '';
         document.getElementById('author-count').textContent = String(authorColumns.length);
         document.getElementById('author-latest').textContent = authorColumns[0] ? (authorColumns[0].fecha || '-') : '-';
-        document.getElementById('author-columns-title').textContent = author.name ? ('Columnas de ' + author.name) : 'Columnas del autor';
         renderSocials(document.getElementById('author-socials'), author);
 
         var listNode = document.getElementById('author-columns-list');

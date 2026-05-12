@@ -497,13 +497,26 @@ footer[data-cms-section="footer"] {
   justify-content: space-between;
   gap: 1rem; }
 
-.author-column-card__author {
+.author-column-card__hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  min-width: 0; }
+
+.author-column-card__hashtag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #f4f6f1;
   color: #1f6b4e;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  text-decoration: none !important; }
-  .author-column-card__author:hover {
-    color: #f23a2e; }
+  line-height: 1;
+  white-space: nowrap; }
+
+.author-column-card__hashtag--empty {
+  color: #6c757d; }
 
 .author-page__empty {
   padding: 2.5rem 1.5rem;
