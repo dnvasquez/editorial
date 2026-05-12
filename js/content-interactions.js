@@ -102,13 +102,17 @@
   }
 
   function buildShareUrl(type, shareUrl, shareText, networks, previewUrl) {
-    var targetUrl = previewUrl || shareUrl;
+    var targetUrl = shareUrl;
+    var previewTarget = previewUrl || shareUrl;
     try {
       targetUrl = new URL(targetUrl, shareUrl).toString();
+      previewTarget = new URL(previewTarget, shareUrl).toString();
     } catch (error) {
-      targetUrl = previewUrl || shareUrl;
+      targetUrl = shareUrl;
+      previewTarget = previewUrl || shareUrl;
     }
     var encodedUrl = encodeURIComponent(targetUrl);
+    var encodedPreviewUrl = encodeURIComponent(previewTarget);
     var encodedText = encodeURIComponent(shareText + " " + targetUrl);
 
     if (type === "whatsapp") {
@@ -121,7 +125,7 @@
       return "https://www.facebook.com/sharer/sharer.php?u=" + encodedUrl;
     }
     if (type === "linkedin") {
-      return "https://www.linkedin.com/sharing/share-offsite/?url=" + encodedUrl;
+      return "https://www.linkedin.com/sharing/share-offsite/?url=" + encodedPreviewUrl;
     }
     if (type === "native") {
       return targetUrl;

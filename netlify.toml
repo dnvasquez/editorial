@@ -1,0 +1,18 @@
+[build]
+  functions = "netlify/functions"
+
+[[edge_functions]]
+  function = "column-og"
+  path = "/columna.html"
+
+[[edge_functions]]
+  function = "admin-guard"
+  path = "/admin-columnas.html"
+
+[[edge_functions]]
+  function = "admin-guard"
+  path = "/admin-seccion.html"
+
+[[edge_functions]]
+  function = "admin-guard"
+  path = "/admin-login.html"
