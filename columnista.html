@@ -32,10 +32,10 @@
       <header class="site-navbar py-4 absolute transparent" role="banner" data-cms-section="header">
         <div class="container">
           <div class="row align-items-center">
-            <div class="col-3" data-aos="fade-down">
+            <div class="col-3">
               <h1><a href="index.html" class="text-white h2">Estaci&oacute;n Rural</a></h1>
             </div>
-            <div class="col-9" data-aos="fade-down">
+            <div class="col-9">
               <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
                 <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
                 <ul class="site-menu js-clone-nav d-none">
@@ -55,7 +55,7 @@
       <main class="author-page__main">
         <section class="site-section author-page__hero">
           <div class="container">
-            <div class="author-page__profile" data-aos="fade-up">
+            <div class="author-page__profile">
               <figure class="author-page__avatar">
                 <img id="author-photo" src="images/person_1.jpg" alt="" class="img-fluid">
               </figure>
@@ -82,7 +82,7 @@
 
         <section class="site-section author-page__archive">
           <div class="container">
-            <div class="author-page__section-head" data-aos="fade-up">
+            <div class="author-page__section-head">
               <div>
                 <div class="author-page__section-kicker">Repositorio</div>
                 <h2 id="author-columns-title" class="author-page__section-title">Columnas del autor</h2>
@@ -156,10 +156,6 @@
           return total + ' vista' + (total === 1 ? '' : 's');
         }
 
-        function getAuthorRef(column) {
-          return String((column && (column.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(column.autor || '') : ''))) || '');
-        }
-
         function getAuthorUrl(author) {
           if (!author) return '';
           if (window.EditorialCmsSite && typeof window.EditorialCmsSite.getColumnistaPageUrl === 'function') {
@@ -195,16 +191,15 @@
         }
 
         function renderColumnCard(column, index) {
-          var delay = index > 0 ? ' data-aos-delay="' + (index * 70) + '"' : '';
           return (
-            '<article class="author-column-card" data-aos="fade-up"' + delay + '>' +
+            '<article class="author-column-card">' +
             '<a href="columna.html?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.banner || column.imagen || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir columna') + '"></a>' +
             '<div class="author-column-card__body">' +
             '<div class="author-column-card__meta">' +
             '<span>' + escapeHtml(column.fecha || '') + '</span>' +
-            '<span>•</span>' +
+            '<span>/</span>' +
             '<span>' + escapeHtml(column.lectura || 'Lectura breve') + '</span>' +
-            '<span>•</span>' +
+            '<span>/</span>' +
             '<span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : formatViews(column.vistas || 0)) + '</span>' +
             '</div>' +
             '<h3 class="author-column-card__title"><a href="columna.html?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
@@ -219,13 +214,14 @@
         }
 
         var params = new URLSearchParams(window.location.search);
+        var catalog = Array.isArray(window.COLUMNAS) ? window.COLUMNAS : [];
         var authorRef = params.get('id') || params.get('autor') || '';
         var author = window.EditorialCmsSite && typeof window.EditorialCmsSite.getColumnistaById === 'function'
           ? window.EditorialCmsSite.getColumnistaById(authorRef)
           : null;
 
-        if (!author && COLUMNAS.length) {
-          var firstColumn = COLUMNAS[0];
+        if (!author && catalog.length) {
+          var firstColumn = catalog[0];
           author = {
             id: firstColumn.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(firstColumn.autor || '') : ''),
             name: firstColumn.autor || 'Columnista',
@@ -247,7 +243,7 @@
 
         var authorPageUrl = getAuthorUrl(author);
 
-        var authorColumns = COLUMNAS.filter(function (column) {
+        var authorColumns = catalog.filter(function (column) {
           var refs = [
             String(column.autorId || ''),
             window.EditorialCmsSite ? window.EditorialCmsSite.slugify(column.autor || '') : ''

@@ -280,6 +280,20 @@ footer[data-cms-section="footer"] {
 .author-page {
   background: #fcfcf6; }
 
+.author-page .site-navbar.absolute {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px); }
+
+.author-page .site-navbar h1 a,
+.author-page .site-navbar .site-navigation .site-menu > li > a,
+.author-page .site-navbar .site-menu-toggle {
+  color: #1f1f1f !important; }
+
+.author-page .site-navbar .site-navigation .site-menu > li > a:hover {
+  color: #f23a2e !important; }
+
 .author-page__hero {
   padding-top: 3.25rem;
   padding-bottom: 1.75rem;

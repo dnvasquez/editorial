@@ -70,6 +70,63 @@
     return '<a href="' + href + '" class="admin-sidebar-link' + (active ? ' is-active' : '') + '">' + label + "</a>";
   }
 
+  function getAdminRoute(view, id) {
+    var url = "admin-columnas.html";
+    var params = [];
+    if (view) {
+      params.push("view=" + encodeURIComponent(view));
+    }
+    if (id) {
+      params.push("id=" + encodeURIComponent(id));
+    }
+    if (params.length) {
+      url += "?" + params.join("&");
+    }
+    return url;
+  }
+
+  function routeAdmin(view, id, replaceState) {
+    var url = getAdminRoute(view, id);
+    if (window.history && window.history[replaceState ? "replaceState" : "pushState"]) {
+      window.history[replaceState ? "replaceState" : "pushState"]({ view: view, id: id }, "", url);
+    }
+    renderDashboardRoute(view, id);
+  }
+
+  function parseAdminRoute() {
+    var params = new URLSearchParams(window.location.search);
+    return {
+      view: params.get("view") || "dashboard",
+      id: params.get("id") || ""
+    };
+  }
+
+  function renderDashboardRoute(view, id) {
+    renderSidebar(view, id);
+
+    if (view === "page") {
+      renderPageEditor(id || "index");
+    } else if (view === "invitados-content") {
+      renderGuestsContentEditor();
+    } else if (view === "columnistas-content") {
+      renderColumnistasContentEditor();
+    } else if (view === "about-content") {
+      renderAboutContentEditor();
+    } else if (view === "contact-content") {
+      renderContactContentEditor();
+    } else if (view === "programs" || view === "program") {
+      renderPrograms(view === "program" ? id : "");
+    } else if (view === "episodes" || view === "episode") {
+      renderEpisodes(view === "episode" ? id : "");
+    } else if (view === "columns" || view === "column") {
+      renderColumns(view === "column" ? id : "");
+    } else if (view === "publications" || view === "publication") {
+      renderPublications(view === "publication" ? id : "");
+    } else {
+      renderDashboard();
+    }
+  }
+
   function escapeHtml(value) {
     return String(value || "")
       .replace(/&/g, "&amp;")
@@ -1165,11 +1222,11 @@
       bind: function () {
         Array.prototype.forEach.call(document.querySelectorAll("#program-list .admin-entity-row"), function (button) {
           button.addEventListener("click", function () {
-            window.location.href = "admin-columnas.html?view=program&id=" + encodeURIComponent(button.getAttribute("data-id"));
+            routeAdmin("program", button.getAttribute("data-id"));
           });
         });
         document.getElementById("add-program").addEventListener("click", function () {
-          window.location.href = "admin-columnas.html?view=program";
+          routeAdmin("program", "");
         });
         document.getElementById("program-form").addEventListener("submit", function (event) {
           event.preventDefault();
@@ -1181,14 +1238,14 @@
             descripcion: document.getElementById("program-description").value,
             visible: document.getElementById("program-visible").checked
           });
-          window.location.href = "admin-columnas.html?view=program&id=" + encodeURIComponent(saved.id);
+          routeAdmin("program", saved.id, true);
         });
         var deleteButton = document.getElementById("delete-program");
         if (deleteButton) {
           deleteButton.addEventListener("click", function () {
             if (!window.confirm("Se eliminara este programa del sitio. Continuar?")) return;
             window.EditorialCmsSite.deleteProgram(selected.id);
-            window.location.href = "admin-columnas.html?view=programs";
+            routeAdmin("programs", "", true);
           });
         }
       }
@@ -1248,11 +1305,11 @@
       bind: function () {
         Array.prototype.forEach.call(document.querySelectorAll("#episode-list .admin-entity-row"), function (button) {
           button.addEventListener("click", function () {
-            window.location.href = "admin-columnas.html?view=episode&id=" + encodeURIComponent(button.getAttribute("data-id"));
+            routeAdmin("episode", button.getAttribute("data-id"));
           });
         });
         document.getElementById("add-episode").addEventListener("click", function () {
-          window.location.href = "admin-columnas.html?view=episode";
+          routeAdmin("episode", "");
         });
         document.getElementById("episode-form").addEventListener("submit", function (event) {
           event.preventDefault();
@@ -1270,14 +1327,14 @@
             transcripcion: document.getElementById("episode-transcript").value,
             visible: document.getElementById("episode-visible").checked
           });
-          window.location.href = "admin-columnas.html?view=episode&id=" + encodeURIComponent(saved.id);
+          routeAdmin("episode", saved.id, true);
         });
         var deleteButton = document.getElementById("delete-episode");
         if (deleteButton) {
           deleteButton.addEventListener("click", function () {
             if (!window.confirm("Se eliminara este episodio del sitio. Continuar?")) return;
             window.EditorialCmsSite.deleteEpisode(selected.id);
-            window.location.href = "admin-columnas.html?view=episodes";
+            routeAdmin("episodes", "", true);
           });
         }
       }
@@ -1334,11 +1391,11 @@
       bind: function () {
         Array.prototype.forEach.call(document.querySelectorAll("#column-list .admin-entity-row"), function (button) {
           button.addEventListener("click", function () {
-            window.location.href = "admin-columnas.html?view=column&id=" + encodeURIComponent(button.getAttribute("data-id"));
+            routeAdmin("column", button.getAttribute("data-id"));
           });
         });
         document.getElementById("add-column").addEventListener("click", function () {
-          window.location.href = "admin-columnas.html?view=column";
+          routeAdmin("column", "");
         });
         bindImageUpload("column-image-file", "column-image", "column-feedback", "La imagen");
         bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
@@ -1361,13 +1418,12 @@
             contenido: document.getElementById("column-content").value,
             visible: document.getElementById("column-visible").checked
           });
-          var redirectUrl = "admin-columnas.html?view=column&id=" + encodeURIComponent(saved.id);
           var feedback = document.getElementById("column-feedback");
           if (feedback) {
             feedback.textContent = "Columna guardada. Actualizando la vista...";
           }
           window.setTimeout(function () {
-            window.location.href = redirectUrl;
+            routeAdmin("column", saved.id, true);
           }, 250);
         });
         var deleteButton = document.getElementById("delete-column");
@@ -1375,7 +1431,7 @@
           deleteButton.addEventListener("click", function () {
             if (!window.confirm("Se eliminara esta columna del sitio. Continuar?")) return;
             window.EditorialCmsSite.deleteColumn(selected.id);
-            window.location.href = "admin-columnas.html?view=columns";
+            routeAdmin("columns", "", true);
           });
         }
       }
@@ -1425,11 +1481,11 @@
       bind: function () {
         Array.prototype.forEach.call(document.querySelectorAll("#publication-list .admin-entity-row"), function (button) {
           button.addEventListener("click", function () {
-            window.location.href = "admin-columnas.html?view=publication&id=" + encodeURIComponent(button.getAttribute("data-id"));
+            routeAdmin("publication", button.getAttribute("data-id"));
           });
         });
         document.getElementById("add-publication").addEventListener("click", function () {
-          window.location.href = "admin-columnas.html?view=publication";
+          routeAdmin("publication", "");
         });
         document.getElementById("publication-form").addEventListener("submit", function (event) {
           event.preventDefault();
@@ -1444,14 +1500,14 @@
             enlace: document.getElementById("publication-link").value,
             visible: document.getElementById("publication-visible").checked
           });
-          window.location.href = "admin-columnas.html?view=publication&id=" + encodeURIComponent(saved.id);
+          routeAdmin("publication", saved.id, true);
         });
         var deleteButton = document.getElementById("delete-publication");
         if (deleteButton) {
           deleteButton.addEventListener("click", function () {
             if (!window.confirm("Se eliminara esta publicacion del sitio. Continuar?")) return;
             window.EditorialCmsSite.deletePublication(selected.id);
-            window.location.href = "admin-columnas.html?view=publications";
+            routeAdmin("publications", "", true);
           });
         }
       }
@@ -1461,32 +1517,29 @@
   function bindDashboard() {
     if (!document.getElementById("admin-main-content") || !window.EditorialCmsSite) return;
 
-    var params = new URLSearchParams(window.location.search);
-    var view = params.get("view") || "dashboard";
-    var id = params.get("id") || "";
-    renderSidebar(view, id);
+    var sidebar = document.getElementById("admin-cms-nav");
 
-    if (view === "page") {
-      renderPageEditor(id || "index");
-    } else if (view === "invitados-content") {
-      renderGuestsContentEditor();
-    } else if (view === "columnistas-content") {
-      renderColumnistasContentEditor();
-    } else if (view === "about-content") {
-      renderAboutContentEditor();
-    } else if (view === "contact-content") {
-      renderContactContentEditor();
-    } else if (view === "programs" || view === "program") {
-      renderPrograms(view === "program" ? id : "");
-    } else if (view === "episodes" || view === "episode") {
-      renderEpisodes(view === "episode" ? id : "");
-    } else if (view === "columns" || view === "column") {
-      renderColumns(view === "column" ? id : "");
-    } else if (view === "publications" || view === "publication") {
-      renderPublications(view === "publication" ? id : "");
-    } else {
-      renderDashboard();
+    if (sidebar && !sidebar.getAttribute("data-admin-nav-bound")) {
+      sidebar.setAttribute("data-admin-nav-bound", "true");
+      sidebar.addEventListener("click", function (event) {
+        var link = event.target.closest("a.admin-sidebar-link");
+        if (!link) return;
+        var href = link.getAttribute("href") || "";
+        if (!/^admin-columnas\.html(\?|$)/.test(href)) return;
+        event.preventDefault();
+
+        var routeUrl = new URL(href, window.location.href);
+        routeAdmin(routeUrl.searchParams.get("view") || "dashboard", routeUrl.searchParams.get("id") || "");
+      });
     }
+
+    window.addEventListener("popstate", function () {
+      var route = parseAdminRoute();
+      renderDashboardRoute(route.view, route.id);
+    });
+
+    var initialRoute = parseAdminRoute();
+    renderDashboardRoute(initialRoute.view, initialRoute.id);
 
     document.getElementById("admin-logout").addEventListener("click", function () {
       fetch(LOGOUT_ENDPOINT, { method: "POST", credentials: "include" })
