@@ -527,7 +527,7 @@
   "editorialCmsColumnViews": {
     "col-1777480207649": 6,
     "col03": 7,
-    "col-1777552684289": 30,
+    "col-1777552684289": 31,
     "col02": 1
   },
   "editorialCmsComments": {},
@@ -538,7 +538,7 @@
       "heroSubtitle": "",
       "heroImage": "images/hero_bg_1.jpg",
       "featuredContentType": "column",
-      "featuredContentId": "col03",
+      "featuredContentId": "col-1777552684289",
       "featuredEpisodeId": "",
       "manualHeroTitle": "",
       "manualHeroMeta": "",
@@ -607,7 +607,7 @@
           "twitter": "",
           "instagram": "",
           "facebook": "",
-          "linkedin": ""
+          "linkedin": "https://www.linkedin.com/in/davidvasquezstuardo"
         }
       ]
     },
