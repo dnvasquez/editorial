@@ -1207,14 +1207,14 @@
     document.body.classList.remove("admin-modal-open");
   }
 
-  function openAdminModal(html, className) {
+  function openAdminModal(html, className, label) {
     closeAdminModal();
 
     var overlay = document.createElement("div");
     overlay.id = "admin-modal-overlay";
     overlay.className = "admin-modal-overlay";
     overlay.innerHTML =
-      '<div class="admin-modal ' + (className || "") + '" role="dialog" aria-modal="true" aria-label="Crear columna">' +
+      '<div class="admin-modal ' + (className || "") + '" role="dialog" aria-modal="true" aria-label="' + escapeHtml(label || "Dialogo") + '">' +
       '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">×</button>' +
       html +
       '</div>';
@@ -1263,70 +1263,78 @@
       '</div>';
   }
 
-  function openColumnCreateModal() {
+  function openColumnEditorModal(column) {
+    var isNew = !column || !column.id;
+    var selected = column || {
+      id: "",
+      titulo: "",
+      autor: "",
+      autorId: "",
+      fecha: "",
+      categoria: "Opinion",
+      resumen: "",
+      hashtags: "",
+      contenido: "",
+      imagen: "",
+      banner: "",
+      estado: "borrador",
+      visible: true
+    };
+    var prefix = "column-modal";
+
     var html =
       '<div class="admin-modal-head">' +
-      '<div><span class="admin-kicker">Biblioteca</span><h3>Nueva columna</h3><p>Completa los datos esenciales para publicar una nueva pieza.</p></div>' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva columna" : "Editar columna") + '</h3><p>' + (isNew ? "Completa los datos esenciales para publicar una nueva pieza." : "Revisa la columna, ajusta sus campos o elimínala si es necesario.") + '</p></div>' +
       '</div>' +
-      '<form id="column-create-form" class="admin-form-stack" novalidate>' +
-      buildColumnFields("new-column", {
-        titulo: "",
-        autor: "",
-        autorId: "",
-        fecha: "",
-        categoria: "Opinion",
-        resumen: "",
-        hashtags: "",
-        contenido: "",
-        imagen: "",
-        banner: "",
-        estado: "borrador",
-        visible: true
-      }) +
+      '<form id="' + prefix + '-form" class="admin-form-stack" novalidate>' +
+      buildColumnFields(prefix, selected) +
       '<div class="admin-actions admin-modal-actions">' +
       '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
-      '<button type="submit" class="btn btn-primary">Crear columna</button>' +
+      '<button type="submit" class="btn btn-primary">' + (isNew ? "Crear columna" : "Guardar cambios") + '</button>' +
+      (isNew ? "" : '<button id="' + prefix + '-delete" type="button" class="btn btn-outline-dark">Eliminar</button>') +
       '</div>' +
-      '<p id="new-column-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '<p id="' + prefix + '-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form>';
 
-    var modal = openAdminModal(html, "admin-modal-column");
+    var modal = openAdminModal(html, "admin-modal-column", isNew ? "Nueva columna" : "Editar columna");
     if (!modal) return;
 
-    var form = modal.querySelector("#column-create-form");
+    var form = modal.querySelector("#" + prefix + "-form");
     if (!form) return;
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      var authorSelect = modal.querySelector("#new-column-author");
-      var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
-      var feedback = modal.querySelector("#new-column-feedback");
-      var saved = window.EditorialCmsSite.saveColumn({
-        id: "",
-        titulo: modal.querySelector("#new-column-title").value,
-        autorId: authorSelect ? authorSelect.value : "",
-        autor: authorOption ? authorOption.textContent.replace(/\s*-\s*.*$/, "") : "",
-        fecha: modal.querySelector("#new-column-date").value,
-        categoria: modal.querySelector("#new-column-category").value,
-        estado: modal.querySelector("#new-column-status").value,
-        imagen: modal.querySelector("#new-column-image").value,
-        banner: modal.querySelector("#new-column-banner").value,
-        resumen: modal.querySelector("#new-column-summary").value,
-        hashtags: modal.querySelector("#new-column-hashtags").value,
-        contenido: modal.querySelector("#new-column-content").value,
-        visible: modal.querySelector("#new-column-visible").checked
-      });
+      var feedback = modal.querySelector("#" + prefix + "-feedback");
+      var saved = window.EditorialCmsSite.saveColumn(readColumnModalDraft(modal, prefix, selected));
 
       if (feedback) {
-        feedback.textContent = "Columna creada. Abriendo el editor...";
+        feedback.textContent = isNew ? "Columna creada. Actualizando la tabla..." : "Columna actualizada. Actualizando la tabla...";
       }
 
       closeAdminModal();
-      routeAdmin("column", saved.id, true);
+      renderColumns(saved.id);
     });
 
-    bindImageUpload("new-column-image-file", "new-column-image", "new-column-feedback", "La imagen");
-    bindImageUpload("new-column-banner-file", "new-column-banner", "new-column-feedback", "El banner");
+    var deleteButton = modal.querySelector("#" + prefix + "-delete");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", function () {
+        if (!window.confirm("Se eliminara esta columna del sitio. Continuar?")) return;
+        window.EditorialCmsSite.deleteColumn(selected.id);
+        closeAdminModal();
+        renderColumns("");
+      });
+    }
+
+    bindImageUpload(prefix + "-image-file", prefix + "-image", prefix + "-feedback", "La imagen");
+    bindImageUpload(prefix + "-banner-file", prefix + "-banner", prefix + "-feedback", "El banner");
+  }
+
+  function openColumnCreateModal() {
+    openColumnEditorModal(null);
+  }
+
+  function openColumnEditModal(column) {
+    openColumnEditorModal(column);
   }
 
   function renderPrograms(selectedId) {
@@ -1487,23 +1495,9 @@
 
   function renderColumns(selectedId) {
     var columns = window.EditorialCmsSite.getColumnsForAdmin();
-    var selected = findById(columns, selectedId) || {
-      id: "",
-      titulo: "",
-      autor: "",
-      autorId: "",
-      fecha: "",
-      categoria: "Opinion",
-      resumen: "",
-      hashtags: "",
-      contenido: "",
-      imagen: "",
-      banner: "",
-      estado: "borrador",
-      visible: true
-    };
+    var selected = findById(columns, selectedId) || null;
     var columnRowsHtml = columns.length ? columns.map(function (column) {
-      return '<button type="button" class="admin-column-row' + (selected.id === column.id ? ' is-editing' : '') + '" data-id="' + escapeHtml(column.id) + '">' +
+      return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(column.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(column.id) + '">' +
         '<div class="admin-column-main"><strong>' + escapeHtml(column.titulo) + '</strong><span>' + escapeHtml(column.resumen || "Sin resumen") + '</span></div>' +
         '<div class="admin-column-cell">' + escapeHtml(column.autor || "Autor/a") + '</div>' +
         '<div class="admin-column-cell">' + escapeHtml(column.fecha || "Sin fecha") + '</div>' +
@@ -1517,70 +1511,27 @@
       title: "Columnas",
       subtitle: "Administra piezas editoriales, borradores y columnas publicadas desde una sola biblioteca.",
       html:
-        '<section class="admin-library-layout admin-library-split">' +
+        '<section class="admin-library-layout">' +
         '<div class="admin-card admin-library-card">' +
         '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Columnas</h3></div><button id="add-column" type="button" class="btn btn-primary">Nueva columna</button></div>' +
-        '<div class="admin-library-meta"><span>' + columns.length + ' columnas</span><span>Selecciona una fila para editar</span></div>' +
+        '<div class="admin-library-meta"><span>' + columns.length + ' columnas</span><span>Haz clic en una fila para ver, editar o borrar</span></div>' +
         '<div class="admin-table-head admin-column-table-head">' +
         '<span>Titulo</span><span>Autor</span><span>Fecha</span><span>Estado</span><span></span>' +
         '</div>' +
-        '<div class="admin-column-list" id="column-list">' + columnRowsHtml + '</div></div>' +
-        '<div class="admin-card admin-editor-panel">' +
-        '<form id="column-form" class="admin-form-stack" novalidate>' +
-        '<input id="column-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
-        buildColumnFields("column", selected) +
-        '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar columna</button>' + (selected.id ? '<button id="delete-column" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
-        '<p id="column-feedback" class="admin-feedback" aria-live="polite"></p>' +
-        '</form></div></section>',
+        '<div class="admin-column-list" id="column-list">' + columnRowsHtml + '</div>' +
+        '</div></section>',
       bind: function () {
         Array.prototype.forEach.call(document.querySelectorAll("#column-list .admin-column-row"), function (button) {
           button.addEventListener("click", function () {
-            routeAdmin("column", button.getAttribute("data-id"));
+            var column = findById(columns, button.getAttribute("data-id"));
+            openColumnEditModal(column);
           });
         });
         document.getElementById("add-column").addEventListener("click", function () {
           openColumnCreateModal();
         });
-        document.getElementById("column-form").addEventListener("submit", function (event) {
-          event.preventDefault();
-          var authorSelect = document.getElementById("column-author");
-          var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
-          var saved = window.EditorialCmsSite.saveColumn({
-            id: document.getElementById("column-id").value,
-            titulo: document.getElementById("column-title").value,
-            autorId: authorSelect ? authorSelect.value : "",
-            autor: authorOption ? authorOption.textContent.replace(/\s*-\s*.*$/, "") : "",
-            fecha: document.getElementById("column-date").value,
-            categoria: document.getElementById("column-category").value,
-            estado: document.getElementById("column-status").value,
-            imagen: document.getElementById("column-image").value,
-            banner: document.getElementById("column-banner").value,
-            resumen: document.getElementById("column-summary").value,
-            hashtags: document.getElementById("column-hashtags").value,
-            contenido: document.getElementById("column-content").value,
-            visible: document.getElementById("column-visible").checked
-          });
-          var feedback = document.getElementById("column-feedback");
-          if (feedback) {
-            feedback.textContent = "Columna guardada. Actualizando la vista...";
-          }
-          window.setTimeout(function () {
-            routeAdmin("column", saved.id, true);
-          }, 250);
-        });
-        var deleteButton = document.getElementById("delete-column");
-        if (deleteButton) {
-          deleteButton.addEventListener("click", function () {
-            if (!window.confirm("Se eliminara esta columna del sitio. Continuar?")) return;
-            window.EditorialCmsSite.deleteColumn(selected.id);
-            routeAdmin("columns", "", true);
-          });
-        }
       }
     });
-
-    bindImageUpload("column-image-file", "column-image", "column-feedback", "La imagen");
-    bindImageUpload("column-banner-file", "column-banner", "column-feedback", "El banner");
   }
 
   function renderPublications(selectedId) {
