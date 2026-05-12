@@ -1498,7 +1498,7 @@
     var selected = findById(columns, selectedId) || null;
     var columnRowsHtml = columns.length ? columns.map(function (column) {
       return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(column.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(column.id) + '">' +
-        '<div class="admin-column-main"><strong>' + escapeHtml(column.titulo) + '</strong><span>' + escapeHtml(column.resumen || "Sin resumen") + '</span></div>' +
+        '<div class="admin-column-main"><strong>' + escapeHtml(column.titulo) + '</strong></div>' +
         '<div class="admin-column-cell">' + escapeHtml(column.autor || "Autor/a") + '</div>' +
         '<div class="admin-column-cell">' + escapeHtml(column.fecha || "Sin fecha") + '</div>' +
         '<div><span class="admin-column-status' + (column.estado === "borrador" ? ' is-borrador' : '') + '">' + escapeHtml(column.estado || "borrador") + '</span></div>' +
