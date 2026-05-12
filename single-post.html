@@ -77,7 +77,9 @@
 
       <div class="row justify-content-center">
         <div class="col-md-7">
-          <div id="ep-transcript" style="height: 400px; overflow-y: scroll; padding-right: 15px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 20px;">
+          <details class="transcript-details">
+            <summary class="transcript-summary">Ver transcripción completa</summary>
+            <div id="ep-transcript" class="transcript-body">
           <p><strong class="font-weight-bold">Locutor 1:</strong> Bueno, eh, a ver, Â¿de quÃ© sirve limpiar un rincÃ³n de la piscina si el resto del agua estÃ¡ sucia? O sea, uno puede, no sÃ©, frotar los azulejos de forma obsesiva, sacar con una red cada hoja de su pequeÃ±o cuadrante, pero el agua es al final del dÃ­a un fluido, todo se mezcla.</p>
           <p><strong class="font-weight-bold">Locutor 2:</strong> Claro. Las corrientes arrastran todo lo que hay en el fondo.</p>
           <p><strong class="font-weight-bold">Locutor 1:</strong> Exacto. Y en cuestiÃ³n de minutos ese gran esfuerzo individual se diluye en la inmensidad del problema. Y sin embargo, cuando intentamos proteger la naturaleza parece que actuamos constantemente como si la agricultura viviera en el vacÃ­o. Limpiamos nuestro propio metro cuadrado, ponemos una valla enorme y bÃ¡sicamente cerramos los ojos ante lo que pasa del otro lado.</p>
@@ -151,10 +153,21 @@
           <p><strong class="font-weight-bold">Locutor 1:</strong> Bueno, para ir cerrando y dejar a quienes nos escuchan con algo para masticar, iniciamos esta charla hablando de lo inÃºtil que es limpiar un solo rincÃ³n de la piscina. Y hoy entendemos que para purificar el agua de todo el ecosistema global estamos construyendo estas calculadoras gigantes. Pero si las plataformas globales que dictan quÃ© alimentos reciben el sello de sostenibles tienen vacÃ­os de datos tan inmensos en el sur global. Â¿QuiÃ©n estÃ¡ escribiendo realmente las reglas de la ecologÃ­a del futuro?</p>
           <p><strong class="font-weight-bold">Locutor 2:</strong> Es una pregunta crÃ­tica.</p>
           <p><strong class="font-weight-bold">Locutor 1:</strong> Â¿PodrÃ¡ la inteligencia artificial algÃºn dÃ­a llenar esos vacÃ­os biolÃ³gicos locales o estamos destinados a estandarizar y simplificar la naturaleza solo para que quepa ordenadamente en un software corporativo? Es un paisaje complejo el que late mÃ¡s allÃ¡ de la cerca y hay que seguir cuestionÃ¡ndolo.</p>
-          </div>
+            </div>
+          </details>
         </div>
       </div>
 
+    </div>
+
+    <div class="site-section" data-cms-section="interaccion-episodio">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-9 col-lg-7">
+            <div id="ep-engagement"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="site-section bg-light">
@@ -201,6 +214,7 @@
 
   <script src="js/episodes.js"></script>
   <script src="js/cms-site.js"></script>
+  <script src="js/content-interactions.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var params = new URLSearchParams(window.location.search);
@@ -231,6 +245,19 @@
         return '<p><strong class="font-weight-bold">' + line.locutor + ':</strong> ' + line.texto + '</p>';
       }).join('');
       document.getElementById('ep-transcript').innerHTML = transcriptHtml;
+
+      if (window.EditorialContentInteractions) {
+        window.EditorialContentInteractions.mountEngagement({
+          mountId: 'ep-engagement',
+          type: 'episode',
+          id: ep.id,
+          title: 'Comparte y comenta este episodio',
+          description: 'Cuéntanos qué te dejó este capítulo y compártelo con tu red.',
+          kicker: 'Podcast',
+          shareText: 'Escucha este episodio de Estación Rural:',
+          shareUrl: window.location.href.split('#')[0]
+        });
+      }
 
       // â”€â”€ Footer: Ãºltimos 3 episodios â”€â”€
       var footerEpHtml = '';

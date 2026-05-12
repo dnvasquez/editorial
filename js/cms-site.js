@@ -6,7 +6,8 @@
     episodes: "editorialCmsEpisodios",
     columns: "editorialCmsColumnas",
     publications: "editorialCmsPublicaciones",
-    columnViews: "editorialCmsColumnViews"
+    columnViews: "editorialCmsColumnViews",
+    comments: "editorialCmsComments"
   };
   var REMOTE_STATE_ENDPOINT = "/.netlify/functions/cms-state";
   var REMOTE_STATE_KEYS = [
@@ -15,6 +16,7 @@
     "editorialCmsColumnas",
     "editorialCmsPublicaciones",
     "editorialCmsColumnViews",
+    "editorialCmsComments",
     "editorialCmsPages",
     "editorialCmsPageContent",
     "editorialCmsSections",

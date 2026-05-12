@@ -84,6 +84,16 @@
       </div>
     </div>
 
+    <div class="site-section" data-cms-section="interaccion-columna">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-9 col-lg-7">
+            <div id="col-engagement"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <footer data-cms-section="footer">
       <div class="container">
@@ -126,6 +136,7 @@
 
   <script src="js/episodes.js"></script>
   <script src="js/cms-site.js"></script>
+  <script src="js/content-interactions.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       function formatViews(count) {
@@ -167,6 +178,19 @@
         html += '<p>' + parrafo + '</p>';
       });
       document.getElementById('col-contenido').innerHTML = html;
+
+      if (window.EditorialContentInteractions) {
+        window.EditorialContentInteractions.mountEngagement({
+          mountId: 'col-engagement',
+          type: 'column',
+          id: col.id,
+          title: 'Comparte y comenta esta columna',
+          description: 'Abre la conversación sobre este texto y difúndelo en tus redes.',
+          kicker: 'Columna',
+          shareText: 'Lee esta columna de Estación Rural:',
+          shareUrl: window.location.href.split('#')[0]
+        });
+      }
 
       // Footer: Ãºltimas 3 columnas
       var footerHtml = '';
