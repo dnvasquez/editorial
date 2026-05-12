@@ -101,9 +101,10 @@
     });
   }
 
-  function buildShareUrl(type, shareUrl, shareText, networks) {
-    var encodedUrl = encodeURIComponent(shareUrl);
-    var encodedText = encodeURIComponent(shareText + " " + shareUrl);
+  function buildShareUrl(type, shareUrl, shareText, networks, previewUrl) {
+    var targetUrl = previewUrl || shareUrl;
+    var encodedUrl = encodeURIComponent(targetUrl);
+    var encodedText = encodeURIComponent(shareText + " " + targetUrl);
 
     if (type === "whatsapp") {
       return "https://wa.me/?text=" + encodedText;
@@ -115,13 +116,13 @@
       return "https://www.facebook.com/sharer/sharer.php?u=" + encodedUrl;
     }
     if (type === "linkedin") {
-      return "https://www.linkedin.com/sharing/share-offsite/?url=" + encodedUrl;
+      return "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(previewUrl || shareUrl);
     }
     if (type === "native") {
-      return shareUrl;
+      return targetUrl;
     }
     if (type === "copy") {
-      return shareUrl;
+      return targetUrl;
     }
 
     return networks;
@@ -130,6 +131,7 @@
   function renderShareButtons(wrapper, options) {
     var shareUrl = options.shareUrl || window.location.href.split("#")[0];
     var shareText = options.shareText || options.title || document.title;
+    var previewUrl = options.previewUrl || shareUrl;
 
     var shareGrid = createNode("div", "content-share-grid");
 
@@ -142,7 +144,7 @@
 
     items.forEach(function (item) {
       var link = createNode("a", "content-share-button " + item.tone);
-      link.href = buildShareUrl(item.type, shareUrl, shareText, "");
+      link.href = buildShareUrl(item.type, shareUrl, shareText, "", previewUrl);
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.setAttribute("aria-label", item.label);
