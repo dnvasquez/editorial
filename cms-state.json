@@ -459,7 +459,7 @@
     {
       "id": "col-1777552684289",
       "titulo": "El falso dilema entre urgencia habitacional y preservación ecosistémica",
-      "autorId": "david-a-vasquez-stuardo",
+      "autorId": "columnista-2",
       "autor": "David A. Vásquez Stuardo",
       "fecha": "2026-04-30",
       "categoria": "Opinion",
@@ -467,6 +467,11 @@
       "imagen": "https://gpjs3bucket.s3.amazonaws.com/wp-content/uploads/2018/03/26152533/GPJNews_Argentina_LP_-Humedales-121_web.jpg",
       "banner": "https://gpjs3bucket.s3.amazonaws.com/wp-content/uploads/2018/03/26152533/GPJNews_Argentina_LP_-Humedales-121_web.jpg",
       "resumen": "Atribuir ocho años de retraso en un proyecto habitacional a una normativa que fue promulgada hace apenas seis revela un preocupante déficit en el análisis crítico de nuestra gestión pública.",
+      "hashtags": [
+        "#humedales",
+        "#territorio",
+        "#gestión"
+      ],
       "contenido": "Atribuir ocho años de retraso en un proyecto habitacional a una normativa que fue promulgada hace apenas seis revela un preocupante déficit en el análisis crítico de nuestra gestión pública. La reciente controversia entre la cartera de Vivienda y el Poder Legislativo respecto a los impactos de la Ley de Humedales Urbanos expone los verdaderos nudos críticos de nuestra matriz institucional: la profunda incapacidad del Estado para conciliar el desarrollo expedito de infraestructura con la indispensable mitigación de riesgos ambientales. Cuando los proyectos inmobiliarios colisionan territorialmente con ecosistemas que actúan como los verdaderos riñones del paisaje e infraestructura verde-azul crítica, el problema de fondo no recae en la existencia de la norma protectora, sino en las severas asimetrías de la planificación urbana y en la absoluta falta de trazabilidad en los tiempos de respuesta del aparato estatal.\n\nLa expansión interpretativa de la normativa ambiental, sumada a la superposición de regímenes legales vigentes, ha generado una arquitectura regulatoria que merma drásticamente la certeza jurídica indispensable para la inversión y el desarrollo territorial. Obligar a que iniciativas de distinta envergadura ingresen al Sistema de Evaluación de Impacto Ambiental bajo estándares de máxima exigencia, producto de criterios técnicos aplicados con discrecionalidad, genera un evidente efecto paralizante en el mercado. Sin embargo, la solución estructural no reside en flexibilizar la protección de los ecosistemas frente a la presión por obtener rápidos retornos sociales o políticos, puesto que edificar sobre estos suelos saturados exige rellenos que suprimen su vital capacidad de absorción, trasladando inevitablemente el riesgo de inundaciones severas a las propias comunidades residentes en el largo plazo. Abordar esta disyuntiva requiere elevar las competencias técnicas de las autoridades sectoriales para que incorporen el contexto territorial desde la génesis de los proyectos, en lugar de ceder a la táctica de apuntar al marco legal como la principal barrera al progreso.\n\nPara que el país recupere su dinamismo de ejecución sin comprometer la sostenibilidad a largo plazo, es imperativo que la administración central abandone la retórica confrontacional y asuma el deber de dotar de coherencia al sistema de evaluación. La atracción y retención de capital humano avanzado dentro de los organismos públicos resulta fundamental para diseñar instrumentos de ordenamiento territorial eficientes, capaces de anticipar y destrabar la competencia por el uso del suelo antes de llegar a la judicialización o al bloqueo. El futuro de la gobernanza de infraestructura y vivienda en Chile dependerá exclusivamente de nuestra madurez para institucionalizar procesos donde la urgencia social y el rigor ecosistémico converjan, dejando atrás la improvisación táctica para establecer políticas de Estado consistentes frente a los ciclos políticos y las crisis climáticas.",
       "visible": true
     }
@@ -475,7 +480,7 @@
   "editorialCmsColumnViews": {
     "col-1777480207649": 4,
     "col03": 5,
-    "col-1777552684289": 10
+    "col-1777552684289": 12
   },
   "editorialCmsComments": {},
   "editorialCmsPages": {
@@ -541,6 +546,22 @@
       "manifestoImage": "images/hero_bg_1.jpg",
       "manifestoLeft": "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
       "manifestoRight": "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
+    },
+    "columnistas": {
+      "title": "Nuestros Columnistas",
+      "items": [
+        {
+          "id": "columnista-2",
+          "name": "David A. Vásquez Stuardo",
+          "role": "Intensificación ecológica / Director editorial",
+          "bio": "Esta es la descripción",
+          "image": "",
+          "twitter": "",
+          "instagram": "",
+          "facebook": "",
+          "linkedin": ""
+        }
+      ]
     },
     "invitados": {
       "title": "Invitados Destacados",
