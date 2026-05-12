@@ -245,7 +245,7 @@
           kicker: 'Columna',
           shareText: 'Lee esta columna de Estación Rural:',
           shareUrl: window.location.href.split('#')[0],
-          previewUrl: '/.netlify/functions/share-column?id=' + encodeURIComponent(col.id)
+          previewUrl: window.location.origin + '/.netlify/functions/share-column?id=' + encodeURIComponent(col.id)
         });
       }
 

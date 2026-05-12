@@ -133,7 +133,6 @@ function buildPageHtml(options) {
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <meta name="twitter:image" content="${escapeHtml(image)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl || pageUrl)}">
-    <meta http-equiv="refresh" content="0;url=${escapeHtml(pageUrl)}">
     <style>
       body { font-family: Arial, sans-serif; margin: 0; background: #fcfcf6; color: #111; }
       .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
