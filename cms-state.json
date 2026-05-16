@@ -464,7 +464,7 @@
     },
     {
       "id": "col-1777552684289",
-      "titulo": "El falso dilema entre urgencia habitacional y preservación ecosistémica",
+      "titulo": "Urgencia habitacional y preservación ecosistémica",
       "autorId": "columnista-2",
       "autor": "David A. Vásquez Stuardo",
       "fecha": "2026-04-30",
@@ -533,10 +533,11 @@
   ],
   "editorialCmsPublicaciones": null,
   "editorialCmsColumnViews": {
-    "col-1777480207649": 6,
-    "col03": 8,
-    "col-1777552684289": 33,
-    "col02": 1
+    "col-1777480207649": 8,
+    "col03": 9,
+    "col-1777552684289": 37,
+    "col02": 1,
+    "col01": 2
   },
   "editorialCmsComments": {},
   "editorialCmsPages": {
