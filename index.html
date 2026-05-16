@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
   <head>
-    <title>Estación Rural - Editorial de Contenido</title>
+    <title>El Deslinde - Editorial de Contenido</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -75,6 +75,646 @@
           font-size: 0.62rem;
         }
       }
+
+      body[data-cms-page="index"] #cms-page-hero {
+        min-height: 44svh;
+        height: auto;
+        background-position: center center;
+        background-attachment: scroll;
+        overflow: visible;
+      }
+
+      body[data-cms-page="index"] #cms-page-hero .row {
+        min-height: 44svh;
+        height: auto;
+      }
+
+      body[data-cms-page="index"] #cms-page-hero .container {
+        min-height: 44svh;
+        height: auto;
+        display: flex;
+        align-items: flex-start;
+        padding-top: 2.9rem;
+        padding-bottom: 0.8rem;
+      }
+
+      body[data-cms-page="index"] #cms-page-hero.overlay:before {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.52) 44%, rgba(0, 0, 0, 0.76) 100%);
+      }
+
+      body[data-cms-page="index"] #ep-hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.42rem;
+        max-width: 650px;
+        margin: 0;
+        padding: 1.15rem 1.35rem 1.1rem 1.35rem;
+        text-align: left;
+        border-left: 1px solid rgba(255, 255, 255, 0.28);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+        backdrop-filter: blur(1.5px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      body[data-cms-page="index"] #ep-hero article {
+        display: flex;
+        flex-direction: column;
+        gap: 0.42rem;
+      }
+
+      body[data-cms-page="index"] #ep-hero:before {
+        content: "Contenido destacado";
+        display: inline-block;
+        margin-bottom: 0.1rem;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"]:before {
+        content: "Podcast destacado";
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"]:before {
+        content: "Columna destacada";
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"]:before {
+        content: "Publicación destacada";
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="manual"]:before {
+        content: "Contenido destacado";
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0;
+        background: transparent;
+        border-left: 0;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"]:before {
+        display: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] article {
+        display: grid;
+        grid-template-columns: minmax(0, 0.58fr) minmax(0, 0.42fr);
+        grid-template-areas: "copy visual";
+        gap: 0;
+        align-items: stretch;
+        min-height: clamp(440px, 56svh, 560px);
+        overflow: hidden;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-hero-kicker {
+        display: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy {
+        grid-area: copy;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.72rem;
+        min-width: 0;
+        padding: clamp(1.45rem, 2.8vw, 3rem);
+        background: transparent;
+        border-right: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-premium-badge {
+        background: #5dff18;
+        border-color: rgba(93, 255, 24, 0.28);
+        color: #081500;
+        box-shadow: 0 12px 30px -16px rgba(93, 255, 24, 0.75);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-hero-title {
+        font-family: Poppins, sans-serif;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        font-weight: 800;
+        max-width: 13.5ch;
+        letter-spacing: -0.035em;
+        color: #fff;
+        line-height: 0.92;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-prefix {
+        display: block;
+        margin-bottom: 0.18rem;
+        color: rgba(255, 255, 255, 0.86);
+        font-family: Poppins, sans-serif;
+        font-size: 0.46em;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-title-main {
+        display: block;
+        color: #fff;
+        font-size: 1em;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-summary {
+        max-width: 100%;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.84);
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn {
+        background: #6d2cf5;
+        border-color: #b58cff;
+        color: #fff !important;
+        box-shadow: 0 16px 30px -18px rgba(109, 44, 245, 0.9);
+        padding-left: 1.15rem;
+        padding-right: 1.15rem;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn:hover,
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn:focus {
+        background: #8a57ff;
+        border-color: #d4c0ff;
+        color: #fff !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn + .btn {
+        margin-left: 0.5rem;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn-secondary {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.32);
+        color: #fff !important;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn-secondary:hover,
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy .btn-secondary:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: #fff !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] {
+        max-width: 1240px;
+        padding: 0;
+        background: transparent;
+        border-left: 0;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] article {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        grid-template-areas: "copy summary";
+        column-gap: 0;
+        gap: 0;
+        align-items: stretch;
+        min-height: 560px;
+        overflow: hidden;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy {
+        grid-area: copy;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+        min-width: 0;
+        padding: 2.2rem 2.15rem 2.15rem 2.15rem;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-left: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .featured-hero-kicker {
+        display: inline-flex;
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-hero-title {
+        max-width: 13.5ch;
+        color: #fff;
+        font-size: clamp(2.35rem, 3.95vw, 4rem);
+        letter-spacing: 0.1em !important;
+        word-spacing: 0.03em;
+        line-height: 0.93;
+        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .featured-publication-intro {
+        margin: 0;
+        max-width: 35ch;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.96rem;
+        line-height: 1.75;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.32rem 0.58rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .btn {
+        background: #f8f4ec;
+        border-color: #f8f4ec;
+        color: #111 !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .btn:hover,
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .btn:focus {
+        background: #fff;
+        border-color: #fff;
+        color: #111 !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-meta-row {
+        margin-top: 0.05rem;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-hero-meta {
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy .featured-hero-kicker {
+        color: rgba(255, 255, 255, 0.72) !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-summary-panel {
+        grid-area: summary;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        min-width: 0;
+        gap: 0.9rem;
+        padding: 2.2rem 2.15rem 2.15rem 2rem;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-left: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-summary-label {
+        display: inline-flex;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-summary-panel .featured-publication-summary {
+        max-width: 100%;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.84);
+        font-size: 1.05rem;
+        line-height: 1.9;
+      }
+
+      body[data-cms-page="index"] #ep-hero > p {
+        margin-bottom: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-premium-badge {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        margin-bottom: 0.15rem;
+        padding: 0.38rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.92);
+        font-family: Poppins, sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-hero-title {
+        margin: 0;
+        color: #fff;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.65rem, 2.65vw, 2.65rem);
+        font-weight: 600;
+        line-height: 0.98;
+        letter-spacing: -0.02em;
+        max-width: 18ch;
+        text-wrap: balance;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-hero-meta {
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-podcast-summary,
+      body[data-cms-page="index"] #ep-hero .featured-column-summary,
+      body[data-cms-page="index"] #ep-hero .featured-publication-summary {
+        margin: 0;
+        max-width: 34rem;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 0.96rem;
+        line-height: 1.6;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-column-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-top: 0.05rem;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-visual {
+        grid-area: visual;
+        position: relative;
+        min-height: 100%;
+        background: transparent;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-visual:before {
+        display: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-visual:after {
+        display: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero .featured-column-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      body[data-cms-page="index"] #ep-hero .btn {
+        align-self: flex-start;
+        padding: 0.62rem 0.9rem !important;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.94);
+        border-color: rgba(255, 255, 255, 0.94);
+        color: #111 !important;
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        box-shadow: none !important;
+      }
+
+      body[data-cms-page="index"] #ep-hero .btn:hover,
+      body[data-cms-page="index"] #ep-hero .btn:focus {
+        background: #fff;
+        border-color: #fff;
+        color: #111 !important;
+        top: 0;
+      }
+
+      body[data-cms-page="index"] #ep-hero .player {
+        width: min(100%, 420px);
+        margin-top: 0.15rem;
+        padding-top: 0.45rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      body[data-cms-page="index"] #ep-hero .player audio {
+        width: 100%;
+      }
+
+      body[data-cms-page="index"] #cms-page-main .site-section {
+        padding-top: 4em;
+        padding-bottom: 4em;
+      }
+
+      body[data-cms-page="index"] #cms-page-main .site-section:first-of-type {
+        padding-top: 3.2em;
+      }
+
+      body[data-cms-page="index"] #cms-page-main .row.mb-5 {
+        margin-bottom: 1.5rem !important;
+      }
+
+      body[data-cms-page="index"] #cms-page-main h2.font-weight-bold,
+      body[data-cms-page="index"] #cms-page-main #home-guests-title {
+        margin-bottom: 0.55rem;
+      }
+
+      body[data-cms-page="index"] #cms-page-main .lead.text-muted {
+        max-width: 50rem;
+        margin: 0 auto;
+        font-size: 0.98rem;
+        line-height: 1.55;
+      }
+
+      body[data-cms-page="index"] .home-program-episodes-layout,
+      body[data-cms-page="index"] .home-column-layout {
+        gap: 1rem;
+      }
+
+      body[data-cms-page="index"] .home-program-selector-grid,
+      body[data-cms-page="index"] .home-column-selector-grid {
+        gap: 0.75rem;
+      }
+
+      body[data-cms-page="index"] .home-program-episodes-layout__right,
+      body[data-cms-page="index"] .home-column-detail__body {
+        padding: 1rem;
+      }
+
+      body[data-cms-page="index"] .home-program-episodes-panel__header,
+      body[data-cms-page="index"] .home-column-detail__kicker {
+        margin-bottom: 0.7rem;
+      }
+
+      body[data-cms-page="index"] .home-program-episodes-panel__header {
+        padding-bottom: 0.7rem;
+        margin-bottom: 0.8rem;
+      }
+
+      body[data-cms-page="index"] .home-column-detail__body h3 {
+        margin-bottom: 0.35rem;
+      }
+
+      body[data-cms-page="index"] .home-column-detail__meta {
+        margin-bottom: 0.7rem;
+      }
+
+      body[data-cms-page="index"] .home-column-detail__body p {
+        margin-bottom: 0.95rem;
+      }
+
+      body[data-cms-page="index"] .home-publications-carousel {
+        margin-top: 1rem;
+      }
+
+      @media (max-width: 767.98px) {
+        body[data-cms-page="index"] #cms-page-hero,
+        body[data-cms-page="index"] #cms-page-hero .row,
+        body[data-cms-page="index"] #cms-page-hero .container {
+          min-height: 54svh;
+          height: auto;
+        }
+
+        body[data-cms-page="index"] #cms-page-hero .container {
+          padding-top: 4rem;
+          padding-bottom: 1rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero {
+          gap: 0.35rem;
+          max-width: 100%;
+          padding: 0.9rem 0 0.9rem 1rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero:before {
+          font-size: 0.64rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero .featured-hero-title {
+          max-width: 100%;
+          font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+        }
+
+        body[data-cms-page="index"] #ep-hero .featured-hero-meta {
+          font-size: 0.64rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] {
+          max-width: 100%;
+          padding: 0;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] article {
+          grid-template-columns: 1fr;
+          min-height: 0;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-copy {
+          padding: 1.2rem 1rem 1rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-summary-panel {
+          padding: 0 1rem 1.15rem;
+          border-left: 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"] .featured-publication-summary {
+          max-width: 100%;
+          line-height: 1.7;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] {
+          max-width: 100%;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] article {
+          grid-template-columns: 1fr;
+          min-height: 0;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-copy {
+          padding: 1.2rem 1rem 1rem;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-hero-title {
+          font-size: clamp(1.9rem, 7vw, 2.8rem);
+          max-width: 100%;
+        }
+
+        body[data-cms-page="index"] #ep-hero[data-hero-kind="episode"] .featured-podcast-visual {
+          min-height: 280px;
+        }
+
+        body[data-cms-page="index"] #cms-page-main .site-section {
+          padding-top: 2.85em;
+          padding-bottom: 2.85em;
+        }
+
+        body[data-cms-page="index"] #cms-page-main .site-section:first-of-type {
+          padding-top: 2.25em;
+        }
+
+        body[data-cms-page="index"] #cms-page-main .row.mb-5 {
+          margin-bottom: 1.1rem !important;
+        }
+
+        body[data-cms-page="index"] #cms-page-main .lead.text-muted {
+          font-size: 0.92rem;
+          line-height: 1.5;
+        }
+
+        body[data-cms-page="index"] .home-program-episodes-layout,
+        body[data-cms-page="index"] .home-column-layout {
+          gap: 0.85rem;
+        }
+      }
     </style>
 
   </head>
@@ -96,7 +736,7 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-3" data-aos="fade-down">
-            <h1><a href="index.html" class="text-white h2">Estación Rural</a></h1>
+            <h1><a href="index.html" class="text-white h2">El Deslinde</a></h1>
           </div>
           <div class="col-9" data-aos="fade-down">
             <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
@@ -120,7 +760,7 @@
     <div id="cms-page-hero" class="site-blocks-cover overlay" style="background-image: url(images/hero_bg_1.jpg);" data-aos="fade" data-stellar-background-ratio="0.5" data-cms-section="hero">
       <div class="container">
         <div class="row align-items-center justify-content-center text-center">
-          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400" id="ep-hero">
+          <div class="col-12" data-aos="fade-up" data-aos-delay="400" id="ep-hero">
             <!-- Renderizado por js/episodes.js -->
           </div>
         </div>
@@ -183,111 +823,8 @@
 
 
     <!-- SECCIÃ“N: El Equipo -->
-    <div class="site-section" data-cms-section="equipo">
-      <div class="container" data-aos="fade-up">
-        <div class="row mb-5">
-          <div class="col-md-12 text-center">
-            <h2 id="home-team-title" class="font-weight-bold text-black">El Equipo</h2>
-          </div>
-        </div>
-        <div id="home-team-grid" class="row">
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_1.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">Megan Smith</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Directora Editorial</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_2.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">David A. VÃ¡squez Stuardo</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Director Editorial</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_3.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">Philip Martin</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Editor de Contenido</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_4.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">Steven Ericson</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Columnista</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_5.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">Nathan Dumlao</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Investigador</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-            <div class="team-member">
-              <img src="images/person_6.jpg" alt="Image" class="img-fluid">
-              <div class="text">
-                <h2 class="mb-2 font-weight-light h4">David A. VÃ¡squez Stuardo</h2>
-                <span class="d-block mb-2 text-white-opacity-05">Columnista</span>
-                <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit ullam reprehenderit nemo.</p>
-                <p>
-                  <a href="#" class="text-white p-2"><span class="icon-facebook"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-twitter"></span></a>
-                  <a href="#" class="text-white p-2"><span class="icon-linkedin"></span></a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
     <!-- SECCIÃ“N: Invitados Destacados (carrusel) -->
-    <div class="site-section bg-light block-13" data-cms-section="invitados">
+    <div class="site-section bg-light block-13" data-cms-section="invitados" style="display:none;">
       <div class="container">
         <div class="row mb-5">
           <div class="col-md-12 text-center">
@@ -328,7 +865,7 @@
       <div class="container">
         <div class="row align-items-start">
           <div class="col-lg-8 mb-4 mb-lg-0">
-            <h3 class="footer-heading mb-4">Sobre Estaci&oacute;n Rural</h3>
+            <h3 class="footer-heading mb-4">Sobre El Deslinde</h3>
             <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos podcasts, columnas de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
           </div>
           <div class="col-lg-4">
@@ -365,108 +902,157 @@
   <script src="js/mediaelement-and-player.min.js"></script>
 
   <script src="js/episodes.js"></script>
-  <script src="js/cms-site.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // â”€â”€ Hero: episodio mÃ¡s reciente â”€â”€
-      var ep = EPISODIOS[0];
-      document.getElementById('ep-hero').innerHTML =
-        '<h2 class="text-white font-weight-light mb-2 display-4">Episodio ' + ep.numero + ': ' + ep.titulo + '</h2>' +
-        '<div class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + ep.autor + ' | ' + ep.fecha + ' | ' + ep.duracion + '</small></span></div>' +
-        '<p><a href="single-post.html?id=' + ep.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripciÃ³n</a></p>' +
-        '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + ep.audio + '" type="audio/mp3"></audio></div>';
-
-      // â”€â”€ Programas: primeros 3 â”€â”€
-      var homeConfig = window.EditorialCmsSite ? window.EditorialCmsSite.getPageConfig('index') : null;
-      var selectedEpisodeId = homeConfig && homeConfig.featuredEpisodeId ? homeConfig.featuredEpisodeId : '';
-      if (selectedEpisodeId) {
-        var selectedEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(selectedEpisodeId); });
-        if (selectedEpisode) {
-          document.getElementById('ep-hero').innerHTML =
-            '<h2 class="text-white font-weight-light mb-2 display-4">Episodio ' + selectedEpisode.numero + ': ' + selectedEpisode.titulo + '</h2>' +
-            '<div class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + selectedEpisode.autor + ' | ' + selectedEpisode.fecha + ' | ' + selectedEpisode.duracion + '</small></span></div>' +
-            '<p><a href="single-post.html?id=' + selectedEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripciÃƒÂ³n</a></p>' +
-            '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + selectedEpisode.audio + '" type="audio/mp3"></audio></div>';
-        }
-      }
-
-      var finalFeaturedEpisode = selectedEpisodeId ? EPISODIOS.find(function(item) {
-        return String(item.id) === String(selectedEpisodeId);
-      }) : null;
-      if (finalFeaturedEpisode) {
-        document.getElementById('ep-hero').innerHTML =
-          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + finalFeaturedEpisode.numero + ': ' + finalFeaturedEpisode.titulo + '</h2>' +
-          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + finalFeaturedEpisode.autor + ' | ' + finalFeaturedEpisode.fecha + ' | ' + finalFeaturedEpisode.duracion + '</small></span></div>' +
-          '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + finalFeaturedEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
-          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + finalFeaturedEpisode.audio + '" type="audio/mp3"></audio></div>';
-      } else if (homeConfig && (homeConfig.manualHeroTitle || homeConfig.manualHeroMeta || homeConfig.manualHeroAudio || homeConfig.manualHeroTranscriptLink)) {
-        var manualHeroHtml =
-          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + (homeConfig.manualHeroTitle || 'Contenido destacado') + '</h2>' +
-          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>' + (homeConfig.manualHeroMeta || '') + '</small></span></div>';
-
-        if (homeConfig.manualHeroTranscriptLink) {
-          manualHeroHtml += '<p><a id="cms-hero-transcript-link" href="' + homeConfig.manualHeroTranscriptLink + '" class="btn btn-primary btn-sm py-3 px-4 small">Ver contenido relacionado</a></p>';
-        }
-        if (homeConfig.manualHeroAudio) {
-          manualHeroHtml += '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + homeConfig.manualHeroAudio + '" type="audio/mp3"></audio></div>';
+    <script src="js/cms-site.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function escapeHtml(value) {
+          return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
         }
 
-        document.getElementById('ep-hero').innerHTML = manualHeroHtml;
-      }
-
-      var featuredConfig = window.EditorialCmsSite ? window.EditorialCmsSite.getPageConfig('index') : null;
-      var featuredType = featuredConfig && featuredConfig.featuredContentType ? featuredConfig.featuredContentType : (featuredConfig && featuredConfig.featuredEpisodeId ? 'episode' : '');
-      var featuredId = featuredConfig && featuredConfig.featuredContentId ? featuredConfig.featuredContentId : (featuredConfig && featuredConfig.featuredEpisodeId ? featuredConfig.featuredEpisodeId : '');
-      var finalHeroHtml = '';
-
-      if (featuredType === 'episode' && featuredId) {
-        var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
-        if (heroEpisode) {
-          finalHeroHtml =
-            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + heroEpisode.numero + ': ' + heroEpisode.titulo + '</h2>' +
-            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + heroEpisode.autor + ' | ' + heroEpisode.fecha + ' | ' + heroEpisode.duracion + '</small></span></div>' +
-            '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + heroEpisode.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
-            '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + heroEpisode.audio + '" type="audio/mp3"></audio></div>';
+        function buildHeroAudio(src) {
+          if (!src) return "";
+          return '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + escapeHtml(src) + '" type="audio/mp3"></audio></div>';
         }
-      } else if (featuredType === 'column' && featuredId) {
-        var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
-        if (heroColumn) {
-          var heroSection = document.getElementById('cms-page-hero');
+
+        function buildHeroHashtags(hashtags) {
+          if (!Array.isArray(hashtags) || !hashtags.length) return "";
+          return '<div class="featured-column-tags">' + hashtags.map(function(tag) {
+            var normalized = String(tag || "").trim().replace(/^#/, "");
+            if (!normalized) return "";
+            return '<span class="featured-column-tag">#' + escapeHtml(normalized) + '</span>';
+          }).filter(Boolean).join('') + '</div>';
+        }
+
+        function buildPodcastHero(episode) {
+          if (!episode) return "";
+          return [
+            '<article class="featured-podcast-panel">',
+            '<div class="featured-podcast-copy">',
+            '<span class="featured-premium-badge">Nuevo episodio</span>',
+            '<h2 id="cms-hero-title" class="featured-hero-title text-white"><span class="featured-podcast-prefix">Episodio ' + escapeHtml(episode.numero || "") + ':</span><span class="featured-podcast-title-main">' + escapeHtml(episode.titulo || "") + '</span></h2>',
+            '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>Por ' + escapeHtml(episode.autor || "Editorial") + ' <span class="sep">/</span> ' + escapeHtml(episode.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(episode.duracion || "") + '</small></span></div>',
+            '<p class="featured-podcast-summary">' + escapeHtml(episode.resumen || "Escucha este episodio destacado de la edición.") + '</p>',
+            '<p class="mb-0">',
+            '<a id="cms-hero-transcript-link" href="single-post.html?id=' + encodeURIComponent(episode.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Escuchar capítulo</a>',
+            '<a href="programas.html" class="btn btn-secondary btn-sm py-3 px-4 small">Explorar programas</a>',
+            '</p>',
+            '</div>',
+            '<div class="featured-podcast-visual"></div>',
+            '</article>'
+          ].join('');
+        }
+
+        function buildColumnHero(column) {
+          if (!column) return "";
+          return [
+            '<article class="featured-column-panel">',
+            '<span class="featured-hero-kicker">Columna destacada</span>',
+            '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(column.titulo || "") + '</h2>',
+            '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>Por ' + escapeHtml(column.autor || "Autor/a") + ' <span class="sep">/</span> ' + escapeHtml(column.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(column.lectura || "") + '</small></span></div>',
+            '<p class="featured-column-summary text-white">' + escapeHtml(column.resumen || "Lee esta columna destacada.") + '</p>',
+            buildHeroHashtags(column.hashtags || []),
+            '<p class="mb-0"><a id="cms-hero-transcript-link" href="columna.html?id=' + encodeURIComponent(column.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>',
+            '</article>'
+          ].join('');
+        }
+
+        function buildPublicationHero(publication) {
+          if (!publication) return "";
+          return [
+            '<article class="featured-publication-panel">',
+            '<div class="featured-publication-copy">',
+            '<span class="featured-premium-badge">Recién publicado</span>',
+            '<span class="featured-hero-kicker">Publicación destacada</span>',
+            '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(publication.titulo || "") + '</h2>',
+            '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>' + escapeHtml(publication.tipo || "") + ' <span class="sep">/</span> ' + escapeHtml(publication.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(publication.paginas || "") + ' páginas</small></span></div>',
+            '<div class="featured-publication-meta-row">' +
+              '<span class="featured-publication-pill">' + escapeHtml(publication.tipo || "Artículo") + '</span>' +
+              '<span class="featured-publication-pill">' + escapeHtml(publication.fecha || "") + '</span>' +
+              (publication.paginas ? '<span class="featured-publication-pill">' + escapeHtml(publication.paginas) + ' páginas</span>' : '') +
+            '</div>',
+            '<p class="mb-0"><a id="cms-hero-transcript-link" href="' + encodeURI(String(publication.enlace || "#")) + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm py-3 px-4 small">Ver publicación</a></p>',
+            '</div>',
+            '<div class="featured-publication-summary-panel">',
+            '<span class="featured-publication-summary-label">Reseña</span>',
+            '<p class="featured-publication-summary">' + escapeHtml(publication.resumen || "Lee la publicación destacada de la edición.") + '</p>',
+            '</div>',
+            '</article>'
+          ].join('');
+        }
+
+        var homeConfig = window.EditorialCmsSite ? window.EditorialCmsSite.getPageConfig('index') : null;
+        var featuredConfig = homeConfig;
+        var featuredType = featuredConfig && featuredConfig.featuredContentType ? featuredConfig.featuredContentType : (featuredConfig && featuredConfig.featuredEpisodeId ? 'episode' : '');
+        var featuredId = featuredConfig && featuredConfig.featuredContentId ? featuredConfig.featuredContentId : (featuredConfig && featuredConfig.featuredEpisodeId ? featuredConfig.featuredEpisodeId : '');
+        var heroSection = document.getElementById('cms-page-hero');
+        var heroRoot = document.getElementById('ep-hero');
+        var heroHtml = '';
+        var heroKind = 'manual';
+        if (featuredType === 'episode' && featuredId) {
+          var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroSection) {
-            heroSection.classList.add('featured-column-cover');
-            heroSection.style.backgroundImage = "url('" + (heroColumn.banner || heroColumn.imagen) + "')";
+            heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
+            heroSection.style.backgroundImage = heroEpisode && heroEpisode.imagen ? "url('" + encodeURI(String(heroEpisode.imagen)).replace(/'/g, "%27") + "')" : "";
+            heroSection.style.backgroundPosition = 'center center';
+            heroSection.style.backgroundSize = 'cover';
           }
-          finalHeroHtml =
-            '<article class="featured-column-panel">' +
-            '<span class="featured-column-kicker">Columna destacada</span>' +
-            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-3 display-4">' + heroColumn.titulo + '</h2>' +
-            '<div id="cms-hero-subtitle" class="featured-column-meta mb-4"><span class="text-white-opacity-05"><small>Por ' + heroColumn.autor + ' <span class="sep">/</span> ' + heroColumn.fecha + ' <span class="sep">/</span> ' + heroColumn.lectura + '</small></span></div>' +
-            '<p class="featured-column-summary text-white mb-4">' + (heroColumn.resumen || '') + '</p>' +
-            '<p class="mb-0"><a id="cms-hero-transcript-link" href="columna.html?id=' + heroColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>' +
-            '</article>';
+          heroHtml = buildPodcastHero(heroEpisode);
+          heroKind = 'episode';
+        } else if (featuredType === 'column' && featuredId) {
+          var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
+          if (heroColumn && heroSection) {
+            heroSection.classList.remove('featured-publication-cover');
+            heroSection.classList.add('featured-column-cover');
+            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumn.banner || heroColumn.imagen || "")).replace(/'/g, "%27") + "')";
+          }
+          heroHtml = buildColumnHero(heroColumn);
+          heroKind = 'column';
+        } else if (featuredType === 'publication' && featuredId) {
+          var heroPublication = PUBLICACIONES.find(function(item) { return String(item.id) === String(featuredId); });
+          if (heroSection && heroPublication) {
+            heroSection.classList.remove('featured-column-cover');
+            heroSection.classList.add('featured-publication-cover');
+            heroSection.style.backgroundImage = heroPublication.imagen ? "url('" + encodeURI(String(heroPublication.imagen)).replace(/'/g, "%27") + "')" : "";
+            heroSection.style.backgroundPosition = 'center center';
+            heroSection.style.backgroundSize = 'cover';
+          }
+          heroHtml = buildPublicationHero(heroPublication);
+          heroKind = 'publication';
+        } else if (homeConfig && (homeConfig.manualHeroTitle || homeConfig.manualHeroMeta || homeConfig.manualHeroAudio || homeConfig.manualHeroTranscriptLink)) {
+          if (heroSection) {
+            heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
+            heroSection.style.backgroundImage = "";
+          }
+          heroHtml = [
+            '<article class="featured-manual-panel">',
+            '<span class="featured-hero-kicker">Contenido destacado</span>',
+            '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(homeConfig.manualHeroTitle || 'Contenido destacado') + '</h2>',
+            '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>' + escapeHtml(homeConfig.manualHeroMeta || '') + '</small></span></div>',
+            homeConfig.manualHeroTranscriptLink ? '<p class="mb-0"><a id="cms-hero-transcript-link" href="' + escapeHtml(homeConfig.manualHeroTranscriptLink) + '" class="btn btn-primary btn-sm py-3 px-4 small">Ver contenido relacionado</a></p>' : '',
+            homeConfig.manualHeroAudio ? buildHeroAudio(homeConfig.manualHeroAudio) : '',
+            '</article>'
+          ].join('');
+          heroKind = 'manual';
+        } else if (EPISODIOS[0]) {
+          if (heroSection) {
+            heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
+            heroSection.style.backgroundImage = EPISODIOS[0].imagen ? "url('" + encodeURI(String(EPISODIOS[0].imagen)).replace(/'/g, "%27") + "')" : "";
+            heroSection.style.backgroundPosition = 'center center';
+            heroSection.style.backgroundSize = 'cover';
+          }
+          heroHtml = buildPodcastHero(EPISODIOS[0]);
+          heroKind = 'episode';
         }
-      } else if (featuredType === 'publication' && featuredId) {
-        var heroPublication = PUBLICACIONES.find(function(item) { return String(item.id) === String(featuredId); });
-        if (heroPublication) {
-          finalHeroHtml =
-            '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">' + heroPublication.titulo + '</h2>' +
-            '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>' + heroPublication.tipo + ' | ' + heroPublication.fecha + '</small></span></div>' +
-            '<p class="text-white mb-4">' + (heroPublication.resumen || '') + '</p>' +
-            '<p><a id="cms-hero-transcript-link" href="' + heroPublication.enlace + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm py-3 px-4 small">Ver publicaci&oacute;n</a></p>';
+
+        if (heroRoot && heroHtml) {
+          heroRoot.setAttribute('data-hero-kind', heroKind);
+          heroRoot.innerHTML = heroHtml;
         }
-      }
-
-      if (!finalHeroHtml && EPISODIOS[0]) {
-        finalHeroHtml =
-          '<h2 id="cms-hero-title" class="text-white font-weight-light mb-2 display-4">Episodio ' + EPISODIOS[0].numero + ': ' + EPISODIOS[0].titulo + '</h2>' +
-          '<div id="cms-hero-subtitle" class="text-white mb-4"><span class="text-white-opacity-05"><small>Por ' + EPISODIOS[0].autor + ' | ' + EPISODIOS[0].fecha + ' | ' + EPISODIOS[0].duracion + '</small></span></div>' +
-          '<p><a id="cms-hero-transcript-link" href="single-post.html?id=' + EPISODIOS[0].id + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer la transcripci&oacute;n</a></p>' +
-          '<div class="player"><audio preload="none" controls style="max-width: 100%"><source src="' + EPISODIOS[0].audio + '" type="audio/mp3"></audio></div>';
-      }
-
-      if (finalHeroHtml) {
-        document.getElementById('ep-hero').innerHTML = finalHeroHtml;
-      }
 
       var programsEpisodesPanel = document.getElementById('home-programs-episodes');
       var activeProgramId = PROGRAMAS[0] ? String(PROGRAMAS[0].id) : '';

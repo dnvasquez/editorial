@@ -1,6 +1,6 @@
 const DEFAULT_IMAGE = "images/col01_img.jpg";
-const DEFAULT_TITLE = "Columna — Estación Rural";
-const DEFAULT_DESCRIPTION = "Lecturas editoriales, opinión y análisis de Estación Rural.";
+const DEFAULT_TITLE = "Columna — El Deslinde";
+const DEFAULT_DESCRIPTION = "Lecturas editoriales, opinión y análisis de El Deslinde.";
 
 function escapeHtml(value) {
   return String(value || "")
@@ -58,9 +58,9 @@ function buildMeta(column, origin, requestUrl) {
   const published = column.fecha && /^\d{4}-\d{2}-\d{2}$/.test(column.fecha) ? `${column.fecha}T12:00:00Z` : "";
 
   return [
-    `<title>${escapeHtml(title)} | Estación Rural</title>`,
+    `<title>${escapeHtml(title)} | El Deslinde</title>`,
     `<meta name="description" content="${escapeHtml(description)}">`,
-    `<meta property="og:site_name" content="Estación Rural">`,
+    `<meta property="og:site_name" content="El Deslinde">`,
     `<meta property="og:type" content="article">`,
     `<meta property="og:title" content="${escapeHtml(title)}">`,
     `<meta property="og:description" content="${escapeHtml(description)}">`,

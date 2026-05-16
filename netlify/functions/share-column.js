@@ -118,9 +118,9 @@ function buildPageHtml(options) {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${escapeHtml(title)} | Estación Rural</title>
+    <title>${escapeHtml(title)} | El Deslinde</title>
     <meta name="description" content="${escapeHtml(description)}">
-    <meta property="og:site_name" content="Estación Rural">
+    <meta property="og:site_name" content="El Deslinde">
     <meta property="og:type" content="article">
     <meta property="og:title" content="${escapeHtml(title)}">
     <meta property="og:description" content="${escapeHtml(description)}">

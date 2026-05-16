@@ -97,7 +97,7 @@
         <div class="container">
           <div class="row align-items-start">
             <div class="col-lg-8 mb-4 mb-lg-0">
-              <h3 class="footer-heading mb-4">Sobre Estaci&oacute;n Rural</h3>
+              <h3 class="footer-heading mb-4">Sobre El Deslinde</h3>
               <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos podcasts, columnas de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
             </div>
             <div class="col-lg-4">
@@ -190,7 +190,7 @@
         }
 
         function renderMissingAuthor(authorRef) {
-          document.title = 'Columnista no encontrado - Estacion Rural';
+          document.title = 'Columnista no encontrado - El Deslinde';
           document.getElementById('author-photo').src = 'images/person_1.jpg';
           document.getElementById('author-photo').alt = 'Columnista no encontrado';
           document.getElementById('author-name').textContent = 'Columnista no encontrado';
@@ -257,7 +257,7 @@
           return refs.indexOf(String(author.id || '')) !== -1 || refs.indexOf(window.EditorialCmsSite ? window.EditorialCmsSite.slugify(author.name || '') : '') !== -1;
         });
 
-        document.title = (author.name || 'Columnista') + ' - Estacion Rural';
+        document.title = (author.name || 'Columnista') + ' - El Deslinde';
         document.getElementById('author-photo').src = author.image || 'images/person_1.jpg';
         document.getElementById('author-photo').alt = author.name || 'Columnista';
         document.getElementById('author-name').textContent = author.name || 'Columnista';
