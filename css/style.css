@@ -965,9 +965,16 @@ footer[data-cms-section="footer"] {
     margin-bottom: 0;
     line-height: 1; }
   .site-navbar h1 a {
+    display: inline-flex;
+    align-items: center;
     color: #1f1f1f !important;
     font-size: 1.55rem;
     letter-spacing: 0.02em; }
+  .site-navbar h1 a img {
+    display: block;
+    width: auto;
+    max-height: 68px;
+    max-width: 100%; }
   .site-navbar .site-navigation {
     display: flex;
     align-items: center;
@@ -2683,6 +2690,8 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     line-height: 1; }
   .site-navbar h1 a {
     font-size: 1.45rem; }
+  .site-navbar h1 a img {
+    max-height: 58px; }
   .site-navbar .site-menu-toggle {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem; }
@@ -2995,6 +3004,8 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     padding-right: 12px; }
   .site-navbar h1 a {
     font-size: 0.95rem; }
+  .site-navbar h1 a img {
+    max-height: 44px; }
   .site-navbar .site-menu-toggle .icon-menu {
     font-size: 1.1rem; }
   #cms-page-hero .container {
