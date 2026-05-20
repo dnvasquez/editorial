@@ -864,29 +864,131 @@
   }
 
   function readColumnistasContentDraft(fallbackContent) {
-    var form = document.getElementById("admin-columnistas-content-form");
-    if (!form) return JSON.parse(JSON.stringify(fallbackContent));
-
+    var titleInput = document.getElementById("columnistas-title");
     var draft = JSON.parse(JSON.stringify(fallbackContent));
-    draft.title = document.getElementById("columnistas-title").value;
 
-    var selectedIndex = Number(form.getAttribute("data-selected-columnista-index") || 0);
-    if (draft.items[selectedIndex]) {
-      var itemId = String(draft.items[selectedIndex].id || "");
-      draft.items[selectedIndex] = {
-        id: itemId || window.EditorialCmsSite.slugify(document.getElementById("columnistas-item-name").value) || ("columnista-" + Date.now()),
-        name: document.getElementById("columnistas-item-name").value,
-        role: document.getElementById("columnistas-item-role").value,
-        bio: document.getElementById("columnistas-item-bio").value,
-        image: document.getElementById("columnistas-item-image").value,
-        twitter: document.getElementById("columnistas-item-twitter").value,
-        instagram: document.getElementById("columnistas-item-instagram").value,
-        facebook: document.getElementById("columnistas-item-facebook").value,
-        linkedin: document.getElementById("columnistas-item-linkedin").value
-      };
+    if (titleInput) {
+      draft.title = titleInput.value;
     }
 
     return draft;
+  }
+
+  function readColumnistasModalDraft(modal, base) {
+    var source = base || {};
+    var titleInput = modal.querySelector("#columnistas-title");
+    var items = Array.isArray(source.items) ? source.items.slice() : [];
+    var selectedIndex = Number(modal.getAttribute("data-selected-columnista-index") || 0);
+
+    if (!items.length) {
+      items = [getEmptyColumnist()];
+    }
+
+    if (items[selectedIndex]) {
+      var itemId = String(items[selectedIndex].id || "");
+      items[selectedIndex] = {
+        id: itemId || window.EditorialCmsSite.slugify(modal.querySelector("#columnistas-item-name").value) || ("columnista-" + Date.now()),
+        name: modal.querySelector("#columnistas-item-name").value,
+        role: modal.querySelector("#columnistas-item-role").value,
+        bio: modal.querySelector("#columnistas-item-bio").value,
+        image: modal.querySelector("#columnistas-item-image").value,
+        twitter: modal.querySelector("#columnistas-item-twitter").value,
+        instagram: modal.querySelector("#columnistas-item-instagram").value,
+        facebook: modal.querySelector("#columnistas-item-facebook").value,
+        linkedin: modal.querySelector("#columnistas-item-linkedin").value
+      };
+    }
+
+    return {
+      title: titleInput ? titleInput.value : source.title,
+      items: items
+    };
+  }
+
+  function openColumnistasEditorModal(selectedIndex, contentOverride, isNewItem) {
+    var content = contentOverride || window.EditorialCmsSite.getPageContentSection("columnistas");
+    var items = Array.isArray(content.items) ? content.items.slice() : [];
+    if (!items.length) {
+      items = [getEmptyColumnist()];
+    }
+
+    items = items.map(function (item, index) {
+      return Object.assign({}, getEmptyColumnist(), item, {
+        id: String(item.id || window.EditorialCmsSite.slugify(item.name) || ("columnista-" + (index + 1)))
+      });
+    });
+
+    var activeIndex = Math.max(0, Math.min(typeof selectedIndex === "number" ? selectedIndex : 0, items.length - 1));
+    var selectedItem = items[activeIndex] || getEmptyColumnist();
+    var titleValue = content.title || "Nuestros Columnistas";
+    var isNew = !!isNewItem;
+
+    var html =
+      '<div class="admin-modal-head">' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nuevo columnista" : "Editar columnista") + '</h3><p>' + (isNew ? "Completa los datos para agregar una nueva ficha." : "Actualiza la ficha o elimina el miembro de la lista.") + '</p></div>' +
+      '</div>' +
+      '<form id="columnistas-modal-form" class="admin-form-stack" data-selected-columnista-index="' + activeIndex + '" novalidate>' +
+      '<div class="admin-field"><label for="columnistas-title">Titulo de seccion</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(titleValue) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-name">Nombre</label><input id="columnistas-item-name" class="form-control" value="' + escapeHtml(selectedItem.name) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-role">Especialidad / Rol</label><input id="columnistas-item-role" class="form-control" value="' + escapeHtml(selectedItem.role) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-image">Imagen</label><input id="columnistas-item-image" class="form-control" value="' + escapeHtml(selectedItem.image) + '" placeholder="URL de imagen segura"><small class="text-muted">Usa siempre una URL de imagen.</small></div>' +
+      '<div class="admin-field"><label for="columnistas-item-bio">Biografia</label><textarea id="columnistas-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedItem.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="columnistas-item-twitter">Twitter / X</label><input id="columnistas-item-twitter" class="form-control" value="' + escapeHtml(selectedItem.twitter) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-instagram">Instagram</label><input id="columnistas-item-instagram" class="form-control" value="' + escapeHtml(selectedItem.instagram) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-facebook">Facebook</label><input id="columnistas-item-facebook" class="form-control" value="' + escapeHtml(selectedItem.facebook) + '"></div>' +
+      '<div class="admin-field"><label for="columnistas-item-linkedin">LinkedIn</label><input id="columnistas-item-linkedin" class="form-control" value="' + escapeHtml(selectedItem.linkedin) + '"></div>' +
+      '<div class="admin-actions admin-modal-actions">' +
+      '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
+      '<button type="submit" class="btn btn-primary">Guardar columnista</button>' +
+      (isNew ? "" : '<button id="columnistas-delete-item" type="button" class="btn btn-outline-dark">Eliminar</button>') +
+      '</div>' +
+      '<p id="columnistas-modal-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form>';
+
+    var modal = openAdminModal(html, "admin-modal-columnistas", isNew ? "Nuevo columnista" : "Editar columnista");
+    if (!modal) return;
+
+    var form = modal.querySelector("#columnistas-modal-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var feedback = modal.querySelector("#columnistas-modal-feedback");
+      var next = readColumnistasModalDraft(modal, {
+        title: titleValue,
+        items: items
+      });
+      var saved = window.EditorialCmsSite.savePageContentSection("columnistas", next);
+      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.hydrateGlobals === "function") {
+        window.EditorialCmsSite.hydrateGlobals();
+      }
+      if (feedback) {
+        feedback.textContent = isNew ? "Columnista creado. Actualizando la tabla..." : "Columnista actualizado. Actualizando la tabla...";
+      }
+      closeAdminModal();
+      renderColumnistasContentEditor(next.items.length ? activeIndex : 0, saved);
+    });
+
+    var deleteButton = modal.querySelector("#columnistas-delete-item");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", function () {
+        if (!window.confirm("Se eliminara este columnista del sitio. Continuar?")) return;
+        var next = readColumnistasModalDraft(modal, {
+          title: titleValue,
+          items: items
+        });
+        next.items.splice(activeIndex, 1);
+        if (!next.items.length) {
+          next.items.push(getEmptyColumnist());
+        }
+        var saved = window.EditorialCmsSite.savePageContentSection("columnistas", next);
+        if (window.EditorialCmsSite && typeof window.EditorialCmsSite.hydrateGlobals === "function") {
+          window.EditorialCmsSite.hydrateGlobals();
+        }
+        closeAdminModal();
+        renderColumnistasContentEditor(Math.max(0, activeIndex - 1), saved);
+      });
+    }
   }
 
   function renderAboutContentEditor(selectedMemberIndex, contentOverride) {
@@ -1100,35 +1202,34 @@
     );
 
     document.getElementById("admin-main-content").innerHTML =
-      '<section class="admin-card admin-editor-panel admin-editor-single">' +
-      '<form id="admin-columnistas-content-form" class="admin-form-stack" data-selected-columnista-index="' + selectedIndex + '" novalidate>' +
-      '<div class="admin-field"><label for="columnistas-title">Titulo de seccion</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(content.title || "Nuestros Columnistas") + '"></div>' +
-      '<section class="admin-card admin-library-card">' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Columnistas</span><h3>Fichas</h3></div><button id="columnistas-add-item" type="button" class="btn btn-primary">Agregar columnista</button></div>' +
-      '<div class="admin-entity-list" id="columnistas-item-list">' + items.map(function (item, index) {
-        return '<button type="button" class="admin-entity-row' + (index === selectedIndex ? ' is-active' : '') + '" data-index="' + index + '">' +
-          '<strong>' + escapeHtml(item.name || ("Columnista " + (index + 1))) + '</strong>' +
-          '<span>' + escapeHtml(item.role || "Sin especialidad") + '</span></button>';
-      }).join("") + '</div>' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Editor</span><h3>Ficha del columnista</h3></div>' + (items.length > 1 ? '<button id="columnistas-remove-item" type="button" class="btn btn-outline-dark">Quitar columnista</button>' : '') + '</div>' +
-      '<div class="admin-form-stack">' +
-      '<div class="admin-field"><label for="columnistas-item-name">Nombre</label><input id="columnistas-item-name" class="form-control" value="' + escapeHtml(selectedItem.name) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-role">Especialidad / Rol</label><input id="columnistas-item-role" class="form-control" value="' + escapeHtml(selectedItem.role) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-image">Imagen</label><input id="columnistas-item-image" class="form-control" value="' + escapeHtml(selectedItem.image) + '" placeholder="URL de imagen segura"><small class="text-muted">Usa siempre una URL de imagen.</small></div>' +
-      '<div class="admin-field"><label for="columnistas-item-bio">Biografia</label><textarea id="columnistas-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedItem.bio) + '</textarea></div>' +
-      '<div class="admin-field"><label for="columnistas-item-twitter">Twitter / X</label><input id="columnistas-item-twitter" class="form-control" value="' + escapeHtml(selectedItem.twitter) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-instagram">Instagram</label><input id="columnistas-item-instagram" class="form-control" value="' + escapeHtml(selectedItem.instagram) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-facebook">Facebook</label><input id="columnistas-item-facebook" class="form-control" value="' + escapeHtml(selectedItem.facebook) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-linkedin">LinkedIn</label><input id="columnistas-item-linkedin" class="form-control" value="' + escapeHtml(selectedItem.linkedin) + '"></div>' +
-      '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="columnas.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pagina publica</a></div>' +
+      '<section class="admin-library-layout admin-library-split">' +
+      '<div class="admin-card admin-library-card">' +
+      '<form id="admin-columnistas-content-form" class="admin-form-stack" novalidate>' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Contenido</span><h3>Titulo de la seccion</h3></div><button id="columnistas-save-title" type="submit" class="btn btn-primary">Guardar titulo</button></div>' +
+      '<div class="admin-field"><label for="columnistas-title">Titulo</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(content.title || "Nuestros Columnistas") + '"></div>' +
       '<p id="columnistas-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
-      '</form></section>';
+      '</form></div>' +
+      '<div class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Columnistas</span><h3>Fichas</h3></div><button id="columnistas-add-item" type="button" class="btn btn-primary">Agregar columnista</button></div>' +
+      '<div class="admin-library-meta"><span>' + items.length + ' columnistas</span><span>Haz clic en una fila para abrir el popup</span></div>' +
+      '<div class="admin-table-head admin-column-table-head"><span>Nombre</span><span>Rol</span><span>Redes</span><span></span><span></span></div>' +
+      '<div class="admin-column-list" id="columnistas-item-list">' + items.map(function (item, index) {
+        var hasLinks = [item.twitter, item.instagram, item.facebook, item.linkedin].some(function (value) {
+          return String(value || "").trim();
+        }) ? "Con enlaces" : "Sin enlaces";
+        return '<button type="button" class="admin-column-row' + (index === selectedIndex ? ' is-editing' : '') + '" data-index="' + index + '">' +
+          '<div class="admin-column-main"><strong>' + escapeHtml(item.name || ("Columnista " + (index + 1))) + '</strong></div>' +
+          '<div class="admin-column-cell">' + escapeHtml(item.role || "Sin especialidad") + '</div>' +
+          '<div class="admin-column-cell">' + escapeHtml(hasLinks) + '</div>' +
+          '<div class="admin-column-cell">Abrir</div>' +
+          '<div class="admin-column-cell"></div>' +
+          '</button>';
+      }).join("") + '</div>' +
+      '</div></section>';
 
     document.getElementById("admin-columnistas-content-form").addEventListener("submit", function (event) {
       event.preventDefault();
       var feedback = document.getElementById("columnistas-content-feedback");
-      var selectedIndex = Number(document.getElementById("admin-columnistas-content-form").getAttribute("data-selected-columnista-index") || 0);
       var next = readColumnistasContentDraft({
         title: content.title || "Nuestros Columnistas",
         items: items
@@ -1148,13 +1249,13 @@
       }
     });
 
-    Array.prototype.forEach.call(document.querySelectorAll("#columnistas-item-list .admin-entity-row"), function (button) {
+    Array.prototype.forEach.call(document.querySelectorAll("#columnistas-item-list .admin-column-row"), function (button) {
       button.addEventListener("click", function () {
         var draft = readColumnistasContentDraft({
           title: content.title || "Nuestros Columnistas",
           items: items
         });
-        renderColumnistasContentEditor(Number(button.getAttribute("data-index")), draft);
+        openColumnistasEditorModal(Number(button.getAttribute("data-index")), draft, false);
       });
     });
 
@@ -1166,19 +1267,7 @@
           items: items
         });
         draft.items.push(getEmptyColumnist());
-        renderColumnistasContentEditor(draft.items.length - 1, draft);
-      });
-    }
-
-    var removeButton = document.getElementById("columnistas-remove-item");
-    if (removeButton) {
-      removeButton.addEventListener("click", function () {
-        var draft = readColumnistasContentDraft({
-          title: content.title || "Nuestros Columnistas",
-          items: items
-        });
-        draft.items.splice(selectedIndex, 1);
-        renderColumnistasContentEditor(Math.max(0, selectedIndex - 1), draft);
+        openColumnistasEditorModal(draft.items.length - 1, draft, true);
       });
     }
   }
@@ -1756,9 +1845,22 @@
     openColumnEditorModal(column);
   }
 
-  function renderPrograms(selectedId) {
-    var programs = window.EditorialCmsSite.getProgramsForAdmin();
-    var selected = findById(programs, selectedId) || {
+  function readProgramModalDraft(modal, base) {
+    var source = base || {};
+
+    return {
+      id: source.id || "",
+      nombre: modal.querySelector("#program-name").value,
+      frecuencia: modal.querySelector("#program-frequency").value,
+      imagen: modal.querySelector("#program-image").value,
+      descripcion: modal.querySelector("#program-description").value,
+      visible: modal.querySelector("#program-visible").checked
+    };
+  }
+
+  function openProgramEditorModal(program) {
+    var isNew = !program || !program.id;
+    var selected = program || {
       id: "",
       nombre: "",
       descripcion: "",
@@ -1767,56 +1869,91 @@
       visible: true
     };
 
+    var html =
+      '<div class="admin-modal-head">' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nuevo programa" : "Editar programa") + '</h3><p>' + (isNew ? "Completa los datos para publicar un nuevo programa." : "Revisa el programa, ajusta su portada o elimínalo si hace falta.") + '</p></div>' +
+      '</div>' +
+      '<form id="program-modal-form" class="admin-form-stack" novalidate>' +
+      '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="program-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
+      '<div class="admin-field"><label for="program-name">Nombre</label><input id="program-name" class="form-control" value="' + escapeHtml(selected.nombre) + '" required></div>' +
+      '<div class="admin-field"><label for="program-frequency">Frecuencia</label><input id="program-frequency" class="form-control" value="' + escapeHtml(selected.frecuencia) + '"></div>' +
+      '<div class="admin-field"><label for="program-image">Imagen</label><input id="program-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
+      '<div class="admin-field"><label for="program-description">Descripcion</label><textarea id="program-description" class="form-control admin-textarea-sm">' + escapeHtml(selected.descripcion) + '</textarea></div>' +
+      '<div class="admin-actions admin-modal-actions">' +
+      '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
+      '<button type="submit" class="btn btn-primary">' + (isNew ? "Crear programa" : "Guardar cambios") + '</button>' +
+      (isNew ? "" : '<button id="delete-program" type="button" class="btn btn-outline-dark">Eliminar</button>') +
+      '</div>' +
+      '<p id="program-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form>';
+
+    var modal = openAdminModal(html, "admin-modal-program", isNew ? "Nuevo programa" : "Editar programa");
+    if (!modal) return;
+
+    var form = modal.querySelector("#program-modal-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var feedback = modal.querySelector("#program-feedback");
+      var saved = window.EditorialCmsSite.saveProgram(readProgramModalDraft(modal, selected));
+      if (feedback) {
+        feedback.textContent = isNew ? "Programa creado. Actualizando la tabla..." : "Programa actualizado. Actualizando la tabla...";
+      }
+      closeAdminModal();
+      renderPrograms(saved.id);
+    });
+
+    var deleteButton = modal.querySelector("#delete-program");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", function () {
+        if (!window.confirm("Se eliminara este programa del sitio. Continuar?")) return;
+        window.EditorialCmsSite.deleteProgram(selected.id);
+        closeAdminModal();
+        renderPrograms("");
+      });
+    }
+  }
+
+  function renderPrograms(selectedId) {
+    var programs = window.EditorialCmsSite.getProgramsForAdmin();
+    var selected = findById(programs, selectedId) || null;
+    var rowsHtml = programs.length ? programs.map(function (program) {
+      var statusLabel = program.visible === false ? "Oculto" : "Visible";
+      return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(program.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(program.id) + '">' +
+        '<div class="admin-column-main"><strong>' + escapeHtml(program.nombre || "Sin nombre") + '</strong></div>' +
+        '<div class="admin-column-cell">' + escapeHtml(program.frecuencia || "Sin frecuencia") + '</div>' +
+        '<div class="admin-column-cell">' + escapeHtml(program.descripcion || "Sin descripcion") + '</div>' +
+        '<div><span class="admin-column-status' + (program.visible === false ? ' is-borrador' : '') + '">' + escapeHtml(statusLabel) + '</span></div>' +
+        '<div class="admin-column-cell">Abrir</div>' +
+        '</button>';
+    }).join("") : '<div class="admin-empty-state">No hay programas creados todavia. Usa <strong>Nuevo programa</strong> para crear el primero.</div>';
+
     renderEntityEditor({
       kicker: "Contenido",
       title: "Programas",
-      subtitle: "Gestiona programas completos. Desde aqui puedes crear nuevos, ocultarlos o editar su portada, frecuencia y descripcion.",
+      subtitle: "Gestiona programas desde una biblioteca unica. Cada fila abre un popup para editar su portadas, frecuencia y descripcion.",
       html:
-        '<section class="admin-library-layout admin-library-split">' +
+        '<section class="admin-library-layout">' +
         '<div class="admin-card admin-library-card">' +
         '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Programas</h3></div><button id="add-program" type="button" class="btn btn-primary">Nuevo programa</button></div>' +
-        '<div class="admin-entity-list" id="program-list">' + programs.map(function (program) {
-          return '<button type="button" class="admin-entity-row' + (selected.id === program.id ? ' is-active' : '') + '" data-id="' + escapeHtml(program.id) + '">' +
-            '<strong>' + escapeHtml(program.nombre) + '</strong><span>' + escapeHtml(program.frecuencia || "Sin frecuencia") + '</span></button>';
-        }).join("") + '</div></div>' +
-        '<div class="admin-card admin-editor-panel">' +
-        '<form id="program-form" class="admin-form-stack" novalidate>' +
-        '<input id="program-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
-        '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="program-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
-        '<div class="admin-field"><label for="program-name">Nombre</label><input id="program-name" class="form-control" value="' + escapeHtml(selected.nombre) + '" required></div>' +
-        '<div class="admin-field"><label for="program-frequency">Frecuencia</label><input id="program-frequency" class="form-control" value="' + escapeHtml(selected.frecuencia) + '"></div>' +
-        '<div class="admin-field"><label for="program-image">Imagen</label><input id="program-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
-        '<div class="admin-field"><label for="program-description">Descripcion</label><textarea id="program-description" class="form-control admin-textarea-sm">' + escapeHtml(selected.descripcion) + '</textarea></div>' +
-        '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar programa</button>' + (selected.id ? '<button id="delete-program" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
-        '<p id="program-feedback" class="admin-feedback" aria-live="polite"></p>' +
-        '</form></div></section>',
+        '<div class="admin-library-meta"><span>' + programs.length + ' programas</span><span>Haz clic en una fila para abrir el popup</span></div>' +
+        '<div class="admin-table-head admin-column-table-head">' +
+        '<span>Nombre</span><span>Frecuencia</span><span>Descripcion</span><span>Estado</span><span></span>' +
+        '</div>' +
+        '<div class="admin-column-list" id="program-list">' + rowsHtml + '</div>' +
+        '</div></section>',
       bind: function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#program-list .admin-entity-row"), function (button) {
+        Array.prototype.forEach.call(document.querySelectorAll("#program-list .admin-column-row"), function (button) {
           button.addEventListener("click", function () {
-            routeAdmin("program", button.getAttribute("data-id"));
+            var program = findById(programs, button.getAttribute("data-id"));
+            openProgramEditorModal(program);
           });
         });
-        document.getElementById("add-program").addEventListener("click", function () {
-          routeAdmin("program", "");
-        });
-        document.getElementById("program-form").addEventListener("submit", function (event) {
-          event.preventDefault();
-          var saved = window.EditorialCmsSite.saveProgram({
-            id: document.getElementById("program-id").value,
-            nombre: document.getElementById("program-name").value,
-            frecuencia: document.getElementById("program-frequency").value,
-            imagen: document.getElementById("program-image").value,
-            descripcion: document.getElementById("program-description").value,
-            visible: document.getElementById("program-visible").checked
-          });
-          routeAdmin("program", saved.id, true);
-        });
-        var deleteButton = document.getElementById("delete-program");
-        if (deleteButton) {
-          deleteButton.addEventListener("click", function () {
-            if (!window.confirm("Se eliminara este programa del sitio. Continuar?")) return;
-            window.EditorialCmsSite.deleteProgram(selected.id);
-            routeAdmin("programs", "", true);
+        var addButton = document.getElementById("add-program");
+        if (addButton) {
+          addButton.addEventListener("click", function () {
+            openProgramEditorModal(null);
           });
         }
       }
@@ -2001,9 +2138,25 @@
     });
   }
 
-  function renderPublications(selectedId) {
-    var publications = window.EditorialCmsSite.getPublicationsForAdmin();
-    var selected = findById(publications, selectedId) || {
+  function readPublicationModalDraft(modal, base) {
+    var source = base || {};
+
+    return {
+      id: source.id || "",
+      titulo: modal.querySelector("#publication-title").value,
+      tipo: modal.querySelector("#publication-type").value,
+      fecha: modal.querySelector("#publication-date").value,
+      paginas: modal.querySelector("#publication-pages").value,
+      imagen: modal.querySelector("#publication-image").value,
+      resumen: modal.querySelector("#publication-summary").value,
+      enlace: modal.querySelector("#publication-link").value,
+      visible: modal.querySelector("#publication-visible").checked
+    };
+  }
+
+  function openPublicationEditorModal(publication) {
+    var isNew = !publication || !publication.id;
+    var selected = publication || {
       id: "",
       titulo: "",
       tipo: "",
@@ -2015,62 +2168,94 @@
       visible: true
     };
 
+    var html =
+      '<div class="admin-modal-head">' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva publicacion" : "Editar publicacion") + '</h3><p>' + (isNew ? "Completa los datos para agregar una publicacion nueva." : "Revisa la publicacion, ajusta sus campos o eliminela si hace falta.") + '</p></div>' +
+      '</div>' +
+      '<form id="publication-modal-form" class="admin-form-stack" novalidate>' +
+      '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="publication-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
+      '<div class="admin-field"><label for="publication-title">Titulo</label><input id="publication-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
+      '<div class="admin-field"><label for="publication-type">Tipo</label><input id="publication-type" class="form-control" value="' + escapeHtml(selected.tipo) + '"></div>' +
+      '<div class="admin-field"><label for="publication-date">Fecha</label><input id="publication-date" class="form-control" value="' + escapeHtml(selected.fecha) + '"></div>' +
+      '<div class="admin-field"><label for="publication-pages">Paginas</label><input id="publication-pages" class="form-control" value="' + escapeHtml(selected.paginas) + '"></div>' +
+      '<div class="admin-field"><label for="publication-image">Imagen</label><input id="publication-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
+      '<div class="admin-field"><label for="publication-link">Enlace del documento</label><input id="publication-link" class="form-control" value="' + escapeHtml(selected.enlace) + '"></div>' +
+      '<div class="admin-field"><label for="publication-summary">Resumen</label><textarea id="publication-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
+      '<div class="admin-actions admin-modal-actions">' +
+      '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
+      '<button type="submit" class="btn btn-primary">' + (isNew ? "Crear publicacion" : "Guardar cambios") + '</button>' +
+      (isNew ? "" : '<button id="delete-publication" type="button" class="btn btn-outline-dark">Eliminar</button>') +
+      '</div>' +
+      '<p id="publication-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form>';
+
+    var modal = openAdminModal(html, "admin-modal-publication", isNew ? "Nueva publicacion" : "Editar publicacion");
+    if (!modal) return;
+
+    var form = modal.querySelector("#publication-modal-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var feedback = modal.querySelector("#publication-feedback");
+      var saved = window.EditorialCmsSite.savePublication(readPublicationModalDraft(modal, selected));
+      if (feedback) {
+        feedback.textContent = isNew ? "Publicacion creada. Actualizando la tabla..." : "Publicacion actualizada. Actualizando la tabla...";
+      }
+      closeAdminModal();
+      renderPublications(saved.id);
+    });
+
+    var deleteButton = modal.querySelector("#delete-publication");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", function () {
+        if (!window.confirm("Se eliminara esta publicacion del sitio. Continuar?")) return;
+        window.EditorialCmsSite.deletePublication(selected.id);
+        closeAdminModal();
+        renderPublications("");
+      });
+    }
+  }
+
+  function renderPublications(selectedId) {
+    var publications = window.EditorialCmsSite.getPublicationsForAdmin();
+    var selected = findById(publications, selectedId) || null;
+    var rowsHtml = publications.length ? publications.map(function (publication) {
+      var statusLabel = publication.visible === false ? "Oculta" : "Visible";
+      return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(publication.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(publication.id) + '">' +
+        '<div class="admin-column-main"><strong>' + escapeHtml(publication.titulo || "Sin titulo") + '</strong></div>' +
+        '<div class="admin-column-cell">' + escapeHtml(publication.tipo || "Sin tipo") + '</div>' +
+        '<div class="admin-column-cell">' + escapeHtml(publication.fecha || "Sin fecha") + '</div>' +
+        '<div><span class="admin-column-status' + (publication.visible === false ? ' is-borrador' : '') + '">' + escapeHtml(statusLabel) + '</span></div>' +
+        '<div class="admin-column-cell">Abrir</div>' +
+        '</button>';
+    }).join("") : '<div class="admin-empty-state">No hay publicaciones creadas todavia. Usa <strong>Nueva publicacion</strong> para crear la primera.</div>';
+
     renderEntityEditor({
       kicker: "Contenido",
       title: "Publicaciones",
-      subtitle: "Carga y gestiona documentos, portadas y enlaces de lectura para la biblioteca editorial.",
+      subtitle: "Carga y gestiona documentos desde una biblioteca unica. Cada fila abre un popup para editar sus datos, portada y enlace.",
       html:
-        '<section class="admin-library-layout admin-library-split">' +
+        '<section class="admin-library-layout">' +
         '<div class="admin-card admin-library-card">' +
         '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Publicaciones</h3></div><button id="add-publication" type="button" class="btn btn-primary">Nueva publicacion</button></div>' +
-        '<div class="admin-entity-list" id="publication-list">' + publications.map(function (publication) {
-          return '<button type="button" class="admin-entity-row' + (selected.id === publication.id ? ' is-active' : '') + '" data-id="' + escapeHtml(publication.id) + '">' +
-            '<strong>' + escapeHtml(publication.titulo) + '</strong><span>' + escapeHtml(publication.fecha || "") + '</span></button>';
-        }).join("") + '</div></div>' +
-        '<div class="admin-card admin-editor-panel">' +
-        '<form id="publication-form" class="admin-form-stack" novalidate>' +
-        '<input id="publication-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
-        '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="publication-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
-        '<div class="admin-field"><label for="publication-title">Titulo</label><input id="publication-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
-        '<div class="admin-field"><label for="publication-type">Tipo</label><input id="publication-type" class="form-control" value="' + escapeHtml(selected.tipo) + '"></div>' +
-        '<div class="admin-field"><label for="publication-date">Fecha</label><input id="publication-date" class="form-control" value="' + escapeHtml(selected.fecha) + '"></div>' +
-        '<div class="admin-field"><label for="publication-pages">Paginas</label><input id="publication-pages" class="form-control" value="' + escapeHtml(selected.paginas) + '"></div>' +
-        '<div class="admin-field"><label for="publication-image">Imagen</label><input id="publication-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
-        '<div class="admin-field"><label for="publication-link">Enlace del documento</label><input id="publication-link" class="form-control" value="' + escapeHtml(selected.enlace) + '"></div>' +
-        '<div class="admin-field"><label for="publication-summary">Resumen</label><textarea id="publication-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
-        '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar publicacion</button>' + (selected.id ? '<button id="delete-publication" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
-        '<p id="publication-feedback" class="admin-feedback" aria-live="polite"></p>' +
-        '</form></div></section>',
+        '<div class="admin-library-meta"><span>' + publications.length + ' publicaciones</span><span>Haz clic en una fila para abrir el popup</span></div>' +
+        '<div class="admin-table-head admin-column-table-head">' +
+        '<span>Titulo</span><span>Tipo</span><span>Fecha</span><span>Estado</span><span></span>' +
+        '</div>' +
+        '<div class="admin-column-list" id="publication-list">' + rowsHtml + '</div>' +
+        '</div></section>',
       bind: function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#publication-list .admin-entity-row"), function (button) {
+        Array.prototype.forEach.call(document.querySelectorAll("#publication-list .admin-column-row"), function (button) {
           button.addEventListener("click", function () {
-            routeAdmin("publication", button.getAttribute("data-id"));
+            var publication = findById(publications, button.getAttribute("data-id"));
+            openPublicationEditorModal(publication);
           });
         });
-        document.getElementById("add-publication").addEventListener("click", function () {
-          routeAdmin("publication", "");
-        });
-        document.getElementById("publication-form").addEventListener("submit", function (event) {
-          event.preventDefault();
-          var saved = window.EditorialCmsSite.savePublication({
-            id: document.getElementById("publication-id").value,
-            titulo: document.getElementById("publication-title").value,
-            tipo: document.getElementById("publication-type").value,
-            fecha: document.getElementById("publication-date").value,
-            paginas: document.getElementById("publication-pages").value,
-            imagen: document.getElementById("publication-image").value,
-            resumen: document.getElementById("publication-summary").value,
-            enlace: document.getElementById("publication-link").value,
-            visible: document.getElementById("publication-visible").checked
-          });
-          routeAdmin("publication", saved.id, true);
-        });
-        var deleteButton = document.getElementById("delete-publication");
-        if (deleteButton) {
-          deleteButton.addEventListener("click", function () {
-            if (!window.confirm("Se eliminara esta publicacion del sitio. Continuar?")) return;
-            window.EditorialCmsSite.deletePublication(selected.id);
-            routeAdmin("publications", "", true);
+        var addButton = document.getElementById("add-publication");
+        if (addButton) {
+          addButton.addEventListener("click", function () {
+            openPublicationEditorModal(null);
           });
         }
       }
