@@ -212,7 +212,7 @@
 
       var bannerImage = document.getElementById('col-banner-image');
       if (bannerImage) {
-        bannerImage.src = col.banner || col.imagen || 'images/col01_img.jpg';
+        bannerImage.src = col.imagen || col.banner || 'images/col01_img.jpg';
         bannerImage.alt = col.titulo || 'Banner de la columna';
       }
 
@@ -230,11 +230,17 @@
       }
 
       // Contenido de la columna
-      var html = '';
-      col.contenido.forEach(function(parrafo) {
-        html += '<p>' + parrafo + '</p>';
-      });
-      document.getElementById('col-contenido').innerHTML = html;
+      var contentHtml = '';
+      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.columnContentToHtml === 'function') {
+        contentHtml = window.EditorialCmsSite.columnContentToHtml(col.contenidoHtml || col.contenido);
+      } else if (Array.isArray(col.contenido)) {
+        contentHtml = col.contenido.map(function (parrafo) {
+          return '<p>' + escapeHtml(parrafo) + '</p>';
+        }).join('');
+      } else {
+        contentHtml = '<p>' + escapeHtml(String(col.contenido || '')).replace(/\n/g, '<br>') + '</p>';
+      }
+      document.getElementById('col-contenido').innerHTML = contentHtml || '<p></p>';
 
       if (window.EditorialContentInteractions) {
         window.EditorialContentInteractions.mountEngagement({

@@ -220,7 +220,7 @@
           : '<span class="column-archive-card__author">Por ' + escapeHtml(column.autor || '') + '</span>';
         return (
           '<article class="column-archive-card" data-aos="fade-up"' + delay + '>' +
-          '<a href="columna.html?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + column.imagen + '\');">' +
+          '<a href="columna.html?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + (column.imagen || column.banner) + '\');">' +
           '<span class="column-archive-card__badge">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : formatViews(column.vistas || 0)) + '</span>' +
           '</a>' +
           '<div class="column-archive-card__body">' +
@@ -264,7 +264,7 @@
           '<p>' + escapeHtml(featured.resumen || '') + '</p>' +
           '<a href="columna.html?id=' + featured.id + '" class="btn btn-primary btn-sm py-2 px-4 column-feature__cta">Leer columna</a>' +
           '</div>' +
-          '<a href="columna.html?id=' + featured.id + '" class="column-feature__featured-media" style="background-image:url(\'' + featured.imagen + '\');" aria-label="Abrir columna destacada"></a>' +
+          '<a href="columna.html?id=' + featured.id + '" class="column-feature__featured-media" style="background-image:url(\'' + (featured.imagen || featured.banner) + '\');" aria-label="Abrir columna destacada"></a>' +
           '</div>' +
           '</section>';
       }

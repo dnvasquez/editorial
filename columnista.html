@@ -218,7 +218,7 @@
             : '<span class="author-column-card__hashtag author-column-card__hashtag--empty">Sin hashtags</span>';
           return (
             '<article class="author-column-card">' +
-            '<a href="columna.html?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.banner || column.imagen || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir columna') + '"></a>' +
+            '<a href="columna.html?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.imagen || column.banner || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir columna') + '"></a>' +
             '<div class="author-column-card__body">' +
             '<div class="author-column-card__meta">' +
             '<span>' + escapeHtml(column.fecha || '') + '</span>' +

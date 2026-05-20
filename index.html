@@ -1043,7 +1043,7 @@
           if (heroColumn && heroSection) {
             heroSection.classList.remove('featured-publication-cover');
             heroSection.classList.add('featured-column-cover');
-            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumn.banner || heroColumn.imagen || "")).replace(/'/g, "%27") + "')";
+            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumn.imagen || heroColumn.banner || "")).replace(/'/g, "%27") + "')";
           }
           heroHtml = buildColumnHero(heroColumn);
           heroKind = 'column';
@@ -1192,7 +1192,7 @@
           var isActive = String(column.id) === String(currentColumn.id);
           return '' +
             '<button type="button" class="home-column-card home-column-card--selector' + (isActive ? ' is-active' : '') + '" data-column-id="' + column.id + '">' +
-            '<div class="home-column-card__media" style="background-image: url(\'' + (column.banner || column.imagen) + '\');">' +
+          '<div class="home-column-card__media" style="background-image: url(\'' + (column.imagen || column.banner) + '\');">' +
             '<span class="home-column-card__count">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : ((column.vistas || 0) + ' vistas')) + '</span>' +
             '</div>' +
             '<div class="home-column-card__caption">' +
@@ -1203,7 +1203,7 @@
 
         var detailHtml =
           '<article class="home-column-detail">' +
-          '<a href="columna.html?id=' + currentColumn.id + '" class="home-column-detail__media" style="background-image: url(\'' + (currentColumn.banner || currentColumn.imagen) + '\');" aria-label="Abrir columna ' + currentColumn.titulo + '"></a>' +
+          '<a href="columna.html?id=' + currentColumn.id + '" class="home-column-detail__media" style="background-image: url(\'' + (currentColumn.imagen || currentColumn.banner) + '\');" aria-label="Abrir columna ' + currentColumn.titulo + '"></a>' +
           '<div class="home-column-detail__body">' +
           '<span class="home-column-detail__kicker">Columnas editoriales</span>' +
           '<h3><a href="columna.html?id=' + currentColumn.id + '">' + currentColumn.titulo + '</a></h3>' +

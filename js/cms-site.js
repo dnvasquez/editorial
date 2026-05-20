@@ -368,6 +368,218 @@
     }).join("\n");
   }
 
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function isProbablyHtml(value) {
+    return /<\/?[a-z][\s\S]*>/i.test(String(value || ""));
+  }
+
+  function htmlToPlainText(html) {
+    var sandbox = document.createElement("div");
+    sandbox.innerHTML = String(html || "");
+    return (sandbox.textContent || "").replace(/\u00a0/g, " ").trim();
+  }
+
+  function sanitizeColumnContentHtml(html) {
+    var allowedTags = {
+      A: true,
+      B: true,
+      BLOCKQUOTE: true,
+      BR: true,
+      EM: true,
+      H2: true,
+      H3: true,
+      I: true,
+      IMG: true,
+      IFRAME: true,
+      LI: true,
+      OL: true,
+      P: true,
+      STRONG: true,
+      SOURCE: true,
+      VIDEO: true,
+      U: true,
+      UL: true
+    };
+
+    function appendSanitizedChildren(source, target) {
+      Array.prototype.forEach.call(source.childNodes, function (child) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          target.appendChild(document.createTextNode(child.nodeValue));
+          return;
+        }
+
+        if (child.nodeType !== Node.ELEMENT_NODE) {
+          return;
+        }
+
+        var tagName = child.tagName.toUpperCase();
+        if (tagName === "SCRIPT" || tagName === "STYLE" || tagName === "OBJECT" || tagName === "EMBED" || tagName === "AUDIO") {
+          return;
+        }
+
+        if (tagName === "DIV") {
+          var paragraph = document.createElement("p");
+          appendSanitizedChildren(child, paragraph);
+          if (!paragraph.textContent.trim() && !paragraph.querySelector("br")) {
+            paragraph.appendChild(document.createElement("br"));
+          }
+          target.appendChild(paragraph);
+          return;
+        }
+
+        if (!allowedTags[tagName]) {
+          appendSanitizedChildren(child, target);
+          return;
+        }
+
+        var clean = document.createElement(tagName.toLowerCase());
+        if (tagName === "A") {
+          var href = sanitizeLinkUrl(child.getAttribute("href"));
+          clean.setAttribute("href", href);
+          if (child.getAttribute("target") === "_blank") {
+            clean.setAttribute("target", "_blank");
+            clean.setAttribute("rel", "noopener noreferrer");
+          }
+        } else if (tagName === "IMG") {
+          clean.setAttribute("src", sanitizeImageUrl(child.getAttribute("src"), ""));
+          clean.setAttribute("alt", child.getAttribute("alt") || "");
+          clean.setAttribute("loading", "lazy");
+          clean.setAttribute("decoding", "async");
+        } else if (tagName === "IFRAME") {
+          clean.setAttribute("src", sanitizeIframeUrl(child.getAttribute("src"), ""));
+          clean.setAttribute("loading", "lazy");
+          clean.setAttribute("title", child.getAttribute("title") || "");
+          clean.setAttribute("allowfullscreen", "allowfullscreen");
+          clean.setAttribute("referrerpolicy", child.getAttribute("referrerpolicy") || "strict-origin-when-cross-origin");
+          clean.setAttribute("allow", child.getAttribute("allow") || "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+        } else if (tagName === "VIDEO") {
+          clean.setAttribute("src", sanitizeMediaUrl(child.getAttribute("src"), ""));
+          clean.setAttribute("controls", "controls");
+          clean.setAttribute("preload", child.getAttribute("preload") || "metadata");
+          if (child.hasAttribute("poster")) {
+            clean.setAttribute("poster", sanitizeImageUrl(child.getAttribute("poster"), ""));
+          }
+          if (child.hasAttribute("playsinline")) {
+            clean.setAttribute("playsinline", "playsinline");
+          }
+        } else if (tagName === "SOURCE") {
+          var sourceSrc = sanitizeMediaUrl(child.getAttribute("src"), "");
+          if (!sourceSrc) return;
+          clean.setAttribute("src", sourceSrc);
+          if (child.getAttribute("type")) {
+            clean.setAttribute("type", child.getAttribute("type"));
+          }
+          if (child.getAttribute("media")) {
+            clean.setAttribute("media", child.getAttribute("media"));
+          }
+        }
+
+        appendSanitizedChildren(child, clean);
+
+        if ((tagName === "P" || tagName === "BLOCKQUOTE" || tagName === "H2" || tagName === "H3" || tagName === "H4" || tagName === "LI") &&
+          !clean.textContent.trim() &&
+          !clean.querySelector("br")) {
+          clean.appendChild(document.createElement("br"));
+        }
+
+        target.appendChild(clean);
+      });
+    }
+
+    var sandbox = document.createElement("div");
+    sandbox.innerHTML = String(html || "");
+    var output = document.createElement("div");
+    appendSanitizedChildren(sandbox, output);
+    return output.innerHTML;
+  }
+
+  function columnContentToHtml(content) {
+    if (Array.isArray(content)) {
+      return content.map(function (paragraph) {
+        var text = String(paragraph || "").trim();
+        return text ? "<p>" + escapeHtml(text).replace(/\n/g, "<br>") + "</p>" : "";
+      }).filter(Boolean).join("");
+    }
+
+    var raw = String(content || "").trim();
+    if (!raw) return "";
+
+    if (isProbablyHtml(raw)) {
+      return sanitizeColumnContentHtml(raw);
+    }
+
+    return raw
+      .split(/\n\s*\n|\r\n\s*\r\n/)
+      .map(function (paragraph) {
+        var text = String(paragraph || "").trim();
+        return text ? "<p>" + escapeHtml(text).replace(/\n/g, "<br>") + "</p>" : "";
+      })
+      .filter(Boolean)
+      .join("");
+  }
+
+  function columnContentToPlainText(content) {
+    if (Array.isArray(content)) {
+      return content.join("\n\n");
+    }
+
+    var raw = String(content || "").trim();
+    if (!raw) return "";
+
+    if (isProbablyHtml(raw)) {
+      return htmlToPlainText(raw);
+    }
+
+    return raw;
+  }
+
+  function clampString(value, maxLength) {
+    var text = String(value || "");
+    var limit = parseInt(maxLength, 10);
+    if (!isFinite(limit) || limit <= 0) return text;
+    return text.slice(0, limit);
+  }
+
+  function sanitizeMediaUrl(value, fallback) {
+    var raw = String(value || "").trim();
+    if (!raw) return fallback || "";
+
+    try {
+      var parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "blob:") {
+        return parsed.href;
+      }
+    } catch (error) {
+      return fallback || "";
+    }
+
+    return fallback || "";
+  }
+
+  function sanitizeIframeUrl(value, fallback) {
+    var raw = String(value || "").trim();
+    if (!raw) return fallback || "";
+
+    try {
+      var parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.href;
+      }
+    } catch (error) {
+      return fallback || "";
+    }
+
+    return fallback || "";
+  }
+
   function mergeById(baseItems, localItems, options) {
     var merged = {};
     var sortFn = options && options.sortFn;
@@ -533,7 +745,8 @@
   function normalizeColumnForSite(column) {
     var views = getColumnViews();
     var columnId = String(column.id);
-    var contentArray = toParagraphArray(column.contenido);
+    var contentHtml = column.contenidoHtml ? sanitizeColumnContentHtml(column.contenidoHtml) : columnContentToHtml(column.contenido);
+    var contentText = columnContentToPlainText(column.contenidoHtml || column.contenido);
     var hashtags = toHashtagArray(column.hashtags).map(normalizeHashtag).filter(Boolean);
     return {
       id: column.id,
@@ -541,11 +754,12 @@
       autor: resolveColumnAuthor(column),
       autorId: column.autorId || slugify(column.autor || ""),
       fecha: formatDisplayDate(column.fecha),
-      lectura: column.lectura || estimateReadingLabel(contentArray.join(" ")),
+      lectura: column.lectura || estimateReadingLabel(contentText),
       imagen: column.imagen || "images/col01_img.jpg",
-      banner: column.banner || column.imagen || "images/col01_img.jpg",
+      banner: column.imagen || column.banner || "images/col01_img.jpg",
       resumen: column.resumen || "",
-      contenido: contentArray,
+      contenido: contentText,
+      contenidoHtml: contentHtml,
       hashtags: hashtags,
       vistas: views[columnId] || 0,
       categoria: column.categoria || "Opinion",
@@ -575,18 +789,20 @@
   function getColumnsForAdmin() {
     return mergeById(getBaseColumns().map(function (column) {
       var autorId = column.autorId || slugify(column.autor || "");
+      var contenidoHtml = column.contenidoHtml ? sanitizeColumnContentHtml(column.contenidoHtml) : columnContentToHtml(column.contenido);
       return {
         id: column.id,
         titulo: column.titulo,
         autor: resolveColumnAuthor(column),
         autorId: autorId,
         fecha: normalizeDate(column.fecha),
-        lectura: column.lectura,
+        lectura: column.lectura || estimateReadingLabel(columnContentToPlainText(column.contenidoHtml || column.contenido)),
         imagen: column.imagen,
-        banner: column.banner || column.imagen,
+        banner: column.imagen || column.banner,
         resumen: column.resumen,
         hashtags: Array.isArray(column.hashtags) ? column.hashtags.join(", ") : String(column.hashtags || ""),
-        contenido: Array.isArray(column.contenido) ? column.contenido.join("\n\n") : (column.contenido || ""),
+        contenido: columnContentToPlainText(column.contenidoHtml || column.contenido),
+        contenidoHtml: contenidoHtml,
         categoria: column.categoria || "Opinion",
         estado: "publicada",
         visible: true
@@ -612,13 +828,18 @@
     var id = column.id || ("col-" + Date.now());
     var payload = clone(column);
     payload.id = id;
+    payload.titulo = clampString(payload.titulo, 120);
+    payload.resumen = clampString(payload.resumen, 280);
     payload.autorId = String(payload.autorId || slugify(payload.autor || ""));
     if (typeof payload.visible !== "boolean") payload.visible = true;
     if (!payload.imagen && payload.banner) {
       payload.imagen = payload.banner;
     }
-    payload.banner = payload.banner || payload.imagen;
+    payload.banner = payload.imagen || payload.banner;
     payload.hashtags = Array.isArray(payload.hashtags) ? payload.hashtags : toHashtagArray(payload.hashtags);
+    payload.contenidoHtml = sanitizeColumnContentHtml(payload.contenidoHtml || payload.contenido || "");
+    payload.contenido = payload.contenidoHtml;
+    payload.lectura = payload.lectura || estimateReadingLabel(columnContentToPlainText(payload.contenidoHtml));
     delete payload._deleted;
 
     var index = localItems.findIndex(function (item) {
@@ -1532,6 +1753,9 @@
     slugify: slugify,
     parseTranscript: parseTranscript,
     serializeTranscript: serializeTranscript,
+    sanitizeColumnContentHtml: sanitizeColumnContentHtml,
+    columnContentToHtml: columnContentToHtml,
+    columnContentToPlainText: columnContentToPlainText,
     getPrograms: getPrograms,
     getProgramsForAdmin: getProgramsForAdmin,
     saveProgram: saveProgram,

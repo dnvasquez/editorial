@@ -30,3 +30,14 @@ If you keep the defaults, `CMS_DATA_REPO` is `dnvasquez/editorial`, `CMS_DATA_BR
 - The old hardcoded front-end credentials were removed from the repo.
 - The CMS now syncs its editable data to a versioned JSON file in GitHub through Netlify Functions.
 - Browser `localStorage` is treated as a cache for convenience, not as the source of truth.
+
+## Live Server fallback for local development
+
+If you open the site with **Live Server** instead of Netlify Dev, the Netlify Functions are not available. In that case the login page can fall back to a local-only dev mode on `localhost`, `127.0.0.1`, `::1`, or `file://`.
+
+Use these temporary credentials:
+
+- `dev-admin`
+- `dev-admin123`
+
+That fallback stores a session only in the current browser tab/session storage and does not affect the real Netlify authentication flow.

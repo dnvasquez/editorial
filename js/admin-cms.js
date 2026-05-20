@@ -1,11 +1,56 @@
-(function () {
+﻿(function () {
   var AUTH_BASE = "/.netlify/functions";
   var LOGIN_ENDPOINT = AUTH_BASE + "/admin-login";
   var SESSION_ENDPOINT = AUTH_BASE + "/admin-session";
   var LOGOUT_ENDPOINT = AUTH_BASE + "/admin-logout";
+  var DEV_SESSION_KEY = "editorialCmsDevSession";
+  var DEV_USERNAME = "dev-admin";
+  var DEV_PASSWORD = "dev-admin123";
+
+  function isLocalDevHost() {
+    return window.location.protocol === "file:" ||
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname === "::1";
+  }
+
+  function readDevSession() {
+    try {
+      var raw = window.sessionStorage.getItem(DEV_SESSION_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed.exp !== "number" || parsed.exp <= Date.now()) {
+        return null;
+      }
+      return parsed;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeDevSession(username, remember) {
+    try {
+      var exp = Date.now() + (remember ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000);
+      window.sessionStorage.setItem(DEV_SESSION_KEY, JSON.stringify({
+        username: username,
+        exp: exp
+      }));
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function clearDevSession() {
+    try {
+      window.sessionStorage.removeItem(DEV_SESSION_KEY);
+    } catch (error) {
+      return null;
+    }
+  }
 
   function requireSession() {
     if (!document.body.classList.contains("admin-dashboard-body")) return;
+    if (isLocalDevHost() && readDevSession()) return;
     fetch(SESSION_ENDPOINT, { credentials: "include" })
       .then(function (response) {
         if (!response.ok) {
@@ -27,6 +72,19 @@
       event.preventDefault();
 
       feedback.textContent = "Validando acceso...";
+
+      if (isLocalDevHost()) {
+        var localUsername = form.username.value.trim();
+        var localPassword = form.password.value;
+        if (localUsername === DEV_USERNAME && localPassword === DEV_PASSWORD) {
+          writeDevSession(localUsername, form.remember.checked);
+          feedback.textContent = "Acceso local correcto. Redirigiendo al panel...";
+          window.setTimeout(function () {
+            window.location.href = "admin-columnas.html";
+          }, 300);
+          return;
+        }
+      }
 
       fetch(LOGIN_ENDPOINT, {
         method: "POST",
@@ -843,7 +901,7 @@
     setHeader(
       "Contenido",
       "Nosotros",
-      "Edita el equipo editorial y el manifiesto. El bloque El Equipo de Inicio usa esta misma información."
+      "Edita el equipo editorial y el manifiesto. El bloque El Equipo de Inicio usa esta misma informaciÃ³n."
     );
 
     document.getElementById("admin-main-content").innerHTML =
@@ -862,7 +920,7 @@
       '<div class="admin-field"><label for="about-member-name">Nombre</label><input id="about-member-name" class="form-control" value="' + escapeHtml(selectedMember.name) + '"></div>' +
       '<div class="admin-field"><label for="about-member-role">Rol</label><input id="about-member-role" class="form-control" value="' + escapeHtml(selectedMember.role) + '"></div>' +
       '<div class="admin-field"><label for="about-member-image">Imagen</label><input id="about-member-image" class="form-control" value="' + escapeHtml(selectedMember.image) + '"></div>' +
-      '<div class="admin-field"><label for="about-member-bio">Biografía</label><textarea id="about-member-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedMember.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="about-member-bio">BiografÃ­a</label><textarea id="about-member-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedMember.bio) + '</textarea></div>' +
       '<div class="admin-field"><label for="about-member-twitter">Twitter/X</label><input id="about-member-twitter" class="form-control" value="' + escapeHtml(selectedMember.twitter) + '"></div>' +
       '<div class="admin-field"><label for="about-member-instagram">Instagram</label><input id="about-member-instagram" class="form-control" value="' + escapeHtml(selectedMember.instagram) + '"></div>' +
       '<div class="admin-field"><label for="about-member-facebook">Facebook</label><input id="about-member-facebook" class="form-control" value="' + escapeHtml(selectedMember.facebook) + '"></div>' +
@@ -875,7 +933,7 @@
       '<div class="admin-field"><label for="about-manifesto-left">Columna izquierda</label><textarea id="about-manifesto-left" class="form-control admin-code-textarea">' + escapeHtml(content.manifestoLeft) + '</textarea></div>' +
       '<div class="admin-field"><label for="about-manifesto-right">Columna derecha</label><textarea id="about-manifesto-right" class="form-control admin-code-textarea">' + escapeHtml(content.manifestoRight) + '</textarea></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="about.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="about.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
       '<p id="about-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
 
@@ -889,7 +947,7 @@
         manifestoRight: content.manifestoRight
       });
       window.EditorialCmsSite.savePageContentSection("about", next);
-      document.getElementById("about-content-feedback").textContent = "Contenido guardado. About e Inicio reflejarán estos cambios.";
+      document.getElementById("about-content-feedback").textContent = "Contenido guardado. About e Inicio reflejarÃ¡n estos cambios.";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#about-member-list .admin-entity-row"), function (button) {
@@ -949,13 +1007,13 @@
     setHeader(
       "Contenido",
       "Invitados destacados",
-      "Edita el carrusel de invitados visibles en la portada. Cada tarjeta puede llevar imagen, cargo y descripción."
+      "Edita el carrusel de invitados visibles en la portada. Cada tarjeta puede llevar imagen, cargo y descripciÃ³n."
     );
 
     document.getElementById("admin-main-content").innerHTML =
       '<section class="admin-card admin-editor-panel admin-editor-single">' +
       '<form id="admin-guests-content-form" class="admin-form-stack" data-selected-guest-index="' + selectedIndex + '" novalidate>' +
-      '<div class="admin-field"><label for="guests-title">Título de sección</label><input id="guests-title" class="form-control" value="' + escapeHtml(content.title) + '"></div>' +
+      '<div class="admin-field"><label for="guests-title">TÃ­tulo de secciÃ³n</label><input id="guests-title" class="form-control" value="' + escapeHtml(content.title) + '"></div>' +
       '<section class="admin-card admin-library-card">' +
       '<div class="admin-library-header"><div><span class="admin-kicker">Invitados</span><h3>Tarjetas</h3></div><button id="guests-add-item" type="button" class="btn btn-primary">Agregar invitado</button></div>' +
       '<div class="admin-entity-list" id="guests-item-list">' + items.map(function (item, index) {
@@ -967,10 +1025,10 @@
       '<div class="admin-form-stack">' +
       '<div class="admin-field"><label for="guests-item-name">Nombre</label><input id="guests-item-name" class="form-control" value="' + escapeHtml(selectedGuest.name) + '"></div>' +
       '<div class="admin-field"><label for="guests-item-role">Cargo</label><input id="guests-item-role" class="form-control" value="' + escapeHtml(selectedGuest.role) + '"></div>' +
-      '<div class="admin-field"><label for="guests-item-image">Imagen</label><input id="guests-item-image" class="form-control" value="' + escapeHtml(selectedGuest.image) + '" placeholder="URL de imagen o data:image/..."><input id="guests-item-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
-      '<div class="admin-field"><label for="guests-item-bio">Descripción</label><textarea id="guests-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedGuest.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="guests-item-image">Imagen</label><input id="guests-item-image" class="form-control" value="' + escapeHtml(selectedGuest.image) + '" placeholder="URL de imagen segura"><small class="text-muted">Usa siempre una URL de imagen.</small></div>' +
+      '<div class="admin-field"><label for="guests-item-bio">DescripciÃ³n</label><textarea id="guests-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedGuest.bio) + '</textarea></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="index.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="index.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
       '<p id="guests-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
 
@@ -981,7 +1039,7 @@
         items: items
       });
       window.EditorialCmsSite.savePageContentSection("invitados", next);
-      document.getElementById("guests-content-feedback").textContent = "Contenido guardado. La portada reflejará estos cambios.";
+      document.getElementById("guests-content-feedback").textContent = "Contenido guardado. La portada reflejarÃ¡ estos cambios.";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#guests-item-list .admin-entity-row"), function (button) {
@@ -1017,8 +1075,6 @@
         renderGuestsContentEditor(Math.max(0, selectedIndex - 1), draft);
       });
     }
-
-    bindImageUpload("guests-item-image-file", "guests-item-image", "guests-content-feedback", "La imagen");
   }
 
   function renderColumnistasContentEditor(selectedColumnistaIndex, contentOverride) {
@@ -1040,7 +1096,7 @@
     setHeader(
       "Contenido",
       "Nuestros columnistas",
-      "Edita las fichas visibles en la sección Columnistas de la página Columnas. Esta lista alimenta también el selector de autor en nuevas columnas."
+      "Edita las fichas visibles en la secciÃ³n Columnistas de la pÃ¡gina Columnas. Esta lista alimenta tambiÃ©n el selector de autor en nuevas columnas."
     );
 
     document.getElementById("admin-main-content").innerHTML =
@@ -1058,7 +1114,7 @@
       '<div class="admin-form-stack">' +
       '<div class="admin-field"><label for="columnistas-item-name">Nombre</label><input id="columnistas-item-name" class="form-control" value="' + escapeHtml(selectedItem.name) + '"></div>' +
       '<div class="admin-field"><label for="columnistas-item-role">Especialidad / Rol</label><input id="columnistas-item-role" class="form-control" value="' + escapeHtml(selectedItem.role) + '"></div>' +
-      '<div class="admin-field"><label for="columnistas-item-image">Imagen</label><input id="columnistas-item-image" class="form-control" value="' + escapeHtml(selectedItem.image) + '" placeholder="URL de imagen o data:image/..."><input id="columnistas-item-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Pega una URL o sube un archivo local.</small></div>' +
+      '<div class="admin-field"><label for="columnistas-item-image">Imagen</label><input id="columnistas-item-image" class="form-control" value="' + escapeHtml(selectedItem.image) + '" placeholder="URL de imagen segura"><small class="text-muted">Usa siempre una URL de imagen.</small></div>' +
       '<div class="admin-field"><label for="columnistas-item-bio">Biografia</label><textarea id="columnistas-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedItem.bio) + '</textarea></div>' +
       '<div class="admin-field"><label for="columnistas-item-twitter">Twitter / X</label><input id="columnistas-item-twitter" class="form-control" value="' + escapeHtml(selectedItem.twitter) + '"></div>' +
       '<div class="admin-field"><label for="columnistas-item-instagram">Instagram</label><input id="columnistas-item-instagram" class="form-control" value="' + escapeHtml(selectedItem.instagram) + '"></div>' +
@@ -1125,8 +1181,6 @@
         renderColumnistasContentEditor(Math.max(0, selectedIndex - 1), draft);
       });
     }
-
-    bindImageUpload("columnistas-item-image-file", "columnistas-item-image", "columnistas-content-feedback", "La imagen");
   }
 
   function renderContactContentEditor() {
@@ -1135,7 +1189,7 @@
     setHeader(
       "Contenido",
       "Contacto",
-      "Edita el formulario, la información de contacto y el bloque final de suscripción."
+      "Edita el formulario, la informaciÃ³n de contacto y el bloque final de suscripciÃ³n."
     );
 
     document.getElementById("admin-main-content").innerHTML =
@@ -1147,24 +1201,24 @@
       '<div class="admin-field"><label for="contact-email-label-input">Correo</label><input id="contact-email-label-input" class="form-control" value="' + escapeHtml(content.emailLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-subject-label-input">Asunto</label><input id="contact-subject-label-input" class="form-control" value="' + escapeHtml(content.subjectLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-message-label-input">Mensaje</label><input id="contact-message-label-input" class="form-control" value="' + escapeHtml(content.messageLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-send-label-input">Botón enviar</label><input id="contact-send-label-input" class="form-control" value="' + escapeHtml(content.sendLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-send-label-input">BotÃ³n enviar</label><input id="contact-send-label-input" class="form-control" value="' + escapeHtml(content.sendLabel) + '"></div>' +
       '</div></section>' +
-      '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Datos</span><h3>Información de contacto</h3></div></div><div class="admin-form-stack">' +
-      '<div class="admin-field"><label for="contact-address-label-input">Etiqueta dirección</label><input id="contact-address-label-input" class="form-control" value="' + escapeHtml(content.addressLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-address-input">Dirección</label><input id="contact-address-input" class="form-control" value="' + escapeHtml(content.address) + '"></div>' +
-      '<div class="admin-field"><label for="contact-phone-label-input">Etiqueta teléfono</label><input id="contact-phone-label-input" class="form-control" value="' + escapeHtml(content.phoneLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-phone-input">Teléfono</label><input id="contact-phone-input" class="form-control" value="' + escapeHtml(content.phone) + '"></div>' +
+      '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Datos</span><h3>InformaciÃ³n de contacto</h3></div></div><div class="admin-form-stack">' +
+      '<div class="admin-field"><label for="contact-address-label-input">Etiqueta direcciÃ³n</label><input id="contact-address-label-input" class="form-control" value="' + escapeHtml(content.addressLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-address-input">DirecciÃ³n</label><input id="contact-address-input" class="form-control" value="' + escapeHtml(content.address) + '"></div>' +
+      '<div class="admin-field"><label for="contact-phone-label-input">Etiqueta telÃ©fono</label><input id="contact-phone-label-input" class="form-control" value="' + escapeHtml(content.phoneLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-phone-input">TelÃ©fono</label><input id="contact-phone-input" class="form-control" value="' + escapeHtml(content.phone) + '"></div>' +
       '<div class="admin-field"><label for="contact-email-info-label-input">Etiqueta correo</label><input id="contact-email-info-label-input" class="form-control" value="' + escapeHtml(content.emailInfoLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-email-info-input">Correo</label><input id="contact-email-info-input" class="form-control" value="' + escapeHtml(content.emailInfo) + '"></div>' +
       '</div></section>' +
       '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Cierre</span><h3>Bloque final</h3></div></div><div class="admin-form-stack">' +
-      '<div class="admin-field"><label for="contact-subscribe-title-input">Título</label><input id="contact-subscribe-title-input" class="form-control" value="' + escapeHtml(content.subscribeTitle) + '"></div>' +
+      '<div class="admin-field"><label for="contact-subscribe-title-input">TÃ­tulo</label><input id="contact-subscribe-title-input" class="form-control" value="' + escapeHtml(content.subscribeTitle) + '"></div>' +
       '<div class="admin-field"><label for="contact-subscribe-text-input">Texto</label><textarea id="contact-subscribe-text-input" class="form-control admin-textarea-sm">' + escapeHtml(content.subscribeText) + '</textarea></div>' +
       '<div class="admin-field"><label for="contact-subscribe-placeholder-input">Placeholder email</label><input id="contact-subscribe-placeholder-input" class="form-control" value="' + escapeHtml(content.subscribePlaceholder) + '"></div>' +
-      '<div class="admin-field"><label for="contact-subscribe-button-input">Botón</label><input id="contact-subscribe-button-input" class="form-control" value="' + escapeHtml(content.subscribeButton) + '"></div>' +
+      '<div class="admin-field"><label for="contact-subscribe-button-input">BotÃ³n</label><input id="contact-subscribe-button-input" class="form-control" value="' + escapeHtml(content.subscribeButton) + '"></div>' +
       '<div class="admin-field"><label for="contact-subscribe-image-input">Imagen de fondo</label><input id="contact-subscribe-image-input" class="form-control" value="' + escapeHtml(content.subscribeImage) + '"></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="contact.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="contact.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
       '<p id="contact-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
 
@@ -1189,7 +1243,7 @@
         subscribeButton: document.getElementById("contact-subscribe-button-input").value,
         subscribeImage: document.getElementById("contact-subscribe-image-input").value
       });
-      document.getElementById("contact-content-feedback").textContent = "Contenido guardado. La página Contacto reflejará estos cambios.";
+      document.getElementById("contact-content-feedback").textContent = "Contenido guardado. La pÃ¡gina Contacto reflejarÃ¡ estos cambios.";
     });
   }
 
@@ -1215,7 +1269,7 @@
     overlay.className = "admin-modal-overlay";
     overlay.innerHTML =
       '<div class="admin-modal ' + (className || "") + '" role="dialog" aria-modal="true" aria-label="' + escapeHtml(label || "Dialogo") + '">' +
-      '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">×</button>' +
+      '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">Ã—</button>' +
       html +
       '</div>';
 
@@ -1242,25 +1296,342 @@
   function buildColumnFields(prefix, selected) {
     var safe = selected || {};
     var id = prefix || "column";
+    var titleLimit = 120;
+    var summaryLimit = 280;
+    var bodyLimit = 8000;
     var authorOptions = buildColumnAuthorOptions({
       autorId: safe.autorId || "",
       autor: safe.autor || ""
     });
+    var contentHtml = safe.contenidoHtml
+      ? sanitizeColumnEditorHtml(safe.contenidoHtml)
+      : (window.EditorialCmsSite && typeof window.EditorialCmsSite.columnContentToHtml === "function"
+        ? window.EditorialCmsSite.columnContentToHtml(safe.contenido || "")
+        : sanitizeColumnEditorHtml(safe.contenido || ""));
 
     return '' +
       '<div class="admin-form-grid">' +
       '<label class="admin-section-toggle admin-field-full"><span>Visible en el sitio</span><input id="' + id + '-visible" type="checkbox"' + (safe.visible !== false ? ' checked' : '') + '></label>' +
-      '<div class="admin-field"><label for="' + id + '-title">Titulo</label><input id="' + id + '-title" class="form-control" value="' + escapeHtml(safe.titulo || "") + '" required></div>' +
+      '<div class="admin-field"><label for="' + id + '-title">Titulo</label><input id="' + id + '-title" class="form-control" value="' + escapeHtml(safe.titulo || "") + '" required maxlength="' + titleLimit + '" data-char-limit="' + titleLimit + '"><small id="' + id + '-title-count" class="admin-char-count" data-char-counter="' + id + '-title" data-char-limit="' + titleLimit + '">0 / ' + titleLimit + ' caracteres</small></div>' +
       '<div class="admin-field"><label for="' + id + '-author">Autor</label><select id="' + id + '-author" class="form-control">' + authorOptions + '</select></div>' +
       '<div class="admin-field"><label for="' + id + '-date">Fecha</label><input id="' + id + '-date" class="form-control" value="' + escapeHtml(safe.fecha || "") + '" placeholder="2026-04-01"></div>' +
       '<div class="admin-field"><label for="' + id + '-category">Categoria</label><select id="' + id + '-category" class="form-control"><option value="Analisis"' + ((safe.categoria || "Opinion") === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + ((safe.categoria || "Opinion") === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (safe.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (safe.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (safe.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
       '<div class="admin-field"><label for="' + id + '-status">Estado</label><select id="' + id + '-status" class="form-control"><option value="borrador"' + ((safe.estado || "borrador") === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (safe.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
-      '<div class="admin-field"><label for="' + id + '-image">Imagen</label><input id="' + id + '-image" class="form-control" value="' + escapeHtml(safe.imagen || "") + '" placeholder="URL de imagen o data:image/..."><input id="' + id + '-image-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Portada principal de la columna.</small></div>' +
-      '<div class="admin-field"><label for="' + id + '-banner">Banner</label><input id="' + id + '-banner" class="form-control" value="' + escapeHtml(safe.banner || safe.imagen || "") + '" placeholder="URL de imagen o data:image/..."><input id="' + id + '-banner-file" type="file" class="form-control-file mt-2" accept="image/*"><small class="text-muted">Imagen superior para la ficha publica.</small></div>' +
-      '<div class="admin-field admin-field-full"><label for="' + id + '-summary">Resumen</label><textarea id="' + id + '-summary" class="form-control admin-textarea-sm">' + escapeHtml(safe.resumen || "") + '</textarea></div>' +
+      '<div class="admin-field"><label for="' + id + '-image">Imagen</label><input id="' + id + '-image" class="form-control" value="' + escapeHtml(safe.imagen || safe.banner || "") + '" placeholder="URL de imagen segura"><small class="text-muted">Se usa como portada y banner de la columna.</small></div>' +
+      '<div class="admin-field admin-field-full"><label for="' + id + '-summary">Resumen</label><textarea id="' + id + '-summary" class="form-control admin-textarea-sm" maxlength="' + summaryLimit + '" data-char-limit="' + summaryLimit + '">' + escapeHtml(safe.resumen || "") + '</textarea><small id="' + id + '-summary-count" class="admin-char-count" data-char-counter="' + id + '-summary" data-char-limit="' + summaryLimit + '">0 / ' + summaryLimit + ' caracteres</small></div>' +
       '<div class="admin-field admin-field-full"><label for="' + id + '-hashtags">Hashtags</label><textarea id="' + id + '-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(Array.isArray(safe.hashtags) ? safe.hashtags.join(", ") : String(safe.hashtags || "")) + '</textarea><small class="text-muted">Separados por comas o saltos de linea.</small></div>' +
-      '<div class="admin-field admin-field-full"><label for="' + id + '-content">Contenido</label><textarea id="' + id + '-content" class="form-control admin-code-textarea">' + escapeHtml(Array.isArray(safe.contenido) ? safe.contenido.join("\n\n") : String(safe.contenido || "")) + '</textarea></div>' +
+      '<div class="admin-field admin-field-full">' +
+      '<label for="' + id + '-content">Contenido</label>' +
+      '<div class="admin-rich-editor" data-rich-editor data-rich-prefix="' + id + '">' +
+      '<div class="admin-rich-toolbar" data-rich-toolbar>' +
+      '<select class="admin-rich-select" data-rich-format aria-label="Formato de texto">' +
+      '<option value="">Estilo</option>' +
+      '<option value="P">PÃ¡rrafo</option>' +
+      '<option value="H2">TÃ­tulo</option>' +
+      '<option value="H3">SubtÃ­tulo</option>' +
+      '<option value="BLOCKQUOTE">Cita</option>' +
+      '</select>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="bold" aria-label="Negrita"><strong>B</strong></button>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="italic" aria-label="Cursiva"><em>I</em></button>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="underline" aria-label="Subrayado"><u>U</u></button>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="insertUnorderedList" aria-label="Lista con viÃ±etas">â€¢ Lista</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="insertOrderedList" aria-label="Lista numerada">1. Lista</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-action="link" aria-label="Insertar enlace">Enlace</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-action="image" aria-label="Insertar imagen por url">Imagen</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-action="video" aria-label="Insertar video por url">Video</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-action="iframe" aria-label="Insertar iframe por url">Iframe</button>' +
+      '</div>' +
+      '<div id="' + id + '-content" class="admin-rich-editor-area" contenteditable="true" spellcheck="true" aria-multiline="true" data-char-limit="' + bodyLimit + '" data-initial-html="' + escapeHtml(contentHtml) + '"></div>' +
+      '<small id="' + id + '-content-count" class="admin-char-count" data-char-counter="' + id + '-content" data-char-limit="' + bodyLimit + '">0 / ' + bodyLimit + ' caracteres</small>' +
+      '</div>' +
+      '</div>' +
       '</div>';
+  }
+
+  function sanitizeColumnEditorHtml(html) {
+    if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeColumnContentHtml === "function") {
+      return window.EditorialCmsSite.sanitizeColumnContentHtml(html || "");
+    }
+    return String(html || "");
+  }
+
+  function getEditorSelectionRange(editor) {
+    var selection = window.getSelection && window.getSelection();
+    if (!selection || !selection.rangeCount) return null;
+    var range = selection.getRangeAt(0);
+    if (!editor.contains(range.commonAncestorContainer)) return null;
+    return range.cloneRange();
+  }
+
+  function restoreEditorSelection(range) {
+    if (!range || !window.getSelection) return;
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function promptForSafeUrl(message, fallback) {
+    var raw = window.prompt(message, fallback || "");
+    if (raw === null) return "";
+    return String(raw || "").trim();
+  }
+
+  function sanitizeEditorImageUrl(value) {
+    if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function") {
+      var safeImageUrl = window.EditorialCmsSite.sanitizeImageUrl(value, "");
+      if (/^(data:|blob:)/i.test(String(safeImageUrl || ""))) return "";
+      return safeImageUrl;
+    }
+    return String(value || "").trim();
+  }
+
+  function sanitizeEditorLinkUrl(value) {
+    if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeLinkUrl === "function") {
+      return window.EditorialCmsSite.sanitizeLinkUrl(value);
+    }
+    return String(value || "").trim();
+  }
+
+  function sanitizeEditorMediaUrl(value) {
+    if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeMediaUrl === "function") {
+      var safeMediaUrl = window.EditorialCmsSite.sanitizeMediaUrl(value, "");
+      if (/^(data:|blob:)/i.test(String(safeMediaUrl || ""))) return "";
+      return safeMediaUrl;
+    }
+    return String(value || "").trim();
+  }
+
+  function sanitizeEditorIframeUrl(value) {
+    if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeIframeUrl === "function") {
+      return window.EditorialCmsSite.sanitizeIframeUrl(value, "");
+    }
+    return String(value || "").trim();
+  }
+
+  function getFieldCounterTarget(modal, prefix, name) {
+    return modal.querySelector("#" + prefix + "-" + name + "-count");
+  }
+
+  function getPlainTextLength(value) {
+    return String(value || "").replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim().length;
+  }
+
+  function getRichEditorLength(editor) {
+    if (!editor) return 0;
+    var text = editor.innerText || editor.textContent || "";
+    return getPlainTextLength(text);
+  }
+
+  function updateCharCounter(node, current, limit) {
+    if (!node) return;
+    node.textContent = current + " / " + limit + " caracteres";
+    node.classList.toggle("is-over-limit", current > limit);
+  }
+
+  function bindTextCounter(input, counterNode, limit) {
+    if (!input || !counterNode) return;
+    var max = parseInt(limit, 10);
+    if (!isFinite(max) || max <= 0) return;
+
+    function refresh() {
+      updateCharCounter(counterNode, getPlainTextLength(input.value), max);
+    }
+
+    input.addEventListener("input", function () {
+      if (input.value.length > max) {
+        input.value = input.value.slice(0, max);
+      }
+      refresh();
+    });
+
+    refresh();
+  }
+
+  function execRichCommand(editor, command, value) {
+    if (!editor || typeof document.execCommand !== "function") return;
+    editor.focus();
+    document.execCommand(command, false, value || null);
+  }
+
+  function insertHtmlAtSelection(editor, html, savedRange) {
+    if (!editor || typeof document.execCommand !== "function") return;
+    editor.focus();
+    if (savedRange) {
+      restoreEditorSelection(savedRange);
+    }
+    document.execCommand("insertHTML", false, html);
+  }
+
+  function insertRichLink(editor) {
+    var savedRange = getEditorSelectionRange(editor);
+    var url = promptForSafeUrl("Pega la URL del enlace:", "https://");
+    if (!url) return;
+    var safeUrl = sanitizeEditorLinkUrl(url);
+    if (!safeUrl || safeUrl === "#") {
+      window.alert("La URL del enlace no es valida.");
+      return;
+    }
+
+    if (savedRange && !savedRange.collapsed) {
+      insertHtmlAtSelection(editor, '<a href="' + escapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(savedRange.toString() || "Enlace") + '</a>', savedRange);
+      return;
+    }
+
+    var text = promptForSafeUrl("Texto visible del enlace:", "Leer mÃ¡s") || "Leer mÃ¡s";
+    insertHtmlAtSelection(editor, '<a href="' + escapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>', savedRange);
+  }
+
+  function insertRichMedia(editor, kind) {
+    var savedRange = getEditorSelectionRange(editor);
+    var url = "";
+    var altText = "";
+    var titleText = "";
+
+    if (kind === "image") {
+      url = promptForSafeUrl("Pega la URL de la imagen:", "https://");
+      if (!url) return;
+      url = sanitizeEditorImageUrl(url);
+      if (!url) {
+        window.alert("La URL de la imagen no es vÃ¡lida.");
+        return;
+      }
+      altText = promptForSafeUrl("Texto alternativo para la imagen:", "") || "";
+      insertHtmlAtSelection(editor, '<img src="' + escapeHtml(url) + '" alt="' + escapeHtml(altText) + '">', savedRange);
+      return;
+    }
+
+    if (kind === "video") {
+      url = promptForSafeUrl("Pega la URL del video:", "https://");
+      if (!url) return;
+      url = sanitizeEditorMediaUrl(url);
+      if (!url) {
+        window.alert("La URL del video no es vÃ¡lida.");
+        return;
+      }
+      insertHtmlAtSelection(editor, '<video controls preload="metadata" src="' + escapeHtml(url) + '"></video>', savedRange);
+      return;
+    }
+
+    if (kind === "iframe") {
+      url = promptForSafeUrl("Pega la URL del iframe:", "https://");
+      if (!url) return;
+      url = sanitizeEditorIframeUrl(url);
+      if (!url) {
+        window.alert("La URL del iframe no es vÃ¡lida.");
+        return;
+      }
+      titleText = promptForSafeUrl("TÃ­tulo del iframe:", "") || "";
+      insertHtmlAtSelection(editor, '<iframe src="' + escapeHtml(url) + '" title="' + escapeHtml(titleText) + '" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>', savedRange);
+    }
+  }
+
+  function bindRichEditor(modal, prefix) {
+    var editor = modal.querySelector("#" + prefix + "-content");
+    var toolbar = modal.querySelector("[data-rich-toolbar]");
+    var formatSelect = modal.querySelector("[data-rich-format]");
+    var counterNode = modal.querySelector("#" + prefix + "-content-count");
+    var bodyLimit = parseInt(editor && editor.getAttribute("data-char-limit"), 10) || 8000;
+
+    if (!editor || !toolbar) return;
+
+    var initialHtml = editor.getAttribute("data-initial-html") || "";
+    editor.innerHTML = initialHtml;
+
+    var savedRange = null;
+
+    function refreshCounter() {
+      updateCharCounter(counterNode, getRichEditorLength(editor), bodyLimit);
+    }
+
+    function cacheSelection() {
+      var range = getEditorSelectionRange(editor);
+      if (range) {
+        savedRange = range;
+      }
+    }
+
+    function restoreSavedSelection() {
+      if (savedRange) {
+        restoreEditorSelection(savedRange);
+      }
+    }
+
+    editor.addEventListener("mouseup", cacheSelection);
+    editor.addEventListener("keyup", cacheSelection);
+    editor.addEventListener("focus", cacheSelection);
+    editor.addEventListener("beforeinput", function (event) {
+      if (!event.inputType || event.inputType.indexOf("insert") !== 0) return;
+
+      var currentLength = getRichEditorLength(editor);
+      var selectionLength = 0;
+      var selection = window.getSelection && window.getSelection();
+      if (selection && selection.rangeCount && editor.contains(selection.getRangeAt(0).commonAncestorContainer)) {
+        selectionLength = getPlainTextLength(selection.toString());
+      }
+
+      var incomingLength = 1;
+      if (event.inputType === "insertFromPaste" || event.inputType === "insertFromDrop") {
+        var pasted = "";
+        if (event.clipboardData) {
+          pasted = event.clipboardData.getData("text/plain");
+        } else if (event.dataTransfer) {
+          pasted = event.dataTransfer.getData("text/plain");
+        }
+        incomingLength = getPlainTextLength(pasted || "");
+      } else if (typeof event.data === "string") {
+        incomingLength = getPlainTextLength(event.data);
+      }
+
+      if (currentLength - selectionLength + incomingLength > bodyLimit) {
+        event.preventDefault();
+      }
+    });
+    editor.addEventListener("input", function () {
+      cacheSelection();
+      refreshCounter();
+    });
+
+    toolbar.addEventListener("mousedown", function (event) {
+      if (event.target.closest("[data-rich-command], [data-rich-action], select")) {
+        event.preventDefault();
+      }
+    });
+
+    Array.prototype.forEach.call(toolbar.querySelectorAll("[data-rich-command]"), function (button) {
+      button.addEventListener("click", function () {
+        var command = button.getAttribute("data-rich-command");
+        restoreSavedSelection();
+        execRichCommand(editor, command);
+        cacheSelection();
+      });
+    });
+
+    if (formatSelect) {
+      formatSelect.addEventListener("change", function () {
+        var value = formatSelect.value;
+        if (!value) return;
+        restoreSavedSelection();
+        execRichCommand(editor, "formatBlock", value);
+        formatSelect.value = "";
+        cacheSelection();
+      });
+    }
+
+    Array.prototype.forEach.call(toolbar.querySelectorAll("[data-rich-action]"), function (button) {
+      button.addEventListener("click", function () {
+        var action = button.getAttribute("data-rich-action");
+        restoreSavedSelection();
+        if (action === "link") {
+          insertRichLink(editor);
+        } else if (action === "image" || action === "video" || action === "iframe") {
+          insertRichMedia(editor, action);
+        }
+        cacheSelection();
+        refreshCounter();
+      });
+    });
+
+    refreshCounter();
   }
 
   function readColumnModalDraft(modal, prefix, base) {
@@ -1268,6 +1639,8 @@
     var source = base || {};
     var authorSelect = modal.querySelector("#" + id + "-author");
     var authorOption = authorSelect && authorSelect.selectedOptions ? authorSelect.selectedOptions[0] : null;
+    var editor = modal.querySelector("#" + id + "-content");
+    var contentHtml = editor ? editor.innerHTML : "";
 
     return {
       id: source.id || "",
@@ -1278,10 +1651,11 @@
       categoria: modal.querySelector("#" + id + "-category").value,
       estado: modal.querySelector("#" + id + "-status").value,
       imagen: modal.querySelector("#" + id + "-image").value,
-      banner: modal.querySelector("#" + id + "-banner").value,
+      banner: modal.querySelector("#" + id + "-image").value,
       resumen: modal.querySelector("#" + id + "-summary").value,
       hashtags: modal.querySelector("#" + id + "-hashtags").value,
-      contenido: modal.querySelector("#" + id + "-content").value,
+      contenido: contentHtml,
+      contenidoHtml: contentHtml,
       visible: modal.querySelector("#" + id + "-visible").checked
     };
   }
@@ -1307,7 +1681,7 @@
 
     var html =
       '<div class="admin-modal-head">' +
-      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva columna" : "Editar columna") + '</h3><p>' + (isNew ? "Completa los datos esenciales para publicar una nueva pieza." : "Revisa la columna, ajusta sus campos o elimínala si es necesario.") + '</p></div>' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva columna" : "Editar columna") + '</h3><p>' + (isNew ? "Completa los datos esenciales para publicar una nueva pieza." : "Revisa la columna, ajusta sus campos o elimÃ­nala si es necesario.") + '</p></div>' +
       '</div>' +
       '<form id="' + prefix + '-form" class="admin-form-stack" novalidate>' +
       buildColumnFields(prefix, selected) +
@@ -1325,9 +1699,33 @@
     var form = modal.querySelector("#" + prefix + "-form");
     if (!form) return;
 
+    var titleInput = modal.querySelector("#" + prefix + "-title");
+    var titleCounter = modal.querySelector("#" + prefix + "-title-count");
+    var summaryInput = modal.querySelector("#" + prefix + "-summary");
+    var summaryCounter = modal.querySelector("#" + prefix + "-summary-count");
+    var contentEditor = modal.querySelector("#" + prefix + "-content");
+    var contentCounter = modal.querySelector("#" + prefix + "-content-count");
+
+    bindTextCounter(titleInput, titleCounter, 120);
+    bindTextCounter(summaryInput, summaryCounter, 280);
+    if (contentEditor && contentCounter) {
+      bindRichEditor(modal, prefix);
+    }
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var feedback = modal.querySelector("#" + prefix + "-feedback");
+      var titleLength = getPlainTextLength(titleInput ? titleInput.value : "");
+      var summaryLength = getPlainTextLength(summaryInput ? summaryInput.value : "");
+      var contentLength = getRichEditorLength(contentEditor);
+
+      if (titleLength > 120 || summaryLength > 280 || contentLength > 8000) {
+        if (feedback) {
+          feedback.textContent = "Revisa los lÃ­mites: tÃ­tulo 120 caracteres, resumen 280 y cuerpo 8000.";
+        }
+        return;
+      }
+
       var saved = window.EditorialCmsSite.saveColumn(readColumnModalDraft(modal, prefix, selected));
 
       if (feedback) {
@@ -1348,8 +1746,6 @@
       });
     }
 
-    bindImageUpload(prefix + "-image-file", prefix + "-image", prefix + "-feedback", "La imagen");
-    bindImageUpload(prefix + "-banner-file", prefix + "-banner", prefix + "-feedback", "El banner");
   }
 
   function openColumnCreateModal() {
@@ -1430,7 +1826,72 @@
   function renderEpisodes(selectedId) {
     var episodes = window.EditorialCmsSite.getEpisodesForAdmin();
     var programs = window.EditorialCmsSite.getProgramsForAdmin();
-    var selected = findById(episodes, selectedId) || {
+    var selected = findById(episodes, selectedId) || null;
+    var episodeRowsHtml = episodes.length ? episodes.map(function (episode) {
+      var program = findById(programs, episode.programaId);
+      var statusLabel = episode.visible === false ? "Oculto" : "Visible";
+      return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(episode.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(episode.id) + '">' +
+        '<div class="admin-column-main"><strong>' + escapeHtml(episode.titulo || "Sin titulo") + '</strong></div>' +
+        '<div class="admin-column-cell">' + escapeHtml(program ? program.nombre : "Sin programa") + '</div>' +
+        '<div class="admin-column-cell">' + escapeHtml(episode.fecha || "Sin fecha") + '</div>' +
+        '<div><span class="admin-column-status' + (episode.visible === false ? ' is-borrador' : '') + '">' + escapeHtml(statusLabel) + '</span></div>' +
+        '<div class="admin-column-cell">Abrir</div>' +
+        '</button>';
+    }).join("") : '<div class="admin-empty-state">No hay episodios creados todavia. Usa <strong>Nuevo episodio</strong> para crear el primero.</div>';
+
+    renderEntityEditor({
+      kicker: "Contenido",
+      title: "Episodios",
+      subtitle: "Gestiona episodios desde una biblioteca unica. Cada fila abre un popup para editar programa, audio, resumen y transcripcion.",
+      html:
+        '<section class="admin-library-layout">' +
+        '<div class="admin-card admin-library-card">' +
+        '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Episodios</h3></div><button id="add-episode" type="button" class="btn btn-primary">Nuevo episodio</button></div>' +
+        '<div class="admin-library-meta"><span>' + episodes.length + ' episodios</span><span>Haz clic en una fila para ver, editar o borrar</span></div>' +
+        '<div class="admin-table-head admin-column-table-head">' +
+        '<span>Titulo</span><span>Programa</span><span>Fecha</span><span>Estado</span><span></span>' +
+        '</div>' +
+        '<div class="admin-column-list" id="episode-list">' + episodeRowsHtml + '</div>' +
+        '</div></section>',
+      bind: function () {
+        Array.prototype.forEach.call(document.querySelectorAll("#episode-list .admin-column-row"), function (button) {
+          button.addEventListener("click", function () {
+            var episode = findById(episodes, button.getAttribute("data-id"));
+            openEpisodeEditorModal(episode);
+          });
+        });
+        document.getElementById("add-episode").addEventListener("click", function () {
+          openEpisodeEditorModal(null);
+        });
+      }
+    });
+  }
+
+  function readEpisodeModalDraft(modal, base) {
+    var source = base || {};
+    var transcript = modal.querySelector("#episode-transcript");
+
+    return {
+      id: source.id || "",
+      programaId: modal.querySelector("#episode-program").value,
+      numero: modal.querySelector("#episode-number").value,
+      titulo: modal.querySelector("#episode-title").value,
+      autor: modal.querySelector("#episode-author").value,
+      fecha: modal.querySelector("#episode-date").value,
+      duracion: modal.querySelector("#episode-duration").value,
+      imagen: modal.querySelector("#episode-image").value,
+      audio: modal.querySelector("#episode-audio").value,
+      resumen: modal.querySelector("#episode-summary").value,
+      transcripcion: transcript ? transcript.value : "",
+      visible: modal.querySelector("#episode-visible").checked
+    };
+  }
+
+  function openEpisodeEditorModal(episode) {
+    var episodes = window.EditorialCmsSite.getEpisodesForAdmin();
+    var programs = window.EditorialCmsSite.getProgramsForAdmin();
+    var isNew = !episode || !episode.id;
+    var selected = episode || {
       id: "",
       programaId: programs[0] ? programs[0].id : "",
       numero: "",
@@ -1445,75 +1906,58 @@
       visible: true
     };
 
-    renderEntityEditor({
-      kicker: "Contenido",
-      title: "Episodios",
-      subtitle: "Cada episodio puede editar programa asociado, audio, metadatos, resumen y transcripcion completa.",
-      html:
-        '<section class="admin-library-layout admin-library-split">' +
-        '<div class="admin-card admin-library-card">' +
-        '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Episodios</h3></div><button id="add-episode" type="button" class="btn btn-primary">Nuevo episodio</button></div>' +
-        '<div class="admin-entity-list" id="episode-list">' + episodes.map(function (episode) {
-          var program = findById(programs, episode.programaId);
-          return '<button type="button" class="admin-entity-row' + (selected.id === episode.id ? ' is-active' : '') + '" data-id="' + escapeHtml(episode.id) + '">' +
-            '<strong>' + escapeHtml(episode.titulo) + '</strong><span>' + escapeHtml((program ? program.nombre + " / " : "") + (episode.fecha || "")) + '</span></button>';
-        }).join("") + '</div></div>' +
-        '<div class="admin-card admin-editor-panel">' +
-        '<form id="episode-form" class="admin-form-stack" novalidate>' +
-        '<input id="episode-id" type="hidden" value="' + escapeHtml(selected.id) + '">' +
-        '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="episode-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
-        '<div class="admin-field"><label for="episode-program">Programa</label><select id="episode-program" class="form-control">' + programs.map(function (program) {
-          return '<option value="' + escapeHtml(program.id) + '"' + (selected.programaId === program.id ? ' selected' : '') + '>' + escapeHtml(program.nombre) + '</option>';
-        }).join("") + '</select></div>' +
-        '<div class="admin-field"><label for="episode-number">Numero</label><input id="episode-number" class="form-control" value="' + escapeHtml(selected.numero) + '"></div>' +
-        '<div class="admin-field"><label for="episode-title">Titulo</label><input id="episode-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
-        '<div class="admin-field"><label for="episode-author">Autor</label><input id="episode-author" class="form-control" value="' + escapeHtml(selected.autor) + '"></div>' +
-        '<div class="admin-field"><label for="episode-date">Fecha</label><input id="episode-date" class="form-control" value="' + escapeHtml(selected.fecha) + '" placeholder="2026-04-01 o 01 Abril 2026"></div>' +
-        '<div class="admin-field"><label for="episode-duration">Duracion</label><input id="episode-duration" class="form-control" value="' + escapeHtml(selected.duracion) + '"></div>' +
-        '<div class="admin-field"><label for="episode-image">Imagen</label><input id="episode-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
-        '<div class="admin-field"><label for="episode-audio">Archivo o URL de audio</label><input id="episode-audio" class="form-control" value="' + escapeHtml(selected.audio) + '"></div>' +
-        '<div class="admin-field"><label for="episode-summary">Resumen</label><textarea id="episode-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
-        '<div class="admin-field"><label for="episode-transcript">Transcripcion</label><textarea id="episode-transcript" class="form-control admin-code-textarea" placeholder="Una linea por intervencion. Formato: Locutor 1: texto">' + escapeHtml(window.EditorialCmsSite.serializeTranscript(selected.transcripcion)) + '</textarea></div>' +
-        '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar episodio</button>' + (selected.id ? '<button id="delete-episode" type="button" class="btn btn-outline-dark">Eliminar</button>' : '') + '</div>' +
-        '<p id="episode-feedback" class="admin-feedback" aria-live="polite"></p>' +
-        '</form></div></section>',
-      bind: function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#episode-list .admin-entity-row"), function (button) {
-          button.addEventListener("click", function () {
-            routeAdmin("episode", button.getAttribute("data-id"));
-          });
-        });
-        document.getElementById("add-episode").addEventListener("click", function () {
-          routeAdmin("episode", "");
-        });
-        document.getElementById("episode-form").addEventListener("submit", function (event) {
-          event.preventDefault();
-          var saved = window.EditorialCmsSite.saveEpisode({
-            id: document.getElementById("episode-id").value,
-            programaId: document.getElementById("episode-program").value,
-            numero: document.getElementById("episode-number").value,
-            titulo: document.getElementById("episode-title").value,
-            autor: document.getElementById("episode-author").value,
-            fecha: document.getElementById("episode-date").value,
-            duracion: document.getElementById("episode-duration").value,
-            imagen: document.getElementById("episode-image").value,
-            audio: document.getElementById("episode-audio").value,
-            resumen: document.getElementById("episode-summary").value,
-            transcripcion: document.getElementById("episode-transcript").value,
-            visible: document.getElementById("episode-visible").checked
-          });
-          routeAdmin("episode", saved.id, true);
-        });
-        var deleteButton = document.getElementById("delete-episode");
-        if (deleteButton) {
-          deleteButton.addEventListener("click", function () {
-            if (!window.confirm("Se eliminara este episodio del sitio. Continuar?")) return;
-            window.EditorialCmsSite.deleteEpisode(selected.id);
-            routeAdmin("episodes", "", true);
-          });
-        }
+    var html =
+      '<div class="admin-modal-head">' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nuevo episodio" : "Editar episodio") + '</h3><p>' + (isNew ? "Completa los datos para publicar un nuevo episodio." : "Revisa el episodio, ajusta sus campos o elimínalo si es necesario.") + '</p></div>' +
+      '</div>' +
+      '<form id="episode-modal-form" class="admin-form-stack" novalidate>' +
+      '<label class="admin-section-toggle"><span>Visible en el sitio</span><input id="episode-visible" type="checkbox"' + (selected.visible !== false ? ' checked' : '') + '></label>' +
+      '<div class="admin-field"><label for="episode-program">Programa</label><select id="episode-program" class="form-control">' + programs.map(function (program) {
+        return '<option value="' + escapeHtml(program.id) + '"' + (selected.programaId === program.id ? ' selected' : '') + '>' + escapeHtml(program.nombre) + '</option>';
+      }).join("") + '</select></div>' +
+      '<div class="admin-field"><label for="episode-number">Numero</label><input id="episode-number" class="form-control" value="' + escapeHtml(selected.numero) + '"></div>' +
+      '<div class="admin-field"><label for="episode-title">Titulo</label><input id="episode-title" class="form-control" value="' + escapeHtml(selected.titulo) + '" required></div>' +
+      '<div class="admin-field"><label for="episode-author">Autor</label><input id="episode-author" class="form-control" value="' + escapeHtml(selected.autor) + '"></div>' +
+      '<div class="admin-field"><label for="episode-date">Fecha</label><input id="episode-date" class="form-control" value="' + escapeHtml(selected.fecha) + '" placeholder="2026-04-01 o 01 Abril 2026"></div>' +
+      '<div class="admin-field"><label for="episode-duration">Duracion</label><input id="episode-duration" class="form-control" value="' + escapeHtml(selected.duracion) + '"></div>' +
+      '<div class="admin-field"><label for="episode-image">Imagen</label><input id="episode-image" class="form-control" value="' + escapeHtml(selected.imagen) + '"></div>' +
+      '<div class="admin-field"><label for="episode-audio">Archivo o URL de audio</label><input id="episode-audio" class="form-control" value="' + escapeHtml(selected.audio) + '"></div>' +
+      '<div class="admin-field"><label for="episode-summary">Resumen</label><textarea id="episode-summary" class="form-control admin-textarea-sm">' + escapeHtml(selected.resumen) + '</textarea></div>' +
+      '<div class="admin-field"><label for="episode-transcript">Transcripcion</label><textarea id="episode-transcript" class="form-control admin-code-textarea" placeholder="Una linea por intervencion. Formato: Locutor 1: texto">' + escapeHtml(window.EditorialCmsSite.serializeTranscript(selected.transcripcion)) + '</textarea></div>' +
+      '<div class="admin-actions admin-modal-actions">' +
+      '<button type="button" class="btn btn-outline-dark" data-admin-modal-close>Cancelar</button>' +
+      '<button type="submit" class="btn btn-primary">' + (isNew ? "Crear episodio" : "Guardar cambios") + '</button>' +
+      (isNew ? "" : '<button id="episode-delete" type="button" class="btn btn-outline-dark">Eliminar</button>') +
+      '</div>' +
+      '<p id="episode-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form>';
+
+    var modal = openAdminModal(html, "admin-modal-episode", isNew ? "Nuevo episodio" : "Editar episodio");
+    if (!modal) return;
+
+    var form = modal.querySelector("#episode-modal-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var feedback = modal.querySelector("#episode-feedback");
+      var saved = window.EditorialCmsSite.saveEpisode(readEpisodeModalDraft(modal, selected));
+      if (feedback) {
+        feedback.textContent = isNew ? "Episodio creado. Actualizando la tabla..." : "Episodio actualizado. Actualizando la tabla...";
       }
+      closeAdminModal();
+      renderEpisodes(saved.id);
     });
+
+    var deleteButton = modal.querySelector("#episode-delete");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", function () {
+        if (!window.confirm("Se eliminara este episodio del sitio. Continuar?")) return;
+        window.EditorialCmsSite.deleteEpisode(selected.id);
+        closeAdminModal();
+        renderEpisodes("");
+      });
+    }
   }
 
   function renderColumns(selectedId) {
@@ -1661,6 +2105,7 @@
     renderDashboardRoute(initialRoute.view, initialRoute.id);
 
     document.getElementById("admin-logout").addEventListener("click", function () {
+      clearDevSession();
       fetch(LOGOUT_ENDPOINT, { method: "POST", credentials: "include" })
         .catch(function () {
           return null;
