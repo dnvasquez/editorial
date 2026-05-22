@@ -604,10 +604,8 @@
     html += createLink("admin-columnas.html?view=episodes", "Episodios", currentView === "episodes" || currentView === "episode");
     html += createLink("admin-columnas.html?view=columns", "Columnas", currentView === "columns" || currentView === "column");
     html += createLink("admin-columnas.html?view=publications", "Publicaciones", currentView === "publications" || currentView === "publication");
-    html += createLink("admin-columnas.html?view=columnistas-content", "Columnistas", currentView === "columnistas-content");
     html += createLink("admin-columnas.html?view=invitados-content", "Invitados destacados", currentView === "invitados-content");
     html += createLink("admin-columnas.html?view=about-content", "Nosotros", currentView === "about-content");
-    html += createLink("admin-columnas.html?view=contact-content", "Contacto", currentView === "contact-content");
     html += '</div></div>';
 
     nav.innerHTML = html;
@@ -685,16 +683,7 @@
     }
     recentEpisodesHtml += '</div></section>';
 
-    var helpHtml = '<section class="admin-card admin-library-card">' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Referencia rápida</span><h3>Guía del CMS</h3></div></div>' +
-      '<div class="admin-help-box">' +
-      '<p><strong>Visualizaciones:</strong> Se actualiza cuando los lectores visitan columnas individuales.</p>' +
-      '<p><strong>Columnas:</strong> Artículos y opiniones de columnistas. Puedes ocultar contenido sin eliminarlo.</p>' +
-      '<p><strong>Capítulos:</strong> Episodios de podcast con audio, transcripciones y metadatos.</p>' +
-      '<p><strong>Publicaciones:</strong> Documentos, reportes y contenido editorial complementario.</p>' +
-      '</div></section>';
-
-    document.getElementById("admin-main-content").innerHTML = metricsHtml + recentColumnsHtml + recentEpisodesHtml + helpHtml;
+    document.getElementById("admin-main-content").innerHTML = metricsHtml + recentColumnsHtml + recentEpisodesHtml;
   }
 
   function renderPageEditor(pageId) {
@@ -722,10 +711,14 @@
     setHeader(
       "Pagina",
       page.label,
-      "Gestiona la visibilidad completa de esta pagina y sus ajustes generales de hero o contenido principal."
+      page.id === "columnas"
+        ? "Gestiona la visibilidad completa de esta pagina, sus ajustes generales y la seccion Columnistas que aparece debajo."
+        : page.id === "contact"
+          ? "Gestiona la visibilidad completa de esta pagina, sus ajustes generales y el contenido de formulario y cierre."
+          : "Gestiona la visibilidad completa de esta pagina y sus ajustes generales de hero o contenido principal."
     );
 
-    document.getElementById("admin-main-content").innerHTML =
+    var pageHtml =
       '<section class="admin-card admin-editor-panel admin-editor-single">' +
       '<form id="admin-page-form" class="admin-form-stack" novalidate>' +
       '<label class="admin-section-toggle"><span>Pagina visible en el sitio</span><input id="page-visible" type="checkbox"' + (config.visible !== false ? ' checked' : '') + '></label>' +
@@ -734,6 +727,16 @@
       '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar pagina</button><a href="' + page.file + '" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pagina publica</a></div>' +
       '<p id="admin-page-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
+
+    if (page.id === "columnas") {
+      var columnistasState = getColumnistasContentState();
+      pageHtml += buildColumnistasContentMarkup(columnistasState.content, columnistasState.items, 0);
+    } else if (page.id === "contact") {
+      var contactState = getContactContentState();
+      pageHtml += buildContactContentMarkup(contactState);
+    }
+
+    document.getElementById("admin-main-content").innerHTML = pageHtml;
 
     document.getElementById("admin-page-form").addEventListener("submit", function (event) {
       event.preventDefault();
@@ -754,6 +757,12 @@
       });
       document.getElementById("admin-page-feedback").textContent = "Pagina guardada. Recarga la vista publica para ver los cambios.";
     });
+
+    if (page.id === "columnas") {
+      bindColumnistasContentEditor(0, getColumnistasContentState().content);
+    } else if (page.id === "contact") {
+      bindContactContentEditor(getContactContentState());
+    }
 
     if (page.id === "index") {
       var typeSelect = document.getElementById("page-featured-type");
@@ -915,6 +924,115 @@
     }
 
     return draft;
+  }
+
+  function getColumnistasContentState(contentOverride) {
+    var content = contentOverride || window.EditorialCmsSite.getPageContentSection("columnistas");
+    var items = Array.isArray(content.items) ? content.items.slice() : [];
+
+    if (!items.length) {
+      items = [getEmptyColumnist()];
+    }
+
+    items = items.map(function (item, index) {
+      return Object.assign({}, getEmptyColumnist(), item, {
+        id: String(item.id || window.EditorialCmsSite.slugify(item.name) || ("columnista-" + (index + 1)))
+      });
+    });
+
+    return {
+      content: content,
+      items: items
+    };
+  }
+
+  function buildColumnistasContentMarkup(content, items, selectedIndex) {
+    var activeIndex = Math.max(0, Math.min(typeof selectedIndex === "number" ? selectedIndex : 0, items.length - 1));
+    var titleValue = content.title || "Nuestros Columnistas";
+
+    return '' +
+      '<section class="admin-library-layout admin-library-split admin-columnistas-panel">' +
+      '<div class="admin-card admin-library-card">' +
+      '<form id="admin-columnistas-content-form" class="admin-form-stack" novalidate>' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Contenido</span><h3>Titulo de la seccion</h3></div><button id="columnistas-save-title" type="submit" class="btn btn-primary">Guardar titulo</button></div>' +
+      '<div class="admin-field"><label for="columnistas-title">Titulo</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(titleValue) + '"></div>' +
+      '<p id="columnistas-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
+      '</form></div>' +
+      '<div class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Columnistas</span><h3>Fichas</h3></div><button id="columnistas-add-item" type="button" class="btn btn-primary">Agregar columnista</button></div>' +
+      '<div class="admin-library-meta"><span>' + items.length + ' columnistas</span><span>Haz clic en una fila para abrir el popup</span></div>' +
+      '<div class="admin-table-head admin-column-table-head"><span>Nombre</span><span>Rol</span><span>Redes</span><span></span><span></span></div>' +
+      '<div class="admin-column-list" id="columnistas-item-list">' + items.map(function (item, index) {
+        var hasLinks = [item.twitter, item.instagram, item.facebook, item.linkedin].some(function (value) {
+          return String(value || "").trim();
+        }) ? "Con enlaces" : "Sin enlaces";
+        return '<button type="button" class="admin-column-row' + (index === activeIndex ? ' is-editing' : '') + '" data-index="' + index + '">' +
+          '<div class="admin-column-main"><strong>' + escapeHtml(item.name || ("Columnista " + (index + 1))) + '</strong></div>' +
+          '<div class="admin-column-cell">' + escapeHtml(item.role || "Sin especialidad") + '</div>' +
+          '<div class="admin-column-cell">' + escapeHtml(hasLinks) + '</div>' +
+          '<div class="admin-column-cell">Abrir</div>' +
+          '<div class="admin-column-cell"></div>' +
+          '</button>';
+      }).join("") + '</div>' +
+      '</div></section>';
+  }
+
+  function bindColumnistasContentEditor(selectedColumnistaIndex, contentOverride) {
+    var state = getColumnistasContentState(contentOverride);
+    var content = state.content;
+    var items = state.items;
+    var selectedIndex = Math.max(0, Math.min(typeof selectedColumnistaIndex === "number" ? selectedColumnistaIndex : 0, items.length - 1));
+    var form = document.getElementById("admin-columnistas-content-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var feedback = document.getElementById("columnistas-content-feedback");
+      var next = readColumnistasContentDraft({
+        title: content.title || "Nuestros Columnistas",
+        items: items
+      });
+      var saved = window.EditorialCmsSite.savePageContentSection("columnistas", next);
+      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.hydrateGlobals === "function") {
+        window.EditorialCmsSite.hydrateGlobals();
+      }
+      if (feedback) {
+        feedback.textContent = "Contenido guardado. Sincronizando en segundo plano...";
+      }
+
+      if (saved) {
+        window.setTimeout(function () {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("view") === "page" && params.get("id") === "columnas") {
+            renderPageEditor("columnas");
+          } else {
+            renderColumnistasContentEditor(selectedIndex, saved);
+          }
+        }, 0);
+      }
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll("#columnistas-item-list .admin-column-row"), function (button) {
+      button.addEventListener("click", function () {
+        var draft = readColumnistasContentDraft({
+          title: content.title || "Nuestros Columnistas",
+          items: items
+        });
+        openColumnistasEditorModal(Number(button.getAttribute("data-index")), draft, false);
+      });
+    });
+
+    var addButton = document.getElementById("columnistas-add-item");
+    if (addButton) {
+      addButton.addEventListener("click", function () {
+        var draft = readColumnistasContentDraft({
+          title: content.title || "Nuestros Columnistas",
+          items: items
+        });
+        draft.items.push(getEmptyColumnist());
+        openColumnistasEditorModal(draft.items.length - 1, draft, true);
+      });
+    }
   }
 
   function readColumnistasModalDraft(modal, base) {
@@ -1223,20 +1341,10 @@
   }
 
   function renderColumnistasContentEditor(selectedColumnistaIndex, contentOverride) {
-    var content = contentOverride || window.EditorialCmsSite.getPageContentSection("columnistas");
-    var items = Array.isArray(content.items) ? content.items.slice() : [];
-    if (!items.length) {
-      items = [getEmptyColumnist()];
-    }
-
-    items = items.map(function (item, index) {
-      return Object.assign({}, getEmptyColumnist(), item, {
-        id: String(item.id || window.EditorialCmsSite.slugify(item.name) || ("columnista-" + (index + 1)))
-      });
-    });
-
+    var state = getColumnistasContentState(contentOverride);
+    var content = state.content;
+    var items = state.items;
     var selectedIndex = Math.max(0, Math.min(typeof selectedColumnistaIndex === "number" ? selectedColumnistaIndex : 0, items.length - 1));
-    var selectedItem = items[selectedIndex] || getEmptyColumnist();
 
     setHeader(
       "Contenido",
@@ -1244,117 +1352,56 @@
       "Edita las fichas visibles en la secciÃ³n Columnistas de la pÃ¡gina Columnas. Esta lista alimenta tambiÃ©n el selector de autor en nuevas columnas."
     );
 
-    document.getElementById("admin-main-content").innerHTML =
-      '<section class="admin-library-layout admin-library-split">' +
-      '<div class="admin-card admin-library-card">' +
-      '<form id="admin-columnistas-content-form" class="admin-form-stack" novalidate>' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Contenido</span><h3>Titulo de la seccion</h3></div><button id="columnistas-save-title" type="submit" class="btn btn-primary">Guardar titulo</button></div>' +
-      '<div class="admin-field"><label for="columnistas-title">Titulo</label><input id="columnistas-title" class="form-control" value="' + escapeHtml(content.title || "Nuestros Columnistas") + '"></div>' +
-      '<p id="columnistas-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
-      '</form></div>' +
-      '<div class="admin-card admin-library-card">' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Columnistas</span><h3>Fichas</h3></div><button id="columnistas-add-item" type="button" class="btn btn-primary">Agregar columnista</button></div>' +
-      '<div class="admin-library-meta"><span>' + items.length + ' columnistas</span><span>Haz clic en una fila para abrir el popup</span></div>' +
-      '<div class="admin-table-head admin-column-table-head"><span>Nombre</span><span>Rol</span><span>Redes</span><span></span><span></span></div>' +
-      '<div class="admin-column-list" id="columnistas-item-list">' + items.map(function (item, index) {
-        var hasLinks = [item.twitter, item.instagram, item.facebook, item.linkedin].some(function (value) {
-          return String(value || "").trim();
-        }) ? "Con enlaces" : "Sin enlaces";
-        return '<button type="button" class="admin-column-row' + (index === selectedIndex ? ' is-editing' : '') + '" data-index="' + index + '">' +
-          '<div class="admin-column-main"><strong>' + escapeHtml(item.name || ("Columnista " + (index + 1))) + '</strong></div>' +
-          '<div class="admin-column-cell">' + escapeHtml(item.role || "Sin especialidad") + '</div>' +
-          '<div class="admin-column-cell">' + escapeHtml(hasLinks) + '</div>' +
-          '<div class="admin-column-cell">Abrir</div>' +
-          '<div class="admin-column-cell"></div>' +
-          '</button>';
-      }).join("") + '</div>' +
-      '</div></section>';
-
-    document.getElementById("admin-columnistas-content-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-      var feedback = document.getElementById("columnistas-content-feedback");
-      var next = readColumnistasContentDraft({
-        title: content.title || "Nuestros Columnistas",
-        items: items
-      });
-      var saved = window.EditorialCmsSite.savePageContentSection("columnistas", next);
-      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.hydrateGlobals === "function") {
-        window.EditorialCmsSite.hydrateGlobals();
-      }
-      if (feedback) {
-        feedback.textContent = "Contenido guardado. Sincronizando en segundo plano...";
-      }
-
-      if (saved) {
-        window.setTimeout(function () {
-          renderColumnistasContentEditor(selectedIndex, saved);
-        }, 0);
-      }
-    });
-
-    Array.prototype.forEach.call(document.querySelectorAll("#columnistas-item-list .admin-column-row"), function (button) {
-      button.addEventListener("click", function () {
-        var draft = readColumnistasContentDraft({
-          title: content.title || "Nuestros Columnistas",
-          items: items
-        });
-        openColumnistasEditorModal(Number(button.getAttribute("data-index")), draft, false);
-      });
-    });
-
-    var addButton = document.getElementById("columnistas-add-item");
-    if (addButton) {
-      addButton.addEventListener("click", function () {
-        var draft = readColumnistasContentDraft({
-          title: content.title || "Nuestros Columnistas",
-          items: items
-        });
-        draft.items.push(getEmptyColumnist());
-        openColumnistasEditorModal(draft.items.length - 1, draft, true);
-      });
-    }
+    document.getElementById("admin-main-content").innerHTML = buildColumnistasContentMarkup(content, items, selectedIndex);
+    bindColumnistasContentEditor(selectedIndex, content);
   }
 
-  function renderContactContentEditor() {
-    var content = window.EditorialCmsSite.getPageContentSection("contact");
+  function getContactContentState(contentOverride) {
+    return contentOverride || window.EditorialCmsSite.getPageContentSection("contact");
+  }
 
-    setHeader(
-      "Contenido",
-      "Contacto",
-      "Edita el formulario, la informaciÃ³n de contacto y el bloque final de suscripciÃ³n."
-    );
-
-    document.getElementById("admin-main-content").innerHTML =
-      '<section class="admin-card admin-editor-panel admin-editor-single">' +
+  function buildContactContentMarkup(content) {
+    return '' +
+      '<section class="admin-library-layout admin-library-split admin-contact-panel">' +
+      '<div class="admin-card admin-library-card">' +
       '<form id="admin-contact-content-form" class="admin-form-stack" novalidate>' +
-      '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Formulario</span><h3>Etiquetas</h3></div></div><div class="admin-form-stack">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Contenido</span><h3>Contacto</h3></div></div>' +
+      '<div class="admin-contact-sections-grid">' +
+      '<section class="admin-card admin-library-card admin-contact-section"><div class="admin-library-header"><div><span class="admin-kicker">Formulario</span><h3>Etiquetas</h3></div></div><div class="admin-form-stack">' +
       '<div class="admin-field"><label for="contact-first-name-label-input">Nombre</label><input id="contact-first-name-label-input" class="form-control" value="' + escapeHtml(content.firstNameLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-last-name-label-input">Apellido</label><input id="contact-last-name-label-input" class="form-control" value="' + escapeHtml(content.lastNameLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-email-label-input">Correo</label><input id="contact-email-label-input" class="form-control" value="' + escapeHtml(content.emailLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-subject-label-input">Asunto</label><input id="contact-subject-label-input" class="form-control" value="' + escapeHtml(content.subjectLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-message-label-input">Mensaje</label><input id="contact-message-label-input" class="form-control" value="' + escapeHtml(content.messageLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-send-label-input">BotÃ³n enviar</label><input id="contact-send-label-input" class="form-control" value="' + escapeHtml(content.sendLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-send-label-input">Botón enviar</label><input id="contact-send-label-input" class="form-control" value="' + escapeHtml(content.sendLabel) + '"></div>' +
       '</div></section>' +
-      '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Datos</span><h3>InformaciÃ³n de contacto</h3></div></div><div class="admin-form-stack">' +
-      '<div class="admin-field"><label for="contact-address-label-input">Etiqueta direcciÃ³n</label><input id="contact-address-label-input" class="form-control" value="' + escapeHtml(content.addressLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-address-input">DirecciÃ³n</label><input id="contact-address-input" class="form-control" value="' + escapeHtml(content.address) + '"></div>' +
-      '<div class="admin-field"><label for="contact-phone-label-input">Etiqueta telÃ©fono</label><input id="contact-phone-label-input" class="form-control" value="' + escapeHtml(content.phoneLabel) + '"></div>' +
-      '<div class="admin-field"><label for="contact-phone-input">TelÃ©fono</label><input id="contact-phone-input" class="form-control" value="' + escapeHtml(content.phone) + '"></div>' +
+      '<section class="admin-card admin-library-card admin-contact-section"><div class="admin-library-header"><div><span class="admin-kicker">Datos</span><h3>Información de contacto</h3></div></div><div class="admin-form-stack">' +
+      '<div class="admin-field"><label for="contact-address-label-input">Etiqueta dirección</label><input id="contact-address-label-input" class="form-control" value="' + escapeHtml(content.addressLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-address-input">Dirección</label><input id="contact-address-input" class="form-control" value="' + escapeHtml(content.address) + '"></div>' +
+      '<div class="admin-field"><label for="contact-phone-label-input">Etiqueta teléfono</label><input id="contact-phone-label-input" class="form-control" value="' + escapeHtml(content.phoneLabel) + '"></div>' +
+      '<div class="admin-field"><label for="contact-phone-input">Teléfono</label><input id="contact-phone-input" class="form-control" value="' + escapeHtml(content.phone) + '"></div>' +
       '<div class="admin-field"><label for="contact-email-info-label-input">Etiqueta correo</label><input id="contact-email-info-label-input" class="form-control" value="' + escapeHtml(content.emailInfoLabel) + '"></div>' +
       '<div class="admin-field"><label for="contact-email-info-input">Correo</label><input id="contact-email-info-input" class="form-control" value="' + escapeHtml(content.emailInfo) + '"></div>' +
       '</div></section>' +
-      '<section class="admin-card admin-library-card"><div class="admin-library-header"><div><span class="admin-kicker">Cierre</span><h3>Bloque final</h3></div></div><div class="admin-form-stack">' +
-      '<div class="admin-field"><label for="contact-subscribe-title-input">TÃ­tulo</label><input id="contact-subscribe-title-input" class="form-control" value="' + escapeHtml(content.subscribeTitle) + '"></div>' +
+      '<section class="admin-card admin-library-card admin-contact-section admin-contact-section--full"><div class="admin-library-header"><div><span class="admin-kicker">Cierre</span><h3>Bloque final</h3></div></div><div class="admin-form-stack">' +
+      '<div class="admin-field"><label for="contact-subscribe-title-input">Título</label><input id="contact-subscribe-title-input" class="form-control" value="' + escapeHtml(content.subscribeTitle) + '"></div>' +
       '<div class="admin-field"><label for="contact-subscribe-text-input">Texto</label><textarea id="contact-subscribe-text-input" class="form-control admin-textarea-sm">' + escapeHtml(content.subscribeText) + '</textarea></div>' +
       '<div class="admin-field"><label for="contact-subscribe-placeholder-input">Placeholder email</label><input id="contact-subscribe-placeholder-input" class="form-control" value="' + escapeHtml(content.subscribePlaceholder) + '"></div>' +
-      '<div class="admin-field"><label for="contact-subscribe-button-input">BotÃ³n</label><input id="contact-subscribe-button-input" class="form-control" value="' + escapeHtml(content.subscribeButton) + '"></div>' +
+      '<div class="admin-field"><label for="contact-subscribe-button-input">Botón</label><input id="contact-subscribe-button-input" class="form-control" value="' + escapeHtml(content.subscribeButton) + '"></div>' +
       '<div class="admin-field"><label for="contact-subscribe-image-input">Imagen de fondo</label><input id="contact-subscribe-image-input" class="form-control" value="' + escapeHtml(content.subscribeImage) + '"></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="contact.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
+      '</div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="contact.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
       '<p id="contact-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
+  }
 
-    document.getElementById("admin-contact-content-form").addEventListener("submit", function (event) {
+  function bindContactContentEditor(contentOverride) {
+    var content = getContactContentState(contentOverride);
+    var form = document.getElementById("admin-contact-content-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
       event.preventDefault();
       window.EditorialCmsSite.savePageContentSection("contact", {
         firstNameLabel: document.getElementById("contact-first-name-label-input").value,
@@ -1375,8 +1422,32 @@
         subscribeButton: document.getElementById("contact-subscribe-button-input").value,
         subscribeImage: document.getElementById("contact-subscribe-image-input").value
       });
-      document.getElementById("contact-content-feedback").textContent = "Contenido guardado. La pÃ¡gina Contacto reflejarÃ¡ estos cambios.";
+
+      var feedback = document.getElementById("contact-content-feedback");
+      if (feedback) {
+        feedback.textContent = "Contenido guardado. La página Contacto reflejará estos cambios.";
+      }
+
+      window.setTimeout(function () {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get("view") === "page" && params.get("id") === "contact") {
+          renderPageEditor("contact");
+        } else {
+          renderContactContentEditor();
+        }
+      }, 0);
     });
+  }
+
+  function renderContactContentEditor() {
+    setHeader(
+      "Contenido",
+      "Contacto",
+      "Edita el formulario, la informaciÃ³n de contacto y el bloque final de suscripciÃ³n."
+    );
+    var content = getContactContentState();
+    document.getElementById("admin-main-content").innerHTML = buildContactContentMarkup(content);
+    bindContactContentEditor(content);
   }
 
   function renderEntityEditor(options) {
