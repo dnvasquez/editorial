@@ -635,23 +635,66 @@
       return pageConfigs[key].visible === false;
     });
 
-    document.getElementById("admin-main-content").innerHTML =
+    var columnViews = window.EditorialCmsSite.getColumnViews ? window.EditorialCmsSite.getColumnViews() : {};
+    var totalColumnViews = 0;
+    Object.keys(columnViews).forEach(function (columnId) {
+      totalColumnViews += (columnViews[columnId] || 0);
+    });
+
+    var visibleColumns = columns.filter(function (c) { return c.visible !== false; });
+    var visibleEpisodes = episodes.filter(function (e) { return e.visible !== false; });
+    var visiblePublications = publications.filter(function (p) { return p.visible !== false; });
+
+    var recentColumns = visibleColumns.slice(-3).reverse();
+    var recentEpisodes = visibleEpisodes.slice(-3).reverse();
+
+    var metricsHtml =
       '<section class="admin-overview-grid">' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Paginas</span><strong>' + window.EditorialCmsSite.PAGE_DEFINITIONS.length + '</strong><p>' + hiddenPages.length + ' paginas ocultas desde el CMS.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Programas</span><strong>' + programs.length + '</strong><p>Incluye programas base y programas creados desde el panel.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Episodios</span><strong>' + episodes.length + '</strong><p>Cada episodio puede editar audio, imagen, resumen y transcripcion.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Columnas</span><strong>' + columns.length + '</strong><p>Administra columnas publicadas y borradores desde una biblioteca unica.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Publicaciones</span><strong>' + publications.length + '</strong><p>Gestiona documentos, portadas, resumenes y enlaces de lectura.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Flujo</span><strong>Unificado</strong><p>El panel lateral ahora prioriza paginas y tipos de contenido por igual.</p></article>' +
-      '</section>' +
-      '<section class="admin-card admin-library-card">' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Como usar</span><h3>Mapa rapido del CMS</h3></div></div>' +
-      '<div class="admin-help-box">' +
-      '<p>Usa la seccion <strong>Paginas</strong> para encender o apagar paginas completas del sitio y ajustar hero o contenido general.</p>' +
-      '<p>Usa <strong>Programas</strong> y <strong>Episodios</strong> para construir el area de podcast completa, incluyendo audio, transcripciones, imagenes y metadatos.</p>' +
-      '<p>Usa <strong>Columnas</strong> y <strong>Publicaciones</strong> para administrar piezas editoriales y documentos sin depender de ediciones manuales en HTML.</p>' +
-      '</div>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Visualizaciones</span><strong>' + totalColumnViews + '</strong><p>Total de vistas en columnas publicadas.</p></article>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Columnas</span><strong>' + visibleColumns.length + '</strong><p>' + (columns.length - visibleColumns.length) + ' ocultas.</p></article>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Capítulos</span><strong>' + visibleEpisodes.length + '</strong><p>' + (episodes.length - visibleEpisodes.length) + ' ocultos.</p></article>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Publicaciones</span><strong>' + visiblePublications.length + '</strong><p>' + (publications.length - visiblePublications.length) + ' ocultas.</p></article>' +
       '</section>';
+
+    var recentColumnsHtml = '<section class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Últimas columnas</span><h3>Contenido reciente</h3></div></div>' +
+      '<div class="admin-recent-list">';
+
+    if (recentColumns.length > 0) {
+      recentColumns.forEach(function (col) {
+        var views = columnViews[col.id] || 0;
+        recentColumnsHtml += '<div class="admin-recent-item"><div class="admin-recent-info"><strong>' + escapeHtml(col.autor || 'Anónimo') + '</strong><p>' + escapeHtml(col.titulo || 'Sin título') + '</p></div><div class="admin-recent-metric">' + views + ' vistas</div></div>';
+      });
+    } else {
+      recentColumnsHtml += '<p class="admin-muted">Sin columnas publicadas aún.</p>';
+    }
+    recentColumnsHtml += '</div></section>';
+
+    var recentEpisodesHtml = '<section class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Últimos capítulos</span><h3>Podcast reciente</h3></div></div>' +
+      '<div class="admin-recent-list">';
+
+    if (recentEpisodes.length > 0) {
+      recentEpisodes.forEach(function (ep) {
+        var program = findById(programs, ep.programaId);
+        var programName = program ? program.nombre : 'Programa desconocido';
+        recentEpisodesHtml += '<div class="admin-recent-item"><div class="admin-recent-info"><strong>Ep. ' + escapeHtml(ep.numero || '-') + ': ' + escapeHtml(ep.titulo || 'Sin título') + '</strong><p>' + escapeHtml(programName) + '</p></div></div>';
+      });
+    } else {
+      recentEpisodesHtml += '<p class="admin-muted">Sin capítulos publicados aún.</p>';
+    }
+    recentEpisodesHtml += '</div></section>';
+
+    var helpHtml = '<section class="admin-card admin-library-card">' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Referencia rápida</span><h3>Guía del CMS</h3></div></div>' +
+      '<div class="admin-help-box">' +
+      '<p><strong>Visualizaciones:</strong> Se actualiza cuando los lectores visitan columnas individuales.</p>' +
+      '<p><strong>Columnas:</strong> Artículos y opiniones de columnistas. Puedes ocultar contenido sin eliminarlo.</p>' +
+      '<p><strong>Capítulos:</strong> Episodios de podcast con audio, transcripciones y metadatos.</p>' +
+      '<p><strong>Publicaciones:</strong> Documentos, reportes y contenido editorial complementario.</p>' +
+      '</div></section>';
+
+    document.getElementById("admin-main-content").innerHTML = metricsHtml + recentColumnsHtml + recentEpisodesHtml + helpHtml;
   }
 
   function renderPageEditor(pageId) {

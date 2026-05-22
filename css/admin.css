@@ -532,8 +532,8 @@
 .admin-overview-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 40px;
 }
 
 .admin-overview-card {
@@ -635,6 +635,7 @@
 .admin-library-card,
 .admin-editor-panel {
   padding: 26px;
+  margin-bottom: 32px;
 }
 
 .admin-entity-list {
@@ -1468,4 +1469,53 @@
     display: inline-block;
     margin-bottom: 20px;
   }
+}
+
+.admin-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-recent-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  transition: all 0.2s ease;
+}
+
+.admin-recent-item:hover {
+  background-color: #faf8f5;
+  border-color: var(--admin-accent);
+}
+
+.admin-recent-info {
+  flex: 1;
+}
+
+.admin-recent-info strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--admin-text);
+  margin-bottom: 4px;
+}
+
+.admin-recent-info p {
+  font-size: 0.85rem;
+  color: var(--admin-muted);
+  margin: 0;
+}
+
+.admin-recent-metric {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--admin-accent);
+  white-space: nowrap;
+  margin-left: 16px;
+}
 }

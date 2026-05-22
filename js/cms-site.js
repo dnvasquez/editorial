@@ -1773,6 +1773,7 @@
     getPublicationsForAdmin: getPublicationsForAdmin,
     savePublication: savePublication,
     deletePublication: deletePublication,
+    getColumnViews: getColumnViews,
     getPageContent: getPageContent,
     getPageContentSection: getPageContentSection,
     savePageContentSection: savePageContentSection,
