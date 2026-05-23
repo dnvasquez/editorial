@@ -1530,6 +1530,56 @@
     }
   }
 
+  function renderFooterContent(body) {
+    if (!body) return;
+
+    var footer = body.querySelector('footer[data-cms-section="footer"]');
+    if (!footer) return;
+
+    var socialLinks = [
+      { href: "https://www.facebook.com/", label: "Facebook", icon: "icon-facebook" },
+      { href: "https://www.instagram.com/", label: "Instagram", icon: "icon-instagram" },
+      { href: "https://www.youtube.com/", label: "YouTube", icon: "icon-youtube" },
+      { href: "https://open.spotify.com/", label: "Spotify", icon: "icon-spotify" }
+    ];
+
+    footer.classList.add("site-footer", "site-footer--structured");
+    footer.innerHTML = '' +
+      '<div class="container">' +
+      '<div class="site-footer__grid">' +
+      '<div class="site-footer__brand">' +
+      '<a href="index.html" class="site-footer__logo-link" aria-label="Ir al inicio"><img src="logo_hor_col.png" alt="El Deslinde" class="site-footer__logo"></a>' +
+      '<p>Editorial digital de contenido cr&iacute;tico sobre territorio, agricultura y sociedad.</p>' +
+      '<p class="site-footer__brand-note">Podcasts, columnas y publicaciones en una sola plataforma.</p>' +
+      '</div>' +
+      '<div class="site-footer__column">' +
+      '<h3 class="footer-heading mb-4">Explorar</h3>' +
+      '<ul class="list-unstyled site-footer__links">' +
+      '<li><a href="programas.html">Programas</a></li>' +
+      '<li><a href="columnas.html">Columnas</a></li>' +
+      '<li><a href="publicaciones.html">Publicaciones</a></li>' +
+      '<li><a href="about.html">Nosotros</a></li>' +
+      '</ul>' +
+      '</div>' +
+      '<div class="site-footer__column">' +
+      '<h3 class="footer-heading mb-4">Contenido reciente</h3>' +
+      '<ul id="footer-episodios" class="list-unstyled site-footer__latest"></ul>' +
+      '</div>' +
+      '<div class="site-footer__column">' +
+      '<h3 class="footer-heading mb-4">S&iacute;guenos</h3>' +
+      '<ul class="list-unstyled site-footer__links site-footer__social-links">' +
+      socialLinks.map(function (item) {
+        return '<li><a href="' + item.href + '" target="_blank" rel="noopener"><span class="' + item.icon + '"></span> ' + item.label + '</a></li>';
+      }).join("") +
+      '</ul>' +
+      '</div>' +
+      '</div>' +
+      '<div class="site-footer__bottom">' +
+      '<p class="site-footer__copyright">Copyright &copy; ' + new Date().getFullYear() + ' El Deslinde. Todos los derechos reservados.</p>' +
+      '</div>' +
+      '</div>';
+  }
+
   function buildDefaultPages() {
     var pages = {};
     PAGE_DEFINITIONS.forEach(function (page) {
@@ -1636,6 +1686,7 @@
     renderGuestsContent(body);
     renderColumnistasContent(body);
     renderContactContent(body);
+    renderFooterContent(body);
 
     applyNavigationVisibility(body);
     applyHomepageSectionVisibility(body);
