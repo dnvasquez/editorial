@@ -1632,6 +1632,41 @@
     return configs[pageId] || buildDefaultPages()[pageId] || null;
   }
 
+  function getSectionConfig() {
+    try {
+      var raw = window.localStorage.getItem("editorialCmsSections");
+      var parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function isSectionEnabled(pageKey, sectionKey) {
+    var config = getSectionConfig();
+    return !(config[pageKey] && config[pageKey][sectionKey] === false);
+  }
+
+  function isNavigationLinkVisible(pageId) {
+    var pageConfig = getPageConfig(pageId);
+    if (pageConfig && pageConfig.visible === false) return false;
+
+    var sectionMap = {
+      programas: "listado-programas",
+      columnas: "listado-columnas",
+      publicaciones: "catalogo",
+      about: "equipo-editorial",
+      contact: "formulario"
+    };
+
+    var sectionKey = sectionMap[pageId];
+    if (sectionKey && !isSectionEnabled(pageId, sectionKey)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function savePageConfig(pageId, config) {
     var all = getPageConfigs();
     if (!all[pageId]) return null;
@@ -1758,8 +1793,7 @@
     };
 
     Object.keys(hrefMap).forEach(function (pageId) {
-      var pageConfig = getPageConfig(pageId);
-      toggleLinksByHref(body, hrefMap[pageId], !pageConfig || pageConfig.visible !== false);
+      toggleLinksByHref(body, hrefMap[pageId], isNavigationLinkVisible(pageId));
     });
   }
 
