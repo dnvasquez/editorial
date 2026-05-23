@@ -1651,6 +1651,10 @@
     var pageConfig = getPageConfig(pageId);
     if (pageConfig && pageConfig.visible === false) return false;
 
+    if (!isSectionEnabled(pageId, "footer")) {
+      return false;
+    }
+
     var sectionMap = {
       programas: "listado-programas",
       columnas: "listado-columnas",
