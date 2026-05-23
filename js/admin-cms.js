@@ -951,6 +951,7 @@
     var titleValue = content.title || "Nuestros Columnistas";
 
     return '' +
+      '<div class="admin-library-header admin-columnistas-heading"><div><span class="admin-kicker">Gestión de página</span><h3>Columnistas</h3></div></div>' +
       '<section class="admin-library-layout admin-library-split admin-columnistas-panel">' +
       '<div class="admin-card admin-library-card">' +
       '<form id="admin-columnistas-content-form" class="admin-form-stack" novalidate>' +
@@ -1164,13 +1165,13 @@
     setHeader(
       "Contenido",
       "Nosotros",
-      "Edita el equipo editorial y el manifiesto. El bloque El Equipo de Inicio usa esta misma informaciÃ³n."
+      "Edita el equipo editorial y el manifiesto. El bloque El Equipo de Inicio usa esta misma información."
     );
 
     document.getElementById("admin-main-content").innerHTML =
       '<section class="admin-card admin-editor-panel admin-editor-single">' +
       '<form id="admin-about-content-form" class="admin-form-stack" data-selected-member-index="' + selectedIndex + '" novalidate>' +
-      '<div class="admin-field"><label for="about-team-title">Titulo del equipo</label><input id="about-team-title" class="form-control" value="' + escapeHtml(content.teamTitle) + '"></div>' +
+      '<div class="admin-field"><label for="about-team-title">Título del equipo</label><input id="about-team-title" class="form-control" value="' + escapeHtml(content.teamTitle) + '"></div>' +
       '<section class="admin-card admin-library-card">' +
       '<div class="admin-library-header"><div><span class="admin-kicker">Equipo</span><h3>Miembros</h3></div><button id="about-add-member" type="button" class="btn btn-primary">Agregar miembro</button></div>' +
       '<div class="admin-entity-list" id="about-member-list">' + teamMembers.map(function (member, index) {
@@ -1183,7 +1184,7 @@
       '<div class="admin-field"><label for="about-member-name">Nombre</label><input id="about-member-name" class="form-control" value="' + escapeHtml(selectedMember.name) + '"></div>' +
       '<div class="admin-field"><label for="about-member-role">Rol</label><input id="about-member-role" class="form-control" value="' + escapeHtml(selectedMember.role) + '"></div>' +
       '<div class="admin-field"><label for="about-member-image">Imagen</label><input id="about-member-image" class="form-control" value="' + escapeHtml(selectedMember.image) + '"></div>' +
-      '<div class="admin-field"><label for="about-member-bio">BiografÃ­a</label><textarea id="about-member-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedMember.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="about-member-bio">Biografía</label><textarea id="about-member-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedMember.bio) + '</textarea></div>' +
       '<div class="admin-field"><label for="about-member-twitter">Twitter/X</label><input id="about-member-twitter" class="form-control" value="' + escapeHtml(selectedMember.twitter) + '"></div>' +
       '<div class="admin-field"><label for="about-member-instagram">Instagram</label><input id="about-member-instagram" class="form-control" value="' + escapeHtml(selectedMember.instagram) + '"></div>' +
       '<div class="admin-field"><label for="about-member-facebook">Facebook</label><input id="about-member-facebook" class="form-control" value="' + escapeHtml(selectedMember.facebook) + '"></div>' +
@@ -1196,7 +1197,7 @@
       '<div class="admin-field"><label for="about-manifesto-left">Columna izquierda</label><textarea id="about-manifesto-left" class="form-control admin-code-textarea">' + escapeHtml(content.manifestoLeft) + '</textarea></div>' +
       '<div class="admin-field"><label for="about-manifesto-right">Columna derecha</label><textarea id="about-manifesto-right" class="form-control admin-code-textarea">' + escapeHtml(content.manifestoRight) + '</textarea></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="about.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="about.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
       '<p id="about-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
 
@@ -1210,7 +1211,7 @@
         manifestoRight: content.manifestoRight
       });
       window.EditorialCmsSite.savePageContentSection("about", next);
-      document.getElementById("about-content-feedback").textContent = "Contenido guardado. About e Inicio reflejarÃ¡n estos cambios.";
+      document.getElementById("about-content-feedback").textContent = "Contenido guardado. About e Inicio reflejarán estos cambios.";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#about-member-list .admin-entity-row"), function (button) {
@@ -1270,13 +1271,13 @@
     setHeader(
       "Contenido",
       "Invitados destacados",
-      "Edita el carrusel de invitados visibles en la portada. Cada tarjeta puede llevar imagen, cargo y descripciÃ³n."
+      "Edita el carrusel de invitados visibles en la portada. Cada tarjeta puede llevar imagen, cargo y descripción."
     );
 
     document.getElementById("admin-main-content").innerHTML =
       '<section class="admin-card admin-editor-panel admin-editor-single">' +
       '<form id="admin-guests-content-form" class="admin-form-stack" data-selected-guest-index="' + selectedIndex + '" novalidate>' +
-      '<div class="admin-field"><label for="guests-title">TÃ­tulo de secciÃ³n</label><input id="guests-title" class="form-control" value="' + escapeHtml(content.title) + '"></div>' +
+      '<div class="admin-field"><label for="guests-title">Título de sección</label><input id="guests-title" class="form-control" value="' + escapeHtml(content.title) + '"></div>' +
       '<section class="admin-card admin-library-card">' +
       '<div class="admin-library-header"><div><span class="admin-kicker">Invitados</span><h3>Tarjetas</h3></div><button id="guests-add-item" type="button" class="btn btn-primary">Agregar invitado</button></div>' +
       '<div class="admin-entity-list" id="guests-item-list">' + items.map(function (item, index) {
@@ -1289,9 +1290,9 @@
       '<div class="admin-field"><label for="guests-item-name">Nombre</label><input id="guests-item-name" class="form-control" value="' + escapeHtml(selectedGuest.name) + '"></div>' +
       '<div class="admin-field"><label for="guests-item-role">Cargo</label><input id="guests-item-role" class="form-control" value="' + escapeHtml(selectedGuest.role) + '"></div>' +
       '<div class="admin-field"><label for="guests-item-image">Imagen</label><input id="guests-item-image" class="form-control" value="' + escapeHtml(selectedGuest.image) + '" placeholder="URL de imagen segura"><small class="text-muted">Usa siempre una URL de imagen.</small></div>' +
-      '<div class="admin-field"><label for="guests-item-bio">DescripciÃ³n</label><textarea id="guests-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedGuest.bio) + '</textarea></div>' +
+      '<div class="admin-field"><label for="guests-item-bio">Descripción</label><textarea id="guests-item-bio" class="form-control admin-textarea-sm">' + escapeHtml(selectedGuest.bio) + '</textarea></div>' +
       '</div></section>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="index.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir pÃ¡gina pÃºblica</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="index.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
       '<p id="guests-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
 
@@ -1302,7 +1303,7 @@
         items: items
       });
       window.EditorialCmsSite.savePageContentSection("invitados", next);
-      document.getElementById("guests-content-feedback").textContent = "Contenido guardado. La portada reflejarÃ¡ estos cambios.";
+      document.getElementById("guests-content-feedback").textContent = "Contenido guardado. La portada reflejará estos cambios.";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#guests-item-list .admin-entity-row"), function (button) {
@@ -1472,7 +1473,7 @@
     overlay.className = "admin-modal-overlay";
     overlay.innerHTML =
       '<div class="admin-modal ' + (className || "") + '" role="dialog" aria-modal="true" aria-label="' + escapeHtml(label || "Dialogo") + '">' +
-      '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">Ã—</button>' +
+      '<button type="button" class="admin-modal-close" data-admin-modal-close aria-label="Cerrar">×</button>' +
       html +
       '</div>';
 
@@ -1515,29 +1516,28 @@
     return '' +
       '<div class="admin-form-grid">' +
       '<label class="admin-section-toggle admin-field-full"><span>Visible en el sitio</span><input id="' + id + '-visible" type="checkbox"' + (safe.visible !== false ? ' checked' : '') + '></label>' +
-      '<div class="admin-field"><label for="' + id + '-title">Titulo</label><input id="' + id + '-title" class="form-control" value="' + escapeHtml(safe.titulo || "") + '" required maxlength="' + titleLimit + '" data-char-limit="' + titleLimit + '"><small id="' + id + '-title-count" class="admin-char-count" data-char-counter="' + id + '-title" data-char-limit="' + titleLimit + '">0 / ' + titleLimit + ' caracteres</small></div>' +
+      '<div class="admin-field"><label for="' + id + '-title">Título</label><input id="' + id + '-title" class="form-control" value="' + escapeHtml(safe.titulo || "") + '" required maxlength="' + titleLimit + '" data-char-limit="' + titleLimit + '"><small id="' + id + '-title-count" class="admin-char-count" data-char-counter="' + id + '-title" data-char-limit="' + titleLimit + '">0 / ' + titleLimit + ' caracteres</small></div>' +
       '<div class="admin-field"><label for="' + id + '-author">Autor</label><select id="' + id + '-author" class="form-control">' + authorOptions + '</select></div>' +
       '<div class="admin-field"><label for="' + id + '-date">Fecha</label><input id="' + id + '-date" class="form-control" value="' + escapeHtml(safe.fecha || "") + '" placeholder="2026-04-01"></div>' +
-      '<div class="admin-field"><label for="' + id + '-category">Categoria</label><select id="' + id + '-category" class="form-control"><option value="Analisis"' + ((safe.categoria || "Opinion") === "Analisis" ? ' selected' : '') + '>Analisis</option><option value="Opinion"' + ((safe.categoria || "Opinion") === "Opinion" ? ' selected' : '') + '>Opinion</option><option value="Entrevista"' + (safe.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (safe.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (safe.categoria === "Politica publica" ? ' selected' : '') + '>Politica publica</option></select></div>' +
+      '<div class="admin-field"><label for="' + id + '-category">Categoría</label><select id="' + id + '-category" class="form-control"><option value="Analisis"' + ((safe.categoria || "Opinion") === "Analisis" ? ' selected' : '') + '>Análisis</option><option value="Opinion"' + ((safe.categoria || "Opinion") === "Opinion" ? ' selected' : '') + '>Opinión</option><option value="Entrevista"' + (safe.categoria === "Entrevista" ? ' selected' : '') + '>Entrevista</option><option value="Territorio"' + (safe.categoria === "Territorio" ? ' selected' : '') + '>Territorio</option><option value="Politica publica"' + (safe.categoria === "Politica publica" ? ' selected' : '') + '>Política pública</option></select></div>' +
       '<div class="admin-field"><label for="' + id + '-status">Estado</label><select id="' + id + '-status" class="form-control"><option value="borrador"' + ((safe.estado || "borrador") === "borrador" ? ' selected' : '') + '>Borrador</option><option value="publicada"' + (safe.estado === "publicada" ? ' selected' : '') + '>Publicada</option></select></div>' +
       '<div class="admin-field"><label for="' + id + '-image">Imagen</label><input id="' + id + '-image" class="form-control" value="' + escapeHtml(safe.imagen || safe.banner || "") + '" placeholder="URL de imagen segura"><small class="text-muted">Se usa como portada y banner de la columna.</small></div>' +
       '<div class="admin-field admin-field-full"><label for="' + id + '-summary">Resumen</label><textarea id="' + id + '-summary" class="form-control admin-textarea-sm" maxlength="' + summaryLimit + '" data-char-limit="' + summaryLimit + '">' + escapeHtml(safe.resumen || "") + '</textarea><small id="' + id + '-summary-count" class="admin-char-count" data-char-counter="' + id + '-summary" data-char-limit="' + summaryLimit + '">0 / ' + summaryLimit + ' caracteres</small></div>' +
-      '<div class="admin-field admin-field-full"><label for="' + id + '-hashtags">Hashtags</label><textarea id="' + id + '-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(Array.isArray(safe.hashtags) ? safe.hashtags.join(", ") : String(safe.hashtags || "")) + '</textarea><small class="text-muted">Separados por comas o saltos de linea.</small></div>' +
+      '<div class="admin-field admin-field-full"><label for="' + id + '-hashtags">Hashtags</label><textarea id="' + id + '-hashtags" class="form-control admin-textarea-sm" placeholder="#clima, #agua, #territorio">' + escapeHtml(Array.isArray(safe.hashtags) ? safe.hashtags.join(", ") : String(safe.hashtags || "")) + '</textarea><small class="text-muted">Separados por comas o saltos de línea.</small></div>' +
       '<div class="admin-field admin-field-full">' +
       '<label for="' + id + '-content">Contenido</label>' +
       '<div class="admin-rich-editor" data-rich-editor data-rich-prefix="' + id + '">' +
       '<div class="admin-rich-toolbar" data-rich-toolbar>' +
-      '<select class="admin-rich-select" data-rich-format aria-label="Formato de texto">' +
-      '<option value="">Estilo</option>' +
-      '<option value="P">PÃ¡rrafo</option>' +
-      '<option value="H2">TÃ­tulo</option>' +
-      '<option value="H3">SubtÃ­tulo</option>' +
-      '<option value="BLOCKQUOTE">Cita</option>' +
-      '</select>' +
+      '<div class="admin-rich-format-group" role="group" aria-label="Estilos">' +
+      '<button type="button" class="admin-rich-button admin-rich-format-button" data-rich-format-button="p" aria-pressed="true">Párrafo</button>' +
+      '<button type="button" class="admin-rich-button admin-rich-format-button" data-rich-format-button="h2" aria-pressed="false">Título</button>' +
+      '<button type="button" class="admin-rich-button admin-rich-format-button" data-rich-format-button="h3" aria-pressed="false">Subtítulo</button>' +
+      '<button type="button" class="admin-rich-button admin-rich-format-button" data-rich-format-button="blockquote" aria-pressed="false">Cita</button>' +
+      '</div>' +
       '<button type="button" class="admin-rich-button" data-rich-command="bold" aria-label="Negrita"><strong>B</strong></button>' +
       '<button type="button" class="admin-rich-button" data-rich-command="italic" aria-label="Cursiva"><em>I</em></button>' +
       '<button type="button" class="admin-rich-button" data-rich-command="underline" aria-label="Subrayado"><u>U</u></button>' +
-      '<button type="button" class="admin-rich-button" data-rich-command="insertUnorderedList" aria-label="Lista con viÃ±etas">â€¢ Lista</button>' +
+      '<button type="button" class="admin-rich-button" data-rich-command="insertUnorderedList" aria-label="Lista con viñetas">• Lista</button>' +
       '<button type="button" class="admin-rich-button" data-rich-command="insertOrderedList" aria-label="Lista numerada">1. Lista</button>' +
       '<button type="button" class="admin-rich-button" data-rich-action="link" aria-label="Insertar enlace">Enlace</button>' +
       '<button type="button" class="admin-rich-button" data-rich-action="image" aria-label="Insertar imagen por url">Imagen</button>' +
@@ -1656,6 +1656,21 @@
     document.execCommand(command, false, value || null);
   }
 
+  function execRichFormatBlock(editor, value) {
+    if (!editor || typeof document.execCommand !== "function") return;
+    editor.focus();
+    var tag = String(value || "").trim().toLowerCase();
+    if (!tag) return;
+
+    // Different browsers accept slightly different formatBlock values.
+    var blockValue = "<" + tag + ">";
+    try {
+      document.execCommand("formatBlock", false, blockValue);
+    } catch (error) {
+      document.execCommand("formatBlock", false, tag);
+    }
+  }
+
   function insertHtmlAtSelection(editor, html, savedRange) {
     if (!editor || typeof document.execCommand !== "function") return;
     editor.focus();
@@ -1671,7 +1686,7 @@
     if (!url) return;
     var safeUrl = sanitizeEditorLinkUrl(url);
     if (!safeUrl || safeUrl === "#") {
-      window.alert("La URL del enlace no es valida.");
+      window.alert("La URL del enlace no es válida.");
       return;
     }
 
@@ -1680,7 +1695,7 @@
       return;
     }
 
-    var text = promptForSafeUrl("Texto visible del enlace:", "Leer mÃ¡s") || "Leer mÃ¡s";
+    var text = promptForSafeUrl("Texto visible del enlace:", "Leer más") || "Leer más";
     insertHtmlAtSelection(editor, '<a href="' + escapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>', savedRange);
   }
 
@@ -1695,7 +1710,7 @@
       if (!url) return;
       url = sanitizeEditorImageUrl(url);
       if (!url) {
-        window.alert("La URL de la imagen no es vÃ¡lida.");
+        window.alert("La URL de la imagen no es válida.");
         return;
       }
       altText = promptForSafeUrl("Texto alternativo para la imagen:", "") || "";
@@ -1708,7 +1723,7 @@
       if (!url) return;
       url = sanitizeEditorMediaUrl(url);
       if (!url) {
-        window.alert("La URL del video no es vÃ¡lida.");
+        window.alert("La URL del video no es válida.");
         return;
       }
       insertHtmlAtSelection(editor, '<video controls preload="metadata" src="' + escapeHtml(url) + '"></video>', savedRange);
@@ -1720,10 +1735,10 @@
       if (!url) return;
       url = sanitizeEditorIframeUrl(url);
       if (!url) {
-        window.alert("La URL del iframe no es vÃ¡lida.");
+        window.alert("La URL del iframe no es válida.");
         return;
       }
-      titleText = promptForSafeUrl("TÃ­tulo del iframe:", "") || "";
+      titleText = promptForSafeUrl("Título del iframe:", "") || "";
       insertHtmlAtSelection(editor, '<iframe src="' + escapeHtml(url) + '" title="' + escapeHtml(titleText) + '" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>', savedRange);
     }
   }
@@ -1731,7 +1746,7 @@
   function bindRichEditor(modal, prefix) {
     var editor = modal.querySelector("#" + prefix + "-content");
     var toolbar = modal.querySelector("[data-rich-toolbar]");
-    var formatSelect = modal.querySelector("[data-rich-format]");
+    var formatButtons = Array.prototype.slice.call(modal.querySelectorAll("[data-rich-format-button]"));
     var counterNode = modal.querySelector("#" + prefix + "-content-count");
     var bodyLimit = parseInt(editor && editor.getAttribute("data-char-limit"), 10) || 8000;
 
@@ -1757,6 +1772,36 @@
       if (savedRange) {
         restoreEditorSelection(savedRange);
       }
+    }
+
+    function getCurrentBlockTag() {
+      var selection = window.getSelection && window.getSelection();
+      if (!selection || !selection.rangeCount) return "";
+      var node = selection.anchorNode;
+      if (!node) return "";
+      if (node.nodeType === 3) {
+        node = node.parentElement;
+      }
+      while (node && node !== editor) {
+        if (node.nodeType === 1 && node.tagName) {
+          var tagName = node.tagName.toLowerCase();
+          if (tagName === "p" || tagName === "h2" || tagName === "h3" || tagName === "blockquote") {
+            return tagName;
+          }
+        }
+        node = node.parentElement;
+      }
+      return "p";
+    }
+
+    function syncFormatButtons() {
+      var currentTag = getCurrentBlockTag();
+      Array.prototype.forEach.call(formatButtons, function (button) {
+        var value = String(button.getAttribute("data-rich-format-button") || "").toLowerCase();
+        var active = value === currentTag;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
     }
 
     editor.addEventListener("mouseup", cacheSelection);
@@ -1795,9 +1840,23 @@
     });
 
     toolbar.addEventListener("mousedown", function (event) {
-      if (event.target.closest("[data-rich-command], [data-rich-action], select")) {
+      if (event.target.closest("[data-rich-format-button]")) {
+        cacheSelection();
+        event.preventDefault();
+      } else if (event.target.closest("[data-rich-command], [data-rich-action]")) {
         event.preventDefault();
       }
+    });
+
+    Array.prototype.forEach.call(formatButtons, function (button) {
+      button.addEventListener("click", function () {
+        var value = button.getAttribute("data-rich-format-button");
+        restoreSavedSelection();
+        execRichFormatBlock(editor, value);
+        cacheSelection();
+        refreshCounter();
+        syncFormatButtons();
+      });
     });
 
     Array.prototype.forEach.call(toolbar.querySelectorAll("[data-rich-command]"), function (button) {
@@ -1808,17 +1867,6 @@
         cacheSelection();
       });
     });
-
-    if (formatSelect) {
-      formatSelect.addEventListener("change", function () {
-        var value = formatSelect.value;
-        if (!value) return;
-        restoreSavedSelection();
-        execRichCommand(editor, "formatBlock", value);
-        formatSelect.value = "";
-        cacheSelection();
-      });
-    }
 
     Array.prototype.forEach.call(toolbar.querySelectorAll("[data-rich-action]"), function (button) {
       button.addEventListener("click", function () {
@@ -1834,7 +1882,13 @@
       });
     });
 
+    editor.addEventListener("click", syncFormatButtons);
+    editor.addEventListener("keyup", syncFormatButtons);
+    editor.addEventListener("mouseup", syncFormatButtons);
+    editor.addEventListener("focus", syncFormatButtons);
+
     refreshCounter();
+    syncFormatButtons();
   }
 
   function readColumnModalDraft(modal, prefix, base) {
@@ -1884,7 +1938,7 @@
 
     var html =
       '<div class="admin-modal-head">' +
-      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva columna" : "Editar columna") + '</h3><p>' + (isNew ? "Completa los datos esenciales para publicar una nueva pieza." : "Revisa la columna, ajusta sus campos o elimÃ­nala si es necesario.") + '</p></div>' +
+      '<div><span class="admin-kicker">Biblioteca</span><h3>' + (isNew ? "Nueva columna" : "Editar columna") + '</h3><p>' + (isNew ? "Completa los datos esenciales para publicar una nueva pieza." : "Revisa la columna, ajusta sus campos o elimínala si es necesario.") + '</p></div>' +
       '</div>' +
       '<form id="' + prefix + '-form" class="admin-form-stack" novalidate>' +
       buildColumnFields(prefix, selected) +
@@ -1924,7 +1978,7 @@
 
       if (titleLength > 120 || summaryLength > 280 || contentLength > 8000) {
         if (feedback) {
-          feedback.textContent = "Revisa los lÃ­mites: tÃ­tulo 120 caracteres, resumen 280 y cuerpo 8000.";
+          feedback.textContent = "Revisa los límites: título 120 caracteres, resumen 280 y cuerpo 8000.";
         }
         return;
       }
@@ -1942,7 +1996,7 @@
     var deleteButton = modal.querySelector("#" + prefix + "-delete");
     if (deleteButton) {
       deleteButton.addEventListener("click", function () {
-        if (!window.confirm("Se eliminara esta columna del sitio. Continuar?")) return;
+        if (!window.confirm("Se eliminará esta columna del sitio. ¿Continuar?")) return;
         window.EditorialCmsSite.deleteColumn(selected.id);
         closeAdminModal();
         renderColumns("");
@@ -2034,12 +2088,11 @@
     var selected = findById(programs, selectedId) || null;
     var rowsHtml = programs.length ? programs.map(function (program) {
       var statusLabel = program.visible === false ? "Oculto" : "Visible";
-      return '<button type="button" class="admin-column-row' + (selected && String(selected.id) === String(program.id) ? ' is-editing' : '') + '" data-id="' + escapeHtml(program.id) + '">' +
-        '<div class="admin-column-main"><strong>' + escapeHtml(program.nombre || "Sin nombre") + '</strong></div>' +
-        '<div class="admin-column-cell">' + escapeHtml(program.frecuencia || "Sin frecuencia") + '</div>' +
-        '<div class="admin-column-cell">' + escapeHtml(program.descripcion || "Sin descripcion") + '</div>' +
-        '<div><span class="admin-column-status' + (program.visible === false ? ' is-borrador' : '') + '">' + escapeHtml(statusLabel) + '</span></div>' +
-        '<div class="admin-column-cell">Abrir</div>' +
+      return '<button type="button" class="admin-program-row' + (selected && String(selected.id) === String(program.id) ? ' is-active' : '') + '" data-id="' + escapeHtml(program.id) + '">' +
+        '<div class="admin-program-main"><strong>' + escapeHtml(program.nombre || "Sin nombre") + '</strong></div>' +
+        '<div class="admin-program-cell">' + escapeHtml(program.frecuencia || "Sin frecuencia") + '</div>' +
+        '<div><span class="admin-program-status' + (program.visible === false ? ' is-hidden' : '') + '">' + escapeHtml(statusLabel) + '</span></div>' +
+        '<div class="admin-program-cell">Abrir</div>' +
         '</button>';
     }).join("") : '<div class="admin-empty-state">No hay programas creados todavia. Usa <strong>Nuevo programa</strong> para crear el primero.</div>';
 
@@ -2052,13 +2105,13 @@
         '<div class="admin-card admin-library-card">' +
         '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Programas</h3></div><button id="add-program" type="button" class="btn btn-primary">Nuevo programa</button></div>' +
         '<div class="admin-library-meta"><span>' + programs.length + ' programas</span><span>Haz clic en una fila para abrir el popup</span></div>' +
-        '<div class="admin-table-head admin-column-table-head">' +
-        '<span>Nombre</span><span>Frecuencia</span><span>Descripcion</span><span>Estado</span><span></span>' +
+        '<div class="admin-table-head admin-program-table-head">' +
+        '<span>Nombre</span><span>Frecuencia</span><span>Estado</span><span></span>' +
         '</div>' +
-        '<div class="admin-column-list" id="program-list">' + rowsHtml + '</div>' +
+        '<div class="admin-program-list" id="program-list">' + rowsHtml + '</div>' +
         '</div></section>',
       bind: function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#program-list .admin-column-row"), function (button) {
+        Array.prototype.forEach.call(document.querySelectorAll("#program-list .admin-program-row"), function (button) {
           button.addEventListener("click", function () {
             var program = findById(programs, button.getAttribute("data-id"));
             openProgramEditorModal(program);

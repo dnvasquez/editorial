@@ -22,6 +22,18 @@
     var(--admin-bg);
 }
 
+.admin-login-page {
+  min-height: 100vh;
+}
+
+.admin-login-page .admin-login-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
 .admin-dashboard-body {
   overflow: hidden;
 }
@@ -216,7 +228,13 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.admin-rich-select,
+.admin-rich-format-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-right: 6px;
+}
+
 .admin-rich-button {
   min-height: 40px;
   border: 1px solid rgba(24, 54, 47, 0.14);
@@ -224,11 +242,6 @@
   background: #fff;
   color: var(--admin-panel);
   font-size: 0.9rem;
-}
-
-.admin-rich-select {
-  min-width: 140px;
-  padding: 0 12px;
 }
 
 .admin-rich-button {
@@ -243,9 +256,7 @@
 }
 
 .admin-rich-button:hover,
-.admin-rich-button:focus,
-.admin-rich-select:hover,
-.admin-rich-select:focus {
+.admin-rich-button:focus {
   border-color: rgba(177, 90, 53, 0.5);
   outline: none;
   box-shadow: 0 0 0 4px rgba(177, 90, 53, 0.08);
@@ -254,6 +265,21 @@
 .admin-rich-button:hover,
 .admin-rich-button:focus {
   transform: translateY(-1px);
+}
+
+.admin-rich-format-button {
+  min-width: 92px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.admin-rich-format-button[aria-pressed="true"],
+.admin-rich-format-button.is-active {
+  border-color: rgba(177, 90, 53, 0.45);
+  background: rgba(177, 90, 53, 0.12);
+  color: var(--admin-accent-dark);
 }
 
 .admin-rich-editor-area {
