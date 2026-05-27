@@ -302,13 +302,46 @@
         box-shadow: none;
       }
 
-      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-panel {
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] article {
+        position: relative;
+        min-height: clamp(440px, 56svh, 560px);
+        overflow: hidden;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-bg {
+        position: absolute;
+        inset: 0;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-bg:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.28) 46%, rgba(0, 0, 0, 0.56) 100%);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-copy {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 0.72rem;
         min-width: 0;
+        max-width: 650px;
         padding: clamp(1.45rem, 2.8vw, 3rem);
+      }
+
+      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-copy .featured-hero-kicker {
+        display: inline-flex;
+        color: rgba(255, 255, 255, 0.78);
       }
 
       body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-hero-title {
@@ -984,14 +1017,19 @@
 
         function buildColumnHero(column) {
           if (!column) return "";
+          var columnImage = column.imagen || column.banner || "images/col01_img.jpg";
+          var columnBackground = "background-image: linear-gradient(90deg, rgba(7, 10, 8, 0.64) 0%, rgba(7, 10, 8, 0.34) 48%, rgba(7, 10, 8, 0.58) 100%), url('" + encodeURI(String(columnImage)).replace(/'/g, "%27") + "')";
           return [
             '<article class="featured-column-panel">',
+            '<div class="featured-column-bg" style="' + columnBackground + ';"></div>',
+            '<div class="featured-column-copy">',
             '<span class="featured-hero-kicker">Columna destacada</span>',
             '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(column.titulo || "") + '</h2>',
             '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>Por ' + escapeHtml(column.autor || "Autor/a") + ' <span class="sep">/</span> ' + escapeHtml(column.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(column.lectura || "") + '</small></span></div>',
             '<p class="featured-column-summary text-white">' + escapeHtml(column.resumen || "Lee esta columna destacada.") + '</p>',
             buildHeroHashtags(column.hashtags || []),
             '<p class="mb-0"><a id="cms-hero-transcript-link" href="columna.html?id=' + encodeURIComponent(column.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Leer columna</a></p>',
+            '</div>',
             '</article>'
           ].join('');
         }
