@@ -997,24 +997,58 @@
           }).filter(Boolean).join('') + '</div>';
         }
 
-        function setHeroBackground(element, imageUrl, fallbackUrl) {
-          if (!element) return;
-          var resolvedUrl = imageUrl || fallbackUrl || "";
-          if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function") {
-            resolvedUrl = window.EditorialCmsSite.sanitizeImageUrl(resolvedUrl, fallbackUrl || "");
-          } else {
-            resolvedUrl = String(resolvedUrl || "");
-            if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(resolvedUrl)) {
-              try {
-                var parsedBackground = new URL(resolvedUrl, window.location.origin);
-                resolvedUrl = parsedBackground.pathname + (parsedBackground.search || "") + (parsedBackground.hash || "");
-              } catch (error) {}
+        function buildHeroImageCandidates(imageUrl, fallbackUrl) {
+          var candidates = [];
+
+          function pushCandidate(value) {
+            var raw = String(value || "").trim();
+            if (!raw) return;
+
+            if (/^data:image\//i.test(raw) || /^blob:/i.test(raw)) {
+              if (candidates.indexOf(raw) === -1) {
+                candidates.push(raw);
+              }
+              return;
+            }
+
+            try {
+              var parsed = new URL(raw, window.location.origin);
+              var resolved = parsed.href;
+              if (candidates.indexOf(resolved) === -1) {
+                candidates.push(resolved);
+              }
+
+              if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+                var proxyUrl = "/.netlify/functions/image-proxy?url=" + encodeURIComponent(resolved);
+                if (candidates.indexOf(proxyUrl) === -1) {
+                  candidates.push(proxyUrl);
+                }
+              }
+            } catch (error) {
+              if (candidates.indexOf(raw) === -1) {
+                candidates.push(raw);
+              }
             }
           }
-          if (!resolvedUrl) {
+
+          pushCandidate(imageUrl);
+          if (!candidates.length) {
+            pushCandidate(fallbackUrl);
+          } else if (fallbackUrl) {
+            pushCandidate(fallbackUrl);
+          }
+
+          return candidates;
+        }
+
+        function setHeroBackground(element, imageUrl, fallbackUrl) {
+          if (!element) return;
+          var candidates = buildHeroImageCandidates(imageUrl, fallbackUrl);
+          if (!candidates.length) {
             element.style.backgroundImage = "";
             return;
           }
+          var resolvedUrl = candidates[0];
           element.style.backgroundImage = "url('" + encodeURI(String(resolvedUrl)).replace(/'/g, "%27") + "')";
           element.style.backgroundPosition = "center center";
           element.style.backgroundSize = "cover";
@@ -1023,32 +1057,25 @@
 
         function setHeroVisual(element, imageUrl, fallbackUrl) {
           if (!element) return;
-          var resolvedUrl = imageUrl || fallbackUrl || "";
-          if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function") {
-            resolvedUrl = window.EditorialCmsSite.sanitizeImageUrl(resolvedUrl, fallbackUrl || "");
-          } else {
-            resolvedUrl = String(resolvedUrl || "");
-            if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(resolvedUrl)) {
-              try {
-                var parsedVisual = new URL(resolvedUrl, window.location.origin);
-                resolvedUrl = parsedVisual.pathname + (parsedVisual.search || "") + (parsedVisual.hash || "");
-              } catch (error) {}
-            }
-          }
-          if (!resolvedUrl) {
+          var candidates = buildHeroImageCandidates(imageUrl, fallbackUrl);
+          if (!candidates.length) {
             element.removeAttribute("src");
             return;
           }
-          var encodedResolvedUrl = encodeURI(String(resolvedUrl)).replace(/'/g, "%27");
-          var encodedFallbackUrl = fallbackUrl ? encodeURI(String(fallbackUrl)).replace(/'/g, "%27") : "";
+          var candidateIndex = 0;
+          var encodedCandidates = candidates.map(function (candidate) {
+            return encodeURI(String(candidate)).replace(/'/g, "%27");
+          });
           element.onerror = null;
           element.onerror = function () {
-            if (encodedFallbackUrl && element.getAttribute("src") !== encodedFallbackUrl) {
-              element.onerror = null;
-              element.src = encodedFallbackUrl;
+            candidateIndex += 1;
+            if (candidateIndex < encodedCandidates.length) {
+              element.src = encodedCandidates[candidateIndex];
+              return;
             }
+            element.onerror = null;
           };
-          element.src = encodedResolvedUrl;
+          element.src = encodedCandidates[candidateIndex];
         }
 
         function buildPodcastHero(episode) {
