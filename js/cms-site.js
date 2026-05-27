@@ -1119,6 +1119,13 @@
         return parsed.pathname + (parsed.search || "") + (parsed.hash || "");
       }
       if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "blob:") {
+        var isLocalHost = window.location.protocol === "file:" ||
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1" ||
+          window.location.hostname === "::1";
+        if (!isLocalHost && (parsed.origin !== window.location.origin || parsed.protocol === "blob:")) {
+          return "/.netlify/functions/image-proxy?url=" + encodeURIComponent(parsed.href);
+        }
         return parsed.href;
       }
     } catch (error) {
