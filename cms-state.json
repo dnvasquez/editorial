@@ -564,9 +564,9 @@
     },
     "columnas": {
       "visible": true,
-      "heroTitle": "",
-      "heroSubtitle": "",
-      "heroImage": ""
+      "heroTitle": "Columnas Editoriales",
+      "heroSubtitle": "Opinión, análisis y pensamiento crítico de nuestros columnistas",
+      "heroImage": "https://ia903107.us.archive.org/7/items/chat-gpt-image-16-may-2026-12-25-12/ChatGPT%20Image%2016%20may%202026%2C%2012_25_12.png"
     },
     "publicaciones": {
       "visible": true,
