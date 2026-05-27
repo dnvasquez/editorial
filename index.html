@@ -1170,6 +1170,12 @@
         var heroRoot = document.getElementById('ep-hero');
         var heroHtml = '';
         var heroKind = 'manual';
+        var heroDebug = {
+          featuredType: featuredType,
+          featuredId: featuredId,
+          featuredHeroImage: featuredHeroImage,
+          fallbackHeroImage: fallbackHeroImage
+        };
         if (featuredType === 'episode' && featuredId) {
           var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroSection) {
@@ -1232,6 +1238,14 @@
 
         if (heroSection) {
           heroSection.setAttribute('data-hero-kind', heroKind);
+          heroSection.setAttribute('data-hero-featured-type', featuredType || '');
+          heroSection.setAttribute('data-hero-featured-id', featuredId || '');
+          heroSection.setAttribute('data-hero-featured-image', featuredHeroImage || '');
+          heroSection.setAttribute('data-hero-fallback-image', fallbackHeroImage || '');
+        }
+
+        if (window.console && typeof window.console.info === "function") {
+          window.console.info("[Editorial hero]", heroDebug);
         }
 
       var programsEpisodesPanel = document.getElementById('home-programs-episodes');
