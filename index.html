@@ -302,34 +302,7 @@
         box-shadow: none;
       }
 
-      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] article {
-        position: relative;
-        min-height: clamp(440px, 56svh, 560px);
-        overflow: hidden;
-        border: 0;
-        border-radius: 0;
-        background: transparent;
-        box-shadow: none;
-      }
-
-      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-bg {
-        position: absolute;
-        inset: 0;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
-      }
-
-      body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-bg:after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.28) 46%, rgba(0, 0, 0, 0.56) 100%);
-      }
-
       body[data-cms-page="index"] #ep-hero[data-hero-kind="column"] .featured-column-copy {
-        position: relative;
-        z-index: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -996,6 +969,19 @@
           }).filter(Boolean).join('') + '</div>';
         }
 
+        function setHeroBackground(element, imageUrl, fallbackUrl) {
+          if (!element) return;
+          var resolvedUrl = imageUrl || fallbackUrl || "";
+          if (!resolvedUrl) {
+            element.style.backgroundImage = "";
+            return;
+          }
+          element.style.backgroundImage = "url('" + encodeURI(String(resolvedUrl)).replace(/'/g, "%27") + "')";
+          element.style.backgroundPosition = "center center";
+          element.style.backgroundSize = "cover";
+          element.style.backgroundRepeat = "no-repeat";
+        }
+
         function buildPodcastHero(episode) {
           if (!episode) return "";
           return [
@@ -1017,11 +1003,8 @@
 
         function buildColumnHero(column) {
           if (!column) return "";
-          var columnImage = column.imagen || column.banner || "images/col01_img.jpg";
-          var columnBackground = "background-image: linear-gradient(90deg, rgba(7, 10, 8, 0.64) 0%, rgba(7, 10, 8, 0.34) 48%, rgba(7, 10, 8, 0.58) 100%), url('" + encodeURI(String(columnImage)).replace(/'/g, "%27") + "')";
           return [
             '<article class="featured-column-panel">',
-            '<div class="featured-column-bg" style="' + columnBackground + ';"></div>',
             '<div class="featured-column-copy">',
             '<span class="featured-hero-kicker">Columna destacada</span>',
             '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(column.titulo || "") + '</h2>',
@@ -1070,22 +1053,16 @@
           var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            heroSection.style.backgroundImage = heroEpisode && heroEpisode.imagen ? "url('" + encodeURI(String(heroEpisode.imagen)).replace(/'/g, "%27") + "')" : "";
-            heroSection.style.backgroundPosition = 'center center';
-            heroSection.style.backgroundSize = 'cover';
+            setHeroBackground(heroSection, heroEpisode && heroEpisode.imagen, 'images/hero_bg_1.jpg');
           }
           heroHtml = buildPodcastHero(heroEpisode);
           heroKind = 'episode';
         } else if (featuredType === 'column' && featuredId) {
           var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroColumn && heroSection) {
-            var heroColumnImage = heroColumn.imagen || heroColumn.banner || 'images/col01_img.jpg';
             heroSection.classList.remove('featured-publication-cover');
             heroSection.classList.add('featured-column-cover');
-            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumnImage)).replace(/'/g, "%27") + "')";
-            heroSection.style.backgroundPosition = 'center center';
-            heroSection.style.backgroundSize = 'cover';
-            heroSection.style.backgroundRepeat = 'no-repeat';
+            setHeroBackground(heroSection, heroColumn.imagen || heroColumn.banner, 'images/hero_bg_1.jpg');
           }
           heroHtml = buildColumnHero(heroColumn);
           heroKind = 'column';
@@ -1094,16 +1071,14 @@
           if (heroSection && heroPublication) {
             heroSection.classList.remove('featured-column-cover');
             heroSection.classList.add('featured-publication-cover');
-            heroSection.style.backgroundImage = heroPublication.imagen ? "url('" + encodeURI(String(heroPublication.imagen)).replace(/'/g, "%27") + "')" : "";
-            heroSection.style.backgroundPosition = 'center center';
-            heroSection.style.backgroundSize = 'cover';
+            setHeroBackground(heroSection, heroPublication.imagen, 'images/hero_bg_1.jpg');
           }
           heroHtml = buildPublicationHero(heroPublication);
           heroKind = 'publication';
         } else if (homeConfig && (homeConfig.manualHeroTitle || homeConfig.manualHeroMeta || homeConfig.manualHeroAudio || homeConfig.manualHeroTranscriptLink)) {
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            heroSection.style.backgroundImage = "";
+            setHeroBackground(heroSection, "", "images/hero_bg_1.jpg");
           }
           heroHtml = [
             '<article class="featured-manual-panel">',
@@ -1118,9 +1093,7 @@
         } else if (EPISODIOS[0]) {
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            heroSection.style.backgroundImage = EPISODIOS[0].imagen ? "url('" + encodeURI(String(EPISODIOS[0].imagen)).replace(/'/g, "%27") + "')" : "";
-            heroSection.style.backgroundPosition = 'center center';
-            heroSection.style.backgroundSize = 'cover';
+            setHeroBackground(heroSection, EPISODIOS[0].imagen, 'images/hero_bg_1.jpg');
           }
           heroHtml = buildPodcastHero(EPISODIOS[0]);
           heroKind = 'episode';
