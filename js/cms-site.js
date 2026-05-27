@@ -1696,7 +1696,9 @@
     writeObject(PAGE_STORAGE_KEY, all);
     flushRemoteSync();
     queueRemoteSync();
-    return all[pageId];
+    return syncStateNow().then(function () {
+      return all[pageId];
+    });
   }
 
   function hydrateGlobals() {

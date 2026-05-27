@@ -764,24 +764,29 @@
 
     document.getElementById("admin-main-content").innerHTML = pageHtml;
 
-    document.getElementById("admin-page-form").addEventListener("submit", function (event) {
+    document.getElementById("admin-page-form").addEventListener("submit", async function (event) {
       event.preventDefault();
-      window.EditorialCmsSite.savePageConfig(page.id, {
-        visible: document.getElementById("page-visible").checked,
-        heroTitle: page.id === "index" ? "" : document.getElementById("page-hero-title").value,
-        heroSubtitle: page.id === "index" ? "" : document.getElementById("page-hero-subtitle").value,
-        heroImage: document.getElementById("page-hero-image").value,
-        featuredContentType: page.id === "index" ? document.getElementById("page-featured-type").value : "",
-        featuredContentId: page.id === "index" ? document.getElementById("page-featured-item").value : "",
-        featuredEpisodeId: page.id === "index" && document.getElementById("page-featured-type").value === "episode"
-          ? document.getElementById("page-featured-item").value
-          : "",
-        manualHeroTitle: "",
-        manualHeroMeta: "",
-        manualHeroAudio: "",
-        manualHeroTranscriptLink: ""
-      });
-      document.getElementById("admin-page-feedback").textContent = "Pagina guardada. Recarga la vista publica para ver los cambios.";
+      var feedbackNode = document.getElementById("admin-page-feedback");
+      try {
+        await window.EditorialCmsSite.savePageConfig(page.id, {
+          visible: document.getElementById("page-visible").checked,
+          heroTitle: page.id === "index" ? "" : document.getElementById("page-hero-title").value,
+          heroSubtitle: page.id === "index" ? "" : document.getElementById("page-hero-subtitle").value,
+          heroImage: document.getElementById("page-hero-image").value,
+          featuredContentType: page.id === "index" ? document.getElementById("page-featured-type").value : "",
+          featuredContentId: page.id === "index" ? document.getElementById("page-featured-item").value : "",
+          featuredEpisodeId: page.id === "index" && document.getElementById("page-featured-type").value === "episode"
+            ? document.getElementById("page-featured-item").value
+            : "",
+          manualHeroTitle: "",
+          manualHeroMeta: "",
+          manualHeroAudio: "",
+          manualHeroTranscriptLink: ""
+        });
+        feedbackNode.textContent = "Pagina guardada y sincronizada. Recarga la vista publica para ver los cambios.";
+      } catch (error) {
+        feedbackNode.textContent = "Se guardo de forma local, pero no se pudo sincronizar con Netlify. Revisa la sesión o el estado remoto.";
+      }
     });
 
     if (page.id === "columnas") {
