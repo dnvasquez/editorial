@@ -1115,6 +1115,9 @@
 
     try {
       var parsed = new URL(raw, window.location.origin);
+      if (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1" || parsed.hostname === "::1") {
+        return parsed.pathname + (parsed.search || "") + (parsed.hash || "");
+      }
       if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "blob:") {
         return parsed.href;
       }

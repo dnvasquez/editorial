@@ -1000,6 +1000,17 @@
         function setHeroBackground(element, imageUrl, fallbackUrl) {
           if (!element) return;
           var resolvedUrl = imageUrl || fallbackUrl || "";
+          if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function") {
+            resolvedUrl = window.EditorialCmsSite.sanitizeImageUrl(resolvedUrl, fallbackUrl || "");
+          } else {
+            resolvedUrl = String(resolvedUrl || "");
+            if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(resolvedUrl)) {
+              try {
+                var parsedBackground = new URL(resolvedUrl, window.location.origin);
+                resolvedUrl = parsedBackground.pathname + (parsedBackground.search || "") + (parsedBackground.hash || "");
+              } catch (error) {}
+            }
+          }
           if (!resolvedUrl) {
             element.style.backgroundImage = "";
             return;
@@ -1013,6 +1024,17 @@
         function setHeroVisual(element, imageUrl, fallbackUrl) {
           if (!element) return;
           var resolvedUrl = imageUrl || fallbackUrl || "";
+          if (window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function") {
+            resolvedUrl = window.EditorialCmsSite.sanitizeImageUrl(resolvedUrl, fallbackUrl || "");
+          } else {
+            resolvedUrl = String(resolvedUrl || "");
+            if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(resolvedUrl)) {
+              try {
+                var parsedVisual = new URL(resolvedUrl, window.location.origin);
+                resolvedUrl = parsedVisual.pathname + (parsedVisual.search || "") + (parsedVisual.hash || "");
+              } catch (error) {}
+            }
+          }
           if (!resolvedUrl) {
             element.removeAttribute("src");
             return;
