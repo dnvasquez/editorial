@@ -1158,8 +1158,7 @@
         var featuredConfig = homeConfig;
         var featuredType = featuredConfig && featuredConfig.featuredContentType ? featuredConfig.featuredContentType : (featuredConfig && featuredConfig.featuredEpisodeId ? 'episode' : '');
         var featuredId = featuredConfig && featuredConfig.featuredContentId ? featuredConfig.featuredContentId : (featuredConfig && featuredConfig.featuredEpisodeId ? featuredConfig.featuredEpisodeId : '');
-        var featuredHeroImage = getFeaturedHeroImage(featuredType, featuredId);
-        var fallbackHeroImage = (homeConfig && homeConfig.heroImage) ? homeConfig.heroImage : 'images/hero_bg_1.jpg';
+        var fixedHeroImage = (homeConfig && homeConfig.heroImage) ? homeConfig.heroImage : 'images/hero_bg_1.jpg';
         var heroSection = document.getElementById('cms-page-hero');
         var heroVisual = document.getElementById('cms-page-hero-visual');
         var heroRoot = document.getElementById('ep-hero');
@@ -1168,16 +1167,15 @@
         var heroDebug = {
           featuredType: featuredType,
           featuredId: featuredId,
-          featuredHeroImage: featuredHeroImage,
-          fallbackHeroImage: fallbackHeroImage
+          fixedHeroImage: fixedHeroImage
         };
         if (featuredType === 'episode' && featuredId) {
           var heroEpisode = EPISODIOS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            setHeroBackground(heroSection, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+            setHeroBackground(heroSection, fixedHeroImage, 'images/hero_bg_1.jpg');
           }
-          setHeroVisual(heroVisual, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+          setHeroVisual(heroVisual, fixedHeroImage, 'images/hero_bg_1.jpg');
           heroHtml = buildPodcastHero(heroEpisode);
           heroKind = 'episode';
         } else if (featuredType === 'column' && featuredId) {
@@ -1185,9 +1183,9 @@
           if (heroColumn && heroSection) {
             heroSection.classList.remove('featured-publication-cover');
             heroSection.classList.add('featured-column-cover');
-            setHeroBackground(heroSection, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+            setHeroBackground(heroSection, fixedHeroImage, 'images/hero_bg_1.jpg');
           }
-          setHeroVisual(heroVisual, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+          setHeroVisual(heroVisual, fixedHeroImage, 'images/hero_bg_1.jpg');
           heroHtml = buildColumnHero(heroColumn);
           heroKind = 'column';
         } else if (featuredType === 'publication' && featuredId) {
@@ -1195,17 +1193,17 @@
           if (heroSection && heroPublication) {
             heroSection.classList.remove('featured-column-cover');
             heroSection.classList.add('featured-publication-cover');
-            setHeroBackground(heroSection, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+            setHeroBackground(heroSection, fixedHeroImage, 'images/hero_bg_1.jpg');
           }
-          setHeroVisual(heroVisual, featuredHeroImage || fallbackHeroImage, 'images/hero_bg_1.jpg');
+          setHeroVisual(heroVisual, fixedHeroImage, 'images/hero_bg_1.jpg');
           heroHtml = buildPublicationHero(heroPublication);
           heroKind = 'publication';
         } else if (homeConfig && (homeConfig.manualHeroTitle || homeConfig.manualHeroMeta || homeConfig.manualHeroAudio || homeConfig.manualHeroTranscriptLink)) {
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            setHeroBackground(heroSection, "", "images/hero_bg_1.jpg");
+            setHeroBackground(heroSection, fixedHeroImage, 'images/hero_bg_1.jpg');
           }
-          setHeroVisual(heroVisual, "", "images/hero_bg_1.jpg");
+          setHeroVisual(heroVisual, fixedHeroImage, 'images/hero_bg_1.jpg');
           heroHtml = [
             '<article class="featured-manual-panel">',
             '<span class="featured-hero-kicker">Contenido destacado</span>',
@@ -1219,9 +1217,9 @@
         } else if (EPISODIOS[0]) {
           if (heroSection) {
             heroSection.classList.remove('featured-column-cover', 'featured-publication-cover');
-            setHeroBackground(heroSection, fallbackHeroImage || EPISODIOS[0].imagen, 'images/hero_bg_1.jpg');
+            setHeroBackground(heroSection, fixedHeroImage, 'images/hero_bg_1.jpg');
           }
-          setHeroVisual(heroVisual, fallbackHeroImage || EPISODIOS[0].imagen, 'images/hero_bg_1.jpg');
+          setHeroVisual(heroVisual, fixedHeroImage, 'images/hero_bg_1.jpg');
           heroHtml = buildPodcastHero(EPISODIOS[0]);
           heroKind = 'episode';
         }
@@ -1235,8 +1233,7 @@
           heroSection.setAttribute('data-hero-kind', heroKind);
           heroSection.setAttribute('data-hero-featured-type', featuredType || '');
           heroSection.setAttribute('data-hero-featured-id', featuredId || '');
-          heroSection.setAttribute('data-hero-featured-image', featuredHeroImage || '');
-          heroSection.setAttribute('data-hero-fallback-image', fallbackHeroImage || '');
+          heroSection.setAttribute('data-hero-fixed-image', fixedHeroImage || '');
         }
 
         if (window.console && typeof window.console.info === "function") {
