@@ -748,6 +748,7 @@
     var contentHtml = column.contenidoHtml ? sanitizeColumnContentHtml(column.contenidoHtml) : columnContentToHtml(column.contenido);
     var contentText = columnContentToPlainText(column.contenidoHtml || column.contenido);
     var hashtags = toHashtagArray(column.hashtags).map(normalizeHashtag).filter(Boolean);
+    var columnImage = column.imagen || column.banner || "images/col01_img.jpg";
     return {
       id: column.id,
       titulo: column.titulo || "Sin titulo",
@@ -755,8 +756,8 @@
       autorId: column.autorId || slugify(column.autor || ""),
       fecha: formatDisplayDate(column.fecha),
       lectura: column.lectura || estimateReadingLabel(contentText),
-      imagen: column.imagen || "images/col01_img.jpg",
-      banner: column.imagen || column.banner || "images/col01_img.jpg",
+      imagen: columnImage,
+      banner: columnImage,
       resumen: column.resumen || "",
       contenido: contentText,
       contenidoHtml: contentHtml,
@@ -797,7 +798,7 @@
         autorId: autorId,
         fecha: normalizeDate(column.fecha),
         lectura: column.lectura || estimateReadingLabel(columnContentToPlainText(column.contenidoHtml || column.contenido)),
-        imagen: column.imagen,
+        imagen: column.imagen || column.banner,
         banner: column.imagen || column.banner,
         resumen: column.resumen,
         hashtags: Array.isArray(column.hashtags) ? column.hashtags.join(", ") : String(column.hashtags || ""),

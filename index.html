@@ -1041,9 +1041,13 @@
         } else if (featuredType === 'column' && featuredId) {
           var heroColumn = COLUMNAS.find(function(item) { return String(item.id) === String(featuredId); });
           if (heroColumn && heroSection) {
+            var heroColumnImage = heroColumn.imagen || heroColumn.banner || 'images/col01_img.jpg';
             heroSection.classList.remove('featured-publication-cover');
             heroSection.classList.add('featured-column-cover');
-            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumn.imagen || heroColumn.banner || "")).replace(/'/g, "%27") + "')";
+            heroSection.style.backgroundImage = "url('" + encodeURI(String(heroColumnImage)).replace(/'/g, "%27") + "')";
+            heroSection.style.backgroundPosition = 'center center';
+            heroSection.style.backgroundSize = 'cover';
+            heroSection.style.backgroundRepeat = 'no-repeat';
           }
           heroHtml = buildColumnHero(heroColumn);
           heroKind = 'column';
