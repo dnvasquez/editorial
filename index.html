@@ -1014,14 +1014,9 @@
             try {
               var parsed = new URL(raw, window.location.origin);
               var resolved = parsed.href;
-              if (candidates.indexOf(resolved) === -1) {
-                candidates.push(resolved);
-              }
-
-              if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-                var proxyUrl = "/.netlify/functions/image-proxy?url=" + encodeURIComponent(resolved);
-                if (candidates.indexOf(proxyUrl) === -1) {
-                  candidates.push(proxyUrl);
+              if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "data:" || parsed.protocol === "blob:") {
+                if (candidates.indexOf(resolved) === -1) {
+                  candidates.push(resolved);
                 }
               }
             } catch (error) {
