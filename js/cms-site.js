@@ -81,6 +81,13 @@
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
   }
 
+  function isLocalPreviewEnvironment() {
+    if (!window.location || window.location.protocol === "file:") return true;
+    return window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname === "::1";
+  }
+
   function readSnapshot() {
     var snapshot = {};
 
@@ -142,8 +149,8 @@
   function syncSnapshotToServer(snapshot, silent) {
     if (!snapshot || typeof snapshot !== "object") return Promise.resolve();
     if (typeof window.fetch !== "function") return Promise.resolve();
-    if (window.location && window.location.protocol === "file:") {
-      return Promise.reject(new Error("El CMS no puede sincronizar desde archivos locales. Abre el sitio desde Netlify o Netlify Dev."));
+    if (isLocalPreviewEnvironment()) {
+      return Promise.resolve(null);
     }
 
     var request = window.fetch(REMOTE_STATE_ENDPOINT, {
@@ -1696,6 +1703,9 @@
     writeObject(PAGE_STORAGE_KEY, all);
     flushRemoteSync();
     queueRemoteSync();
+    if (isLocalPreviewEnvironment()) {
+      return Promise.resolve(all[pageId]);
+    }
     return syncStateNow().then(function () {
       return all[pageId];
     });
