@@ -1158,7 +1158,8 @@
         var featuredConfig = homeConfig;
         var featuredType = featuredConfig && featuredConfig.featuredContentType ? featuredConfig.featuredContentType : (featuredConfig && featuredConfig.featuredEpisodeId ? 'episode' : '');
         var featuredId = featuredConfig && featuredConfig.featuredContentId ? featuredConfig.featuredContentId : (featuredConfig && featuredConfig.featuredEpisodeId ? featuredConfig.featuredEpisodeId : '');
-        var fixedHeroImage = (homeConfig && homeConfig.heroImage) ? homeConfig.heroImage : 'images/hero_bg_1.jpg';
+        var featuredHeroImage = getFeaturedHeroImage(featuredType, featuredId);
+        var fixedHeroImage = featuredHeroImage || (homeConfig && homeConfig.heroImage) || 'images/hero_bg_1.jpg';
         var heroSection = document.getElementById('cms-page-hero');
         var heroVisual = document.getElementById('cms-page-hero-visual');
         var heroRoot = document.getElementById('ep-hero');
@@ -1167,6 +1168,7 @@
         var heroDebug = {
           featuredType: featuredType,
           featuredId: featuredId,
+          featuredHeroImage: featuredHeroImage,
           fixedHeroImage: fixedHeroImage
         };
         if (featuredType === 'episode' && featuredId) {
