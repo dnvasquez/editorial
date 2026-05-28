@@ -570,9 +570,9 @@
     },
     "publicaciones": {
       "visible": true,
-      "heroTitle": "",
-      "heroSubtitle": "",
-      "heroImage": ""
+      "heroTitle": "Publicaciones",
+      "heroSubtitle": "Documentos, ensayos y reportes de acceso libre en formato PDF",
+      "heroImage": "https://ia903107.us.archive.org/7/items/chat-gpt-image-16-may-2026-12-25-12/ChatGPT%20Image%2016%20may%202026%2C%2012_25_12.png"
     },
     "about": {
       "visible": true,
