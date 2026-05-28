@@ -406,17 +406,11 @@
     var typeSelect = document.getElementById("page-featured-type");
     var itemSelect = document.getElementById("page-featured-item");
     var preview = document.getElementById("page-featured-episode-preview");
-    var imageInput = document.getElementById("page-hero-image");
     if (!typeSelect || !itemSelect || !preview) return;
 
     itemSelect.innerHTML = buildFeaturedItemOptions(typeSelect.value, itemSelect.value);
     preview.innerHTML = buildFeaturedContentPreview(typeSelect.value, itemSelect.value);
     preview.style.display = typeSelect.value && itemSelect.value ? "" : "none";
-
-    if (imageInput) {
-      var featuredImage = getFeaturedContentImage(typeSelect.value, itemSelect.value);
-      imageInput.value = featuredImage || "images/hero_bg_1.jpg";
-    }
   }
 
   function createLink(href, label, active) {
@@ -720,13 +714,12 @@
     if (page.id === "index") {
       var selectedType = config.featuredContentType || (config.featuredEpisodeId ? "episode" : "");
       var selectedItemId = config.featuredContentId || config.featuredEpisodeId || "";
-      var selectedHeroImage = getFeaturedContentImage(selectedType, selectedItemId) || config.heroImage || "images/hero_bg_1.jpg";
       featuredEpisodeField =
         '<div class="admin-field"><label for="page-featured-type">Que quieres destacar</label><select id="page-featured-type" class="form-control">' + buildFeaturedTypeOptions(selectedType) + '</select></div>' +
         '<div class="admin-field"><label for="page-featured-item">Contenido destacado</label><select id="page-featured-item" class="form-control">' + buildFeaturedItemOptions(selectedType, selectedItemId) + '</select></div>' +
         '<div id="page-featured-episode-preview">' + buildFeaturedContentPreview(selectedType, selectedItemId) + '</div>';
       pageFields =
-        '<div class="admin-field"><label for="page-hero-image">Imagen</label><input id="page-hero-image" class="form-control" value="' + escapeHtml(selectedHeroImage) + '" placeholder="images/hero_bg_1.jpg o URL completa"></div>';
+        '<div class="admin-field"><label for="page-hero-image">Imagen</label><input id="page-hero-image" class="form-control" value="' + escapeHtml(config.heroImage) + '" placeholder="images/hero_bg_1.jpg o URL completa"></div>';
     } else {
       pageFields =
         '<div class="admin-field"><label for="page-hero-title">Titulo</label><input id="page-hero-title" class="form-control" value="' + escapeHtml(config.heroTitle) + '" placeholder="Opcional"></div>' +
