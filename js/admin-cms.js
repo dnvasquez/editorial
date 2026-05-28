@@ -719,7 +719,7 @@
         '<div class="admin-field"><label for="page-featured-item">Contenido destacado</label><select id="page-featured-item" class="form-control">' + buildFeaturedItemOptions(selectedType, selectedItemId) + '</select></div>' +
         '<div id="page-featured-episode-preview">' + buildFeaturedContentPreview(selectedType, selectedItemId) + '</div>';
       pageFields =
-        '<div class="admin-field"><label for="page-hero-image">Imagen</label><input id="page-hero-image" class="form-control" value="' + escapeHtml(config.heroImage) + '" placeholder="images/hero_bg_1.jpg o URL completa"></div>';
+        '<div class="admin-field"><label for="page-hero-image">Imagen de fondo del hero</label><input id="page-hero-image" class="form-control" value="' + escapeHtml(config.heroImage) + '" placeholder="images/hero_bg_1.jpg o URL completa"><small class="text-muted">Esta imagen controla el fondo principal de Inicio.</small></div>';
     } else {
       pageFields =
         '<div class="admin-field"><label for="page-hero-title">Titulo</label><input id="page-hero-title" class="form-control" value="' + escapeHtml(config.heroTitle) + '" placeholder="Opcional"></div>' +

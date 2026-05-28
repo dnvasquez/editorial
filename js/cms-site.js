@@ -1598,7 +1598,7 @@
         visible: true,
         heroTitle: "",
         heroSubtitle: "",
-        heroImage: ""
+        heroImage: page.id === "index" ? "images/hero_bg_1.jpg" : ""
       };
       if (page.id === "index") {
         pages[page.id].featuredContentType = "";
@@ -1907,4 +1907,10 @@
   } else {
     applyPageConfig(document);
   }
+
+  window.addEventListener("storage", function (event) {
+    if (!event || (event.key !== PAGE_STORAGE_KEY && event.key !== CONTENT_STORAGE_KEY)) return;
+    hydrateGlobals();
+    applyPageConfig(document);
+  });
 })();
