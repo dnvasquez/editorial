@@ -1126,7 +1126,13 @@
         return parsed.pathname + (parsed.search || "") + (parsed.hash || "");
       }
       if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "blob:") {
-        return parsed.href;
+        if (isLocalPreviewEnvironment()) {
+          return parsed.href;
+        }
+        if (parsed.protocol === "blob:") {
+          return parsed.href;
+        }
+        return "/.netlify/functions/image-proxy?url=" + encodeURIComponent(parsed.href);
       }
     } catch (error) {
       return fallback || "";
@@ -1765,7 +1771,7 @@
     var heroSubtitle = body.querySelector("#cms-hero-subtitle");
 
     if (hero && config.heroImage) {
-      hero.style.backgroundImage = "url(" + config.heroImage + ")";
+      setSafeBackgroundImage(hero, config.heroImage, "");
     }
     if (heroTitle && config.heroTitle) {
       heroTitle.textContent = config.heroTitle;
@@ -1861,6 +1867,7 @@
     sanitizeColumnContentHtml: sanitizeColumnContentHtml,
     columnContentToHtml: columnContentToHtml,
     columnContentToPlainText: columnContentToPlainText,
+    sanitizeImageUrl: sanitizeImageUrl,
     getPrograms: getPrograms,
     getProgramsForAdmin: getProgramsForAdmin,
     saveProgram: saveProgram,

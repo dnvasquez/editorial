@@ -998,22 +998,18 @@
         }
 
         function buildHeroImageCandidates(imageUrl) {
-          var raw = String(imageUrl || "").trim();
-          if (!raw) return [];
+          var sanitizer = window.EditorialCmsSite && typeof window.EditorialCmsSite.sanitizeImageUrl === "function"
+            ? window.EditorialCmsSite.sanitizeImageUrl
+            : null;
+          var resolved = sanitizer ? sanitizer(imageUrl, "") : String(imageUrl || "").trim();
+          return resolved ? [resolved] : [];
+        }
 
-          if (/^data:image\//i.test(raw) || /^blob:/i.test(raw)) {
-            return [raw];
-          }
-
-          try {
-            var parsed = new URL(raw, window.location.origin);
-            var resolved = parsed.href;
-            if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "data:" || parsed.protocol === "blob:") {
-              return [resolved];
-            }
-          } catch (error) {}
-
-          return [raw];
+        function escapeCssUrlValue(value) {
+          return String(value || "")
+            .replace(/\\/g, "\\\\")
+            .replace(/"/g, "%22")
+            .replace(/\r?\n/g, " ");
         }
 
         function getFeaturedHeroImage(featuredType, featuredId) {
@@ -1046,7 +1042,7 @@
             return;
           }
           var resolvedUrl = candidates[0];
-          element.style.backgroundImage = "url('" + encodeURI(String(resolvedUrl)).replace(/'/g, "%27") + "')";
+          element.style.backgroundImage = 'url("' + escapeCssUrlValue(resolvedUrl) + '")';
           element.style.backgroundPosition = "center center";
           element.style.backgroundSize = "cover";
           element.style.backgroundRepeat = "no-repeat";
@@ -1060,19 +1056,16 @@
             return;
           }
           var candidateIndex = 0;
-          var encodedCandidates = candidates.map(function (candidate) {
-            return encodeURI(String(candidate)).replace(/'/g, "%27");
-          });
           element.onerror = null;
           element.onerror = function () {
             candidateIndex += 1;
-            if (candidateIndex < encodedCandidates.length) {
-              element.src = encodedCandidates[candidateIndex];
+            if (candidateIndex < candidates.length) {
+              element.src = candidates[candidateIndex];
               return;
             }
             element.onerror = null;
           };
-          element.src = encodedCandidates[candidateIndex];
+          element.src = candidates[candidateIndex];
         }
 
         function buildPodcastHero(episode) {
