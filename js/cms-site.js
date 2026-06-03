@@ -176,34 +176,38 @@
   }
 
   function mergeSnapshotArray(baseArray, overrideArray) {
+    function canMergeById(items) {
+      return Array.isArray(items) && items.length > 0 && items.every(function (item) {
+        return isPlainObject(item) && item.id !== undefined && item.id !== null;
+      });
+    }
+
+    if (!Array.isArray(overrideArray)) {
+      return Array.isArray(baseArray) ? clone(baseArray) : [];
+    }
+
+    if (!canMergeById(baseArray) || !canMergeById(overrideArray)) {
+      return clone(overrideArray);
+    }
+
     var merged = [];
     var indexById = {};
 
-    function pushItem(item) {
+    baseArray.forEach(function (item) {
       var cloned = clone(item);
-      if (cloned && typeof cloned === "object" && !Array.isArray(cloned) && cloned.id !== undefined && cloned.id !== null) {
-        indexById[String(cloned.id)] = merged.length;
-      }
+      indexById[String(cloned.id)] = merged.length;
       merged.push(cloned);
-    }
-
-    (Array.isArray(baseArray) ? baseArray : []).forEach(function (item) {
-      pushItem(item);
     });
 
-    (Array.isArray(overrideArray) ? overrideArray : []).forEach(function (item) {
-      if (!item || typeof item !== "object" || Array.isArray(item) || item.id === undefined || item.id === null) {
-        pushItem(item);
-        return;
-      }
-
-      var id = String(item.id);
+    overrideArray.forEach(function (item) {
+      var cloned = clone(item);
+      var id = String(cloned.id);
       if (Object.prototype.hasOwnProperty.call(indexById, id)) {
-        merged[indexById[id]] = mergeSnapshotObject(merged[indexById[id]], item);
+        merged[indexById[id]] = mergeSnapshotObject(merged[indexById[id]], cloned);
         return;
       }
-
-      pushItem(item);
+      indexById[id] = merged.length;
+      merged.push(cloned);
     });
 
     return merged;
@@ -472,6 +476,17 @@
     value = value.replace(/^#+/, "");
     value = value.replace(/\s+/g, "-");
     return "#" + value;
+  }
+
+  function normalizeHashtagList(value) {
+    var seen = {};
+    return toHashtagArray(value)
+      .map(normalizeHashtag)
+      .filter(function (tag) {
+        if (!tag || seen[tag]) return false;
+        seen[tag] = true;
+        return true;
+      });
   }
 
   function parseTranscript(text) {
@@ -877,7 +892,7 @@
     var columnId = String(column.id);
     var contentHtml = column.contenidoHtml ? sanitizeColumnContentHtml(column.contenidoHtml) : columnContentToHtml(column.contenido);
     var contentText = columnContentToPlainText(column.contenidoHtml || column.contenido);
-    var hashtags = toHashtagArray(column.hashtags).map(normalizeHashtag).filter(Boolean);
+    var hashtags = normalizeHashtagList(column.hashtags);
     var columnImage = column.imagen || column.banner || "images/col01_img.jpg";
     return {
       id: column.id,
@@ -931,7 +946,7 @@
         imagen: column.imagen || column.banner,
         banner: column.imagen || column.banner,
         resumen: column.resumen,
-        hashtags: Array.isArray(column.hashtags) ? column.hashtags.join(", ") : String(column.hashtags || ""),
+        hashtags: Array.isArray(column.hashtags) ? normalizeHashtagList(column.hashtags).join(", ") : String(column.hashtags || ""),
         contenido: columnContentToPlainText(column.contenidoHtml || column.contenido),
         contenidoHtml: contenidoHtml,
         categoria: column.categoria || "Opinion",
@@ -967,7 +982,7 @@
       payload.imagen = payload.banner;
     }
     payload.banner = payload.imagen || payload.banner;
-    payload.hashtags = Array.isArray(payload.hashtags) ? payload.hashtags : toHashtagArray(payload.hashtags);
+    payload.hashtags = normalizeHashtagList(payload.hashtags);
     payload.contenidoHtml = sanitizeColumnContentHtml(payload.contenidoHtml || payload.contenido || "");
     payload.contenido = payload.contenidoHtml;
     payload.lectura = payload.lectura || estimateReadingLabel(columnContentToPlainText(payload.contenidoHtml));

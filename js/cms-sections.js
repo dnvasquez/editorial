@@ -373,34 +373,38 @@
   }
 
   function mergeSnapshotArray(baseArray, overrideArray) {
+    function canMergeById(items) {
+      return Array.isArray(items) && items.length > 0 && items.every(function (item) {
+        return isPlainObject(item) && item.id !== undefined && item.id !== null;
+      });
+    }
+
+    if (!Array.isArray(overrideArray)) {
+      return Array.isArray(baseArray) ? cloneValue(baseArray) : [];
+    }
+
+    if (!canMergeById(baseArray) || !canMergeById(overrideArray)) {
+      return cloneValue(overrideArray);
+    }
+
     var merged = [];
     var indexById = {};
 
-    function pushItem(item) {
+    baseArray.forEach(function (item) {
       var cloned = cloneValue(item);
-      if (cloned && typeof cloned === "object" && !Array.isArray(cloned) && cloned.id !== undefined && cloned.id !== null) {
-        indexById[String(cloned.id)] = merged.length;
-      }
+      indexById[String(cloned.id)] = merged.length;
       merged.push(cloned);
-    }
-
-    (Array.isArray(baseArray) ? baseArray : []).forEach(function (item) {
-      pushItem(item);
     });
 
-    (Array.isArray(overrideArray) ? overrideArray : []).forEach(function (item) {
-      if (!item || typeof item !== "object" || Array.isArray(item) || item.id === undefined || item.id === null) {
-        pushItem(item);
-        return;
-      }
-
-      var id = String(item.id);
+    overrideArray.forEach(function (item) {
+      var cloned = cloneValue(item);
+      var id = String(cloned.id);
       if (Object.prototype.hasOwnProperty.call(indexById, id)) {
-        merged[indexById[id]] = mergeSnapshotObject(merged[indexById[id]], item);
+        merged[indexById[id]] = mergeSnapshotObject(merged[indexById[id]], cloned);
         return;
       }
-
-      pushItem(item);
+      indexById[id] = merged.length;
+      merged.push(cloned);
     });
 
     return merged;
