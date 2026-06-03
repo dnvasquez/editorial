@@ -442,10 +442,9 @@
   }
 
   function syncSnapshotToServer(snapshot) {
-    if (!snapshot || typeof snapshot !== "object") return;
     if (typeof window.fetch !== "function") return;
 
-    var payload = cloneValue(snapshot);
+    var payload = snapshot && typeof snapshot === "object" ? cloneValue(snapshot) : cloneValue(getRemoteStateStore());
 
     if (!hasSnapshotData(payload)) return;
 
@@ -472,7 +471,7 @@
 
     remoteSyncTimer = window.setTimeout(function () {
       remoteSyncTimer = null;
-      syncSnapshotToServer(readSnapshot());
+      syncSnapshotToServer(getRemoteStateStore());
     }, 150);
   }
 

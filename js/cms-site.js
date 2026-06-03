@@ -257,13 +257,12 @@
   }
 
   function syncSnapshotToServer(snapshot, silent) {
-    if (!snapshot || typeof snapshot !== "object") return Promise.resolve();
     if (typeof window.fetch !== "function") return Promise.resolve();
     if (isLocalPreviewEnvironment()) {
       return Promise.resolve(null);
     }
 
-    var payload = clone(snapshot);
+    var payload = snapshot && typeof snapshot === "object" ? clone(snapshot) : clone(getRemoteStateStore());
 
     if (!hasSnapshotData(payload, REMOTE_STATE_KEYS)) {
       return Promise.resolve(null);
@@ -305,11 +304,11 @@
   }
 
   function flushRemoteSync() {
-    syncSnapshotToServer(readSnapshot(), true);
+    syncSnapshotToServer(getRemoteStateStore(), true);
   }
 
   function syncStateNow() {
-    return syncSnapshotToServer(readSnapshot(), false);
+    return syncSnapshotToServer(getRemoteStateStore(), false);
   }
 
   function queueRemoteSync() {
