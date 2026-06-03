@@ -22,6 +22,10 @@
     "editorialCmsSections",
     "editorialCmsSectionContent"
   ];
+  // Public counters and comment caches should be read locally, not pushed back as editable CMS state.
+  var REMOTE_STATE_SYNC_KEYS = REMOTE_STATE_KEYS.filter(function (key) {
+    return key !== "editorialCmsColumnViews" && key !== "editorialCmsComments";
+  });
   var remoteSyncTimer = null;
 
   var PAGE_DEFINITIONS = [
@@ -103,8 +107,18 @@
     return snapshot;
   }
 
-  function hasSnapshotData(snapshot) {
-    return REMOTE_STATE_KEYS.some(function (key) {
+  function pickSnapshotKeys(snapshot, keys) {
+    var picked = {};
+    (Array.isArray(keys) ? keys : []).forEach(function (key) {
+      if (!snapshot || !Object.prototype.hasOwnProperty.call(snapshot, key)) return;
+      picked[key] = snapshot[key];
+    });
+    return picked;
+  }
+
+  function hasSnapshotData(snapshot, keys) {
+    var sourceKeys = Array.isArray(keys) ? keys : REMOTE_STATE_KEYS;
+    return sourceKeys.some(function (key) {
       var value = snapshot && snapshot[key];
       if (Array.isArray(value)) return value.length > 0;
       if (isPlainObject(value)) return Object.keys(value).length > 0;
@@ -153,13 +167,18 @@
       return Promise.resolve(null);
     }
 
+    var payload = pickSnapshotKeys(snapshot, REMOTE_STATE_SYNC_KEYS);
+    if (!hasSnapshotData(payload, REMOTE_STATE_SYNC_KEYS)) {
+      return Promise.resolve(null);
+    }
+
     var request = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "PUT",
       credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ state: snapshot })
+      body: JSON.stringify({ state: payload })
     }).then(function (response) {
       if (response.ok) {
         return response;
@@ -205,8 +224,10 @@
     var localState = readSnapshot();
     if (hasSnapshotData(localState)) {
       applySnapshotToLocalStorage(localState);
-      syncSnapshotToServer(localState);
-      return;
+      if (hasSnapshotData(localState, REMOTE_STATE_SYNC_KEYS)) {
+        syncSnapshotToServer(localState);
+        return;
+      }
     }
 
     var remoteState = readRemoteStateSync();
