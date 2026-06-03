@@ -1313,6 +1313,7 @@
       function renderHomeColumns(selectedColumnId) {
         if (!colGrid) return;
 
+        var recentColumns = COLUMNAS.slice(0, 4);
         var currentColumn = COLUMNAS.find(function (item) {
           return String(item.id) === String(selectedColumnId);
         }) || COLUMNAS[0] || null;
@@ -1322,7 +1323,7 @@
           return;
         }
 
-        var selectorHtml = COLUMNAS.map(function (column) {
+        var selectorHtml = recentColumns.map(function (column) {
           var isActive = String(column.id) === String(currentColumn.id);
           return '' +
             '<button type="button" class="home-column-card home-column-card--selector' + (isActive ? ' is-active' : '') + '" data-column-id="' + column.id + '">' +
@@ -1347,10 +1348,17 @@
           '</div>' +
           '</article>';
 
+        var moreColumnsHtml = COLUMNAS.length > recentColumns.length ? (
+          '<div class="mt-3">' +
+            '<a href="columnas.html" class="btn btn-outline-primary btn-block py-3 px-4 small">Ver m&aacute;s columnas</a>' +
+          '</div>'
+        ) : '';
+
         colGrid.innerHTML = '' +
           '<div class="home-column-layout">' +
           '<div class="home-column-layout__left">' +
           '<div class="home-column-selector-grid">' + selectorHtml + '</div>' +
+          moreColumnsHtml +
           '</div>' +
           '<div class="home-column-layout__right">' + detailHtml + '</div>' +
           '</div>';
