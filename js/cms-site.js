@@ -289,7 +289,6 @@
     cmsStateSyncPromise = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "POST",
       credentials: "include",
-      keepalive: true,
       headers: {
         "Content-Type": "application/json"
       },
