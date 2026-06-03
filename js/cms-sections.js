@@ -452,7 +452,7 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ state: payload })
+      body: JSON.stringify({ ok: true, state: payload })
     }).catch(function () {});
   }
 
