@@ -242,6 +242,11 @@
   }
 
   function hydrateRemoteState() {
+    var columnViews = readColumnViewsSync();
+    if (columnViews && typeof columnViews === "object") {
+      writeObject(STORAGE_KEYS.columnViews, columnViews);
+    }
+
     var localState = readSnapshot();
     if (hasSnapshotData(localState)) {
       applySnapshotToLocalStorage(localState);
@@ -254,11 +259,6 @@
     var remoteState = readRemoteStateSync();
     if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
       applySnapshotToLocalStorage(remoteState);
-    }
-
-    var columnViews = readColumnViewsSync();
-    if (columnViews && typeof columnViews === "object") {
-      writeObject(STORAGE_KEYS.columnViews, columnViews);
     }
   }
 

@@ -1,7 +1,6 @@
 const DEFAULT_REPO = "dnvasquez/editorial";
 const DEFAULT_BRANCH = "main";
-const DEFAULT_PATH = "cms-column-views.json";
-const LEGACY_PATH = "cms-state.json";
+const DEFAULT_PATH = "cms-state.json";
 
 function getRepoFullName() {
   return process.env.CMS_DATA_REPO || DEFAULT_REPO;
@@ -32,28 +31,9 @@ function buildApiUrl(repo, path) {
 }
 
 async function readRemoteState() {
-  const primary = await readRemoteStateFromPath(getPath());
-  const primaryViews = getViewsMap(primary);
-  if (Object.keys(primaryViews).length > 0) {
-    return primary;
-  }
-
-  if (getPath() === LEGACY_PATH) {
-    return primary;
-  }
-
-  const legacy = await readRemoteStateFromPath(LEGACY_PATH);
-  const legacyViews = getViewsMap(legacy);
-  if (Object.keys(legacyViews).length > 0) {
-    return legacy;
-  }
-
-  return primary;
-}
-
-async function readRemoteStateFromPath(path) {
   const repo = getRepoFullName();
   const branch = getBranch();
+  const path = getPath();
   const token = getGitHubToken();
 
   try {
