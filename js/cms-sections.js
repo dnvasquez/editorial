@@ -441,12 +441,7 @@
     if (!snapshot || typeof snapshot !== "object") return;
     if (typeof window.fetch !== "function") return;
 
-    var remoteState = readRemoteStateSync();
-    var currentState = mergeSnapshotState(
-      remoteState && typeof remoteState === "object" ? remoteState : {},
-      readSnapshot() && typeof readSnapshot() === "object" ? readSnapshot() : {}
-    );
-    var payload = mergeSnapshotState(currentState, snapshot && typeof snapshot === "object" ? snapshot : {});
+    var payload = cloneValue(snapshot);
 
     if (!hasSnapshotData(payload)) return;
 

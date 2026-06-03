@@ -259,12 +259,7 @@
       return Promise.resolve(null);
     }
 
-    var remoteState = readRemoteStateSync();
-    var currentState = mergeSnapshotState(
-      remoteState && typeof remoteState === "object" ? remoteState : {},
-      readSnapshot() && typeof readSnapshot() === "object" ? readSnapshot() : {}
-    );
-    var payload = mergeSnapshotState(currentState, snapshot && typeof snapshot === "object" ? snapshot : {});
+    var payload = clone(snapshot);
 
     if (!hasSnapshotData(payload, REMOTE_STATE_KEYS)) {
       return Promise.resolve(null);
