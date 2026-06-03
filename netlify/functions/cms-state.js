@@ -178,7 +178,9 @@ exports.handler = async function (event) {
   }
 
   try {
-    await writeRemoteState(state, `Update CMS state from ${session.username}`);
+    const currentState = await readRemoteState();
+    const nextState = Object.assign({}, currentState && typeof currentState === "object" ? currentState : {}, state);
+    await writeRemoteState(nextState, `Update CMS state from ${session.username}`);
     return {
       statusCode: 200,
       headers: {
