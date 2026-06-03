@@ -3,6 +3,7 @@ const { getSessionFromEvent } = require("./_cms-auth");
 const DEFAULT_REPO = "dnvasquez/editorial";
 const DEFAULT_BRANCH = "main";
 const DEFAULT_PATH = "cms-state.json";
+const GITHUB_FETCH_TIMEOUT_MS = 10000;
 
 function getRepoFullName() {
   return process.env.CMS_DATA_REPO || DEFAULT_REPO;
@@ -30,6 +31,17 @@ function buildRawUrl(repo, branch, path) {
 
 function buildApiUrl(repo, path) {
   return `https://api.github.com/repos/${repo}/contents/${normalizeRepoPath(path)}`;
+}
+
+async function fetchWithTimeout(url, options, timeoutMs, label) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+
+  try {
+    return await fetch(url, Object.assign({}, options || {}, { signal: controller.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function sanitizeIncomingValue(value) {
@@ -79,13 +91,14 @@ async function readRemoteState() {
 
   try {
     if (token) {
-      const response = await fetch(`${buildApiUrl(repo, path)}?ref=${encodeURIComponent(branch)}`, {
+      console.log("[cms-state] readRemoteState api start", { repo, branch, path });
+      const response = await fetchWithTimeout(`${buildApiUrl(repo, path)}?ref=${encodeURIComponent(branch)}`, {
         headers: {
           Accept: "application/vnd.github+json",
           Authorization: `Bearer ${token}`,
           "X-GitHub-Api-Version": "2022-11-28"
         }
-      });
+      }, GITHUB_FETCH_TIMEOUT_MS, "GitHub read");
 
       if (response.ok) {
         const payload = await response.json();
@@ -93,14 +106,16 @@ async function readRemoteState() {
         if (content) {
           const text = Buffer.from(content, payload.encoding === "base64" ? "base64" : "utf8").toString("utf8");
           const parsed = JSON.parse(text || "{}");
+          console.log("[cms-state] readRemoteState api ok", { keys: Object.keys(parsed || {}) });
           return parsed && typeof parsed === "object" ? parsed : {};
         }
       }
     }
 
-    const response = await fetch(buildRawUrl(repo, branch, path), {
+    console.log("[cms-state] readRemoteState raw start", { repo, branch, path });
+    const response = await fetchWithTimeout(buildRawUrl(repo, branch, path), {
       headers: { Accept: "application/json" }
-    });
+    }, GITHUB_FETCH_TIMEOUT_MS, "GitHub raw read");
 
     if (!response.ok) {
       return {};
@@ -110,8 +125,10 @@ async function readRemoteState() {
     if (!text.trim()) return {};
 
     const parsed = JSON.parse(text);
+    console.log("[cms-state] readRemoteState raw ok", { keys: Object.keys(parsed || {}) });
     return parsed && typeof parsed === "object" ? parsed : {};
   } catch (error) {
+    console.error("[cms-state] readRemoteState failed", error);
     return {};
   }
 }
@@ -130,23 +147,40 @@ async function writeRemoteState(state, message) {
 
   let sha = null;
   try {
-    const current = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
+    console.log("[cms-state] writeRemoteState sha fetch start", { repo, branch, path });
+    const current = await fetchWithTimeout(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
       headers: {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${token}`,
         "X-GitHub-Api-Version": "2022-11-28"
       }
-    });
+    }, GITHUB_FETCH_TIMEOUT_MS, "GitHub sha read");
 
     if (current.ok) {
       const currentJson = await current.json();
       sha = currentJson && currentJson.sha ? currentJson.sha : null;
     }
   } catch (error) {
+    console.error("[cms-state] writeRemoteState sha fetch failed", error);
     sha = null;
   }
 
-  const response = await fetch(apiUrl, {
+  const writeBody = JSON.stringify({
+    message,
+    content,
+    branch,
+    ...(sha ? { sha } : {})
+  });
+
+  console.log("[cms-state] writeRemoteState put start", {
+    repo,
+    branch,
+    path,
+    hasSha: Boolean(sha),
+    bodyLength: writeBody.length
+  });
+
+  const response = await fetchWithTimeout(apiUrl, {
     method: "PUT",
     headers: {
       Accept: "application/vnd.github+json",
@@ -154,16 +188,14 @@ async function writeRemoteState(state, message) {
       "Content-Type": "application/json",
       "X-GitHub-Api-Version": "2022-11-28"
     },
-    body: JSON.stringify({
-      message,
-      content,
-      branch,
-      ...(sha ? { sha } : {})
-    })
-  });
+    body: writeBody
+  }, GITHUB_FETCH_TIMEOUT_MS, "GitHub write");
+
+  console.log("[cms-state] writeRemoteState put end", { ok: response.ok, status: response.status });
 
   if (!response.ok) {
     const text = await response.text();
+    console.error("[cms-state] writeRemoteState put failed", text);
     throw new Error(text || "Unable to update CMS state.");
   }
 
@@ -171,8 +203,15 @@ async function writeRemoteState(state, message) {
 }
 
 exports.handler = async function (event) {
+  console.log("[cms-state] handler start", {
+    method: event && event.httpMethod,
+    path: event && event.path,
+    bodyLength: event && event.body ? String(event.body).length : 0
+  });
+
   if (event.httpMethod === "GET") {
     const state = await readRemoteState();
+    console.log("[cms-state] handler GET ok", { keys: Object.keys(state || {}) });
     return {
       statusCode: 200,
       headers: {
@@ -204,11 +243,18 @@ exports.handler = async function (event) {
   try {
     body = JSON.parse(event.body || "{}");
   } catch (error) {
+    console.error("[cms-state] handler body parse failed", error);
     body = {};
   }
 
   const state = body && typeof body.state === "object" ? body.state : null;
+  console.log("[cms-state] handler parsed body", {
+    bodyKeys: Object.keys(body || {}),
+    stateKeys: state && typeof state === "object" ? Object.keys(state) : [],
+    columnsLength: state && Array.isArray(state.editorialCmsColumnas) ? state.editorialCmsColumnas.length : 0
+  });
   if (!state) {
+    console.error("[cms-state] handler missing state payload");
     return {
       statusCode: 400,
       headers: { "Content-Type": "application/json" },
@@ -217,9 +263,13 @@ exports.handler = async function (event) {
   }
 
   try {
+    console.log("[cms-state] handler read current state start");
     const currentState = await readRemoteState();
+    console.log("[cms-state] handler read current state done", { keys: Object.keys(currentState || {}) });
     const nextState = mergeDefinedState(currentState && typeof currentState === "object" ? currentState : {}, state);
+    console.log("[cms-state] handler write state start", { keys: Object.keys(nextState || {}) });
     await writeRemoteState(nextState, `Update CMS state from ${session.username}`);
+    console.log("[cms-state] handler write state done");
     return {
       statusCode: 200,
       headers: {
@@ -229,6 +279,7 @@ exports.handler = async function (event) {
       body: JSON.stringify({ ok: true })
     };
   } catch (error) {
+    console.error("[cms-state] handler failed", error);
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
