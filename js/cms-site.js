@@ -143,6 +143,78 @@
     });
   }
 
+  function mergeSnapshotObject(baseValue, overrideValue) {
+    var base = isPlainObject(baseValue) ? baseValue : {};
+    var override = isPlainObject(overrideValue) ? overrideValue : {};
+    var merged = {};
+
+    Object.keys(base).forEach(function (key) {
+      merged[key] = clone(base[key]);
+    });
+
+    Object.keys(override).forEach(function (key) {
+      var incoming = override[key];
+      if (incoming === null || incoming === undefined) {
+        return;
+      }
+
+      var current = merged[key];
+      if (Array.isArray(current) && Array.isArray(incoming)) {
+        merged[key] = mergeSnapshotArray(current, incoming);
+        return;
+      }
+
+      if (isPlainObject(current) && isPlainObject(incoming)) {
+        merged[key] = mergeSnapshotObject(current, incoming);
+        return;
+      }
+
+      merged[key] = clone(incoming);
+    });
+
+    return merged;
+  }
+
+  function mergeSnapshotArray(baseArray, overrideArray) {
+    var merged = [];
+    var indexById = {};
+
+    function pushItem(item) {
+      var cloned = clone(item);
+      if (cloned && typeof cloned === "object" && !Array.isArray(cloned) && cloned.id !== undefined && cloned.id !== null) {
+        indexById[String(cloned.id)] = merged.length;
+      }
+      merged.push(cloned);
+    }
+
+    (Array.isArray(baseArray) ? baseArray : []).forEach(function (item) {
+      pushItem(item);
+    });
+
+    (Array.isArray(overrideArray) ? overrideArray : []).forEach(function (item) {
+      if (!item || typeof item !== "object" || Array.isArray(item) || item.id === undefined || item.id === null) {
+        pushItem(item);
+        return;
+      }
+
+      var id = String(item.id);
+      if (Object.prototype.hasOwnProperty.call(indexById, id)) {
+        merged[indexById[id]] = mergeSnapshotObject(merged[indexById[id]], item);
+        return;
+      }
+
+      pushItem(item);
+    });
+
+    return merged;
+  }
+
+  function mergeSnapshotState(remoteState, localState) {
+    var remote = isPlainObject(remoteState) ? remoteState : {};
+    var local = isPlainObject(localState) ? localState : {};
+    return mergeSnapshotObject(remote, local);
+  }
+
   function readRemoteStateSync() {
     try {
       var xhr = new XMLHttpRequest();
@@ -245,20 +317,24 @@
   }
 
   function hydrateRemoteState() {
+    var localState = readSnapshot();
     var columnViews = readColumnViewsSync();
     if (columnViews && typeof columnViews === "object") {
       writeObject(STORAGE_KEYS.columnViews, columnViews);
     }
 
     var remoteState = readRemoteStateSync();
-    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
-      applySnapshotToLocalStorage(remoteState);
-      return;
+    var mergedState = mergeSnapshotState(
+      remoteState && typeof remoteState === "object" ? remoteState : {},
+      localState && typeof localState === "object" ? localState : {}
+    );
+
+    if (hasSnapshotData(mergedState)) {
+      applySnapshotToLocalStorage(mergedState);
     }
 
-    var localState = readSnapshot();
-    if (hasSnapshotData(localState)) {
-      applySnapshotToLocalStorage(localState);
+    if (hasSnapshotData(localState, REMOTE_STATE_SYNC_KEYS) && JSON.stringify(mergedState) !== JSON.stringify(remoteState && typeof remoteState === "object" ? remoteState : {})) {
+      syncSnapshotToServer(mergedState, true);
     }
   }
 
