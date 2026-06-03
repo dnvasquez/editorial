@@ -418,6 +418,11 @@
   }
 
   function readRemoteStateSync() {
+    var envelope = readRemoteStateEnvelopeSync();
+    return envelope && envelope.state && typeof envelope.state === "object" ? envelope.state : null;
+  }
+
+  function readRemoteStateEnvelopeSync() {
     try {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", REMOTE_STATE_ENDPOINT, false);
@@ -426,9 +431,7 @@
 
       if (xhr.status >= 200 && xhr.status < 300) {
         var payload = JSON.parse(xhr.responseText || "{}");
-        if (payload && typeof payload === "object") {
-          return payload.state && typeof payload.state === "object" ? payload.state : payload;
-        }
+        return payload && typeof payload === "object" ? payload : null;
       }
     } catch (error) {
       return null;
@@ -445,6 +448,9 @@
 
     if (!hasSnapshotData(payload)) return;
 
+    var envelope = readRemoteStateEnvelopeSync() || { ok: true, state: {} };
+    envelope.state = mergeSnapshotState(envelope.state && typeof envelope.state === "object" ? envelope.state : {}, payload);
+
     window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "POST",
       credentials: "include",
@@ -452,7 +458,7 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ ok: true, state: payload })
+      body: JSON.stringify(envelope)
     }).catch(function () {});
   }
 
