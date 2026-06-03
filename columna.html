@@ -172,7 +172,6 @@
           .then(function(payload) {
             if (!payload || typeof payload.count !== 'number') return;
             col.vistas = payload.count;
-            persistViewCount(col.id, payload.count);
             var viewsNode = document.getElementById('col-views');
             if (viewsNode) {
               viewsNode.textContent = formatViews(payload.count);
@@ -189,7 +188,6 @@
             var fallbackCount = parseInt(col && col.vistas, 10);
             fallbackCount = isFinite(fallbackCount) && fallbackCount > 0 ? fallbackCount + 1 : 1;
             col.vistas = fallbackCount;
-            persistViewCount(col.id, fallbackCount);
             var fallbackViewsNode = document.getElementById('col-views');
             if (fallbackViewsNode) {
               fallbackViewsNode.textContent = formatViews(fallbackCount);
@@ -220,19 +218,6 @@
           };
           return map[char] || char;
         });
-      }
-
-      function persistViewCount(id, count) {
-        try {
-          var storageKey = window.EditorialCmsSite && window.EditorialCmsSite.STORAGE_KEYS ? window.EditorialCmsSite.STORAGE_KEYS.columnViews : 'editorialCmsColumnViews';
-          var raw = window.localStorage.getItem(storageKey);
-          var views = raw ? JSON.parse(raw) : {};
-          if (!views || typeof views !== 'object' || Array.isArray(views)) {
-            views = {};
-          }
-          views[id] = count;
-          window.localStorage.setItem(storageKey, JSON.stringify(views));
-        } catch (error) {}
       }
 
       var params = new URLSearchParams(window.location.search);

@@ -28,40 +28,6 @@
     }
   }
 
-  function getStorageKey(type, id) {
-    return "editorialCmsCommentsLocal:" + type + ":" + id;
-  }
-
-  function readLocalComments(type, id) {
-    try {
-      var raw = window.localStorage.getItem(getStorageKey(type, id));
-      var parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function writeLocalComments(type, id, comments) {
-    try {
-      window.localStorage.setItem(getStorageKey(type, id), JSON.stringify(comments || []));
-    } catch (error) {}
-  }
-
-  function mergeComments(primary, secondary) {
-    var merged = {};
-    (primary || []).concat(secondary || []).forEach(function (comment) {
-      if (!comment || !comment.id) return;
-      merged[String(comment.id)] = comment;
-    });
-
-    return Object.keys(merged).map(function (key) {
-      return merged[key];
-    }).sort(function (a, b) {
-      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
-    });
-  }
-
   function requestComments(type, id) {
     var url = COMMENTS_ENDPOINT + "?type=" + encodeURIComponent(type) + "&id=" + encodeURIComponent(id);
     return window.fetch(url, {
@@ -127,10 +93,7 @@
     if (type === "linkedin") {
       return "https://www.linkedin.com/sharing/share-offsite/?url=" + encodedPreviewUrl;
     }
-    if (type === "native") {
-      return targetUrl;
-    }
-    if (type === "copy") {
+    if (type === "native" || type === "copy") {
       return targetUrl;
     }
 
@@ -171,7 +134,7 @@
     listNode.textContent = "";
 
     if (!comments || comments.length === 0) {
-      listNode.appendChild(createNode("p", "comment-empty", "Aún no hay comentarios. Sé la primera persona en abrir la conversación."));
+      listNode.appendChild(createNode("p", "comment-empty", "Aun no hay comentarios. Se la primera persona en abrir la conversacion."));
       return;
     }
 
@@ -205,7 +168,7 @@
     var intro = createNode("div", "content-engagement-intro");
     intro.appendChild(createNode("span", "content-engagement-kicker", options.kicker || "Participa"));
     intro.appendChild(createNode("h3", "content-engagement-title", options.title || "Comparte y deja tu comentario"));
-    intro.appendChild(createNode("p", "content-engagement-description", options.description || "Ayúdanos a amplificar el debate y cuéntanos qué te pareció esta publicación."));
+    intro.appendChild(createNode("p", "content-engagement-description", options.description || "Ayudanos a amplificar el debate y cuentanos que te parecio esta publicacion."));
     card.appendChild(intro);
 
     var shareSection = createNode("section", "content-engagement-section content-engagement-share");
@@ -238,7 +201,7 @@
     commentInput.name = "message";
     commentInput.className = "form-control";
     commentInput.rows = 4;
-    commentInput.placeholder = "Escribe tu opinión";
+    commentInput.placeholder = "Escribe tu opinion";
     commentInput.maxLength = 1000;
     commentInput.required = true;
 
@@ -270,16 +233,13 @@
     function refreshComments() {
       setStatus("Cargando comentarios...", "is-loading");
       requestComments(type, id).then(function (comments) {
-        var localComments = readLocalComments(type, id);
-        var merged = mergeComments(comments, localComments);
-        countBadge.textContent = String(merged.length);
-        renderComments(list, merged);
+        countBadge.textContent = String(comments.length);
+        renderComments(list, comments);
         setStatus("", "");
       }).catch(function () {
-        var fallback = readLocalComments(type, id);
-        countBadge.textContent = String(fallback.length);
-        renderComments(list, fallback);
-        setStatus("Los comentarios se están mostrando desde este navegador porque no pudimos conectar con el servidor.", "is-warning");
+        countBadge.textContent = "0";
+        renderComments(list, []);
+        setStatus("No pudimos cargar los comentarios desde el servidor.", "is-warning");
       });
     }
 
@@ -306,40 +266,18 @@
         if (payload && Array.isArray(payload.comments)) {
           countBadge.textContent = String(payload.comments.length);
           renderComments(list, payload.comments);
-        } else if (payload && payload.comment) {
-          var local = mergeComments([payload.comment], readLocalComments(type, id));
-          countBadge.textContent = String(local.length);
-          renderComments(list, local);
+        } else {
+          refreshComments();
         }
-        writeLocalComments(type, id, payload && Array.isArray(payload.comments) ? payload.comments : mergeComments([{
-          id: (payload && payload.comment && payload.comment.id) || ("comment-" + Date.now()),
-          type: type,
-          contentId: id,
-          name: name,
-          message: message,
-          createdAt: new Date().toISOString()
-        }], readLocalComments(type, id)));
         form.reset();
         nameInput.value = name;
         commentInput.value = "";
         setStatus("Comentario publicado.", "is-success");
       }).catch(function () {
-        var localComment = {
-          id: "local-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-          type: type,
-          contentId: id,
-          name: name,
-          message: message,
-          createdAt: new Date().toISOString()
-        };
-        var localComments = mergeComments([localComment], readLocalComments(type, id));
-        writeLocalComments(type, id, localComments);
-        countBadge.textContent = String(localComments.length);
-        renderComments(list, localComments);
         form.reset();
         nameInput.value = name;
         commentInput.value = "";
-        setStatus("Tu comentario quedó guardado en este navegador y se mostrará aquí aunque el servidor no responda.", "is-warning");
+        setStatus("No pudimos publicar el comentario en el servidor.", "is-error");
       }).finally(function () {
         submitButton.disabled = false;
         submitButton.textContent = "Publicar comentario";

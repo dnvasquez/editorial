@@ -27,6 +27,7 @@
   var REMOTE_STATE_SYNC_KEYS = REMOTE_STATE_KEYS.filter(function (key) {
     return key !== "editorialCmsColumnViews" && key !== "editorialCmsComments";
   });
+  var REMOTE_STATE_STORE_KEY = "__editorialCmsRemoteState";
   var remoteSyncTimer = null;
 
   var PAGE_DEFINITIONS = [
@@ -52,33 +53,26 @@
   }
 
   function readArray(key) {
-    try {
-      var raw = window.localStorage.getItem(key);
-      var parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      return [];
-    }
+    var store = getRemoteStateStore();
+    var parsed = store[key];
+    return Array.isArray(parsed) ? clone(parsed) : [];
   }
 
   function writeArray(key, items) {
-    window.localStorage.setItem(key, JSON.stringify(items));
-    return items;
+    var normalized = Array.isArray(items) ? clone(items) : [];
+    getRemoteStateStore()[key] = normalized;
+    return normalized;
   }
 
   function readObject(key) {
-    try {
-      var raw = window.localStorage.getItem(key);
-      var parsed = raw ? JSON.parse(raw) : {};
-      return parsed && typeof parsed === "object" ? parsed : {};
-    } catch (error) {
-      return {};
-    }
+    var store = getRemoteStateStore();
+    var parsed = store[key];
+    return isPlainObject(parsed) ? clone(parsed) : {};
   }
 
   function writeObject(key, value) {
-    var payload = value && typeof value === "object" ? value : {};
-    window.localStorage.setItem(key, JSON.stringify(payload));
+    var payload = value && typeof value === "object" && !Array.isArray(value) ? clone(value) : {};
+    getRemoteStateStore()[key] = payload;
     return payload;
   }
 
@@ -94,18 +88,31 @@
   }
 
   function readSnapshot() {
-    var snapshot = {};
+    return clone(getRemoteStateStore());
+  }
 
-    REMOTE_STATE_KEYS.forEach(function (key) {
-      try {
-        var raw = window.localStorage.getItem(key);
-        snapshot[key] = raw ? JSON.parse(raw) : null;
-      } catch (error) {
-        snapshot[key] = null;
-      }
+  function getRemoteStateStore() {
+    var store = window[REMOTE_STATE_STORE_KEY];
+    if (!store || typeof store !== "object" || Array.isArray(store)) {
+      store = {};
+      window[REMOTE_STATE_STORE_KEY] = store;
+    }
+    return store;
+  }
+
+  function replaceRemoteStateStore(snapshot) {
+    var store = getRemoteStateStore();
+    Object.keys(store).forEach(function (key) {
+      delete store[key];
     });
 
-    return snapshot;
+    if (snapshot && typeof snapshot === "object") {
+      Object.keys(snapshot).forEach(function (key) {
+        store[key] = clone(snapshot[key]);
+      });
+    }
+
+    return store;
   }
 
   function pickSnapshotKeys(snapshot, keys) {
@@ -126,20 +133,6 @@
       if (Array.isArray(value)) return value.length > 0;
       if (isPlainObject(value)) return Object.keys(value).length > 0;
       return Boolean(value);
-    });
-  }
-
-  function applySnapshotToLocalStorage(snapshot) {
-    if (!snapshot || typeof snapshot !== "object") return;
-
-    REMOTE_STATE_KEYS.forEach(function (key) {
-      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
-      var value = snapshot[key];
-      if (value === null || value === undefined) {
-        window.localStorage.removeItem(key);
-        return;
-      }
-      window.localStorage.setItem(key, JSON.stringify(value));
     });
   }
 
@@ -321,25 +314,8 @@
   }
 
   function hydrateRemoteState() {
-    var localState = readSnapshot();
-    var columnViews = readColumnViewsSync();
-    if (columnViews && typeof columnViews === "object") {
-      writeObject(STORAGE_KEYS.columnViews, columnViews);
-    }
-
     var remoteState = readRemoteStateSync();
-    var mergedState = mergeSnapshotState(
-      remoteState && typeof remoteState === "object" ? remoteState : {},
-      localState && typeof localState === "object" ? localState : {}
-    );
-
-    if (hasSnapshotData(mergedState)) {
-      applySnapshotToLocalStorage(mergedState);
-    }
-
-    if (hasSnapshotData(localState, REMOTE_STATE_SYNC_KEYS) && JSON.stringify(mergedState) !== JSON.stringify(remoteState && typeof remoteState === "object" ? remoteState : {})) {
-      syncSnapshotToServer(mergedState, true);
-    }
+    replaceRemoteStateStore(remoteState && typeof remoteState === "object" ? remoteState : {});
   }
 
   function normalizeDate(dateValue) {
@@ -1788,13 +1764,7 @@
   }
 
   function getSectionConfig() {
-    try {
-      var raw = window.localStorage.getItem("editorialCmsSections");
-      var parsed = raw ? JSON.parse(raw) : {};
-      return parsed && typeof parsed === "object" ? parsed : {};
-    } catch (error) {
-      return {};
-    }
+    return readObject("editorialCmsSections");
   }
 
   function isSectionEnabled(pageKey, sectionKey) {
@@ -2053,9 +2023,4 @@
     applyPageConfig(document);
   }
 
-  window.addEventListener("storage", function (event) {
-    if (!event || (event.key !== PAGE_STORAGE_KEY && event.key !== CONTENT_STORAGE_KEY)) return;
-    hydrateGlobals();
-    applyPageConfig(document);
-  });
 })();

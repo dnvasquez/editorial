@@ -13,6 +13,7 @@
     "editorialCmsSections",
     "editorialCmsSectionContent"
   ];
+  var REMOTE_STATE_STORE_KEY = "__editorialCmsRemoteState";
   var remoteSyncTimer = null;
   var PAGE_DEFINITIONS = [
     {
@@ -162,17 +163,12 @@
   }
 
   function getConfig() {
-    try {
-      var raw = window.localStorage.getItem(STORAGE_KEY);
-      return mergeWithDefaults(raw ? JSON.parse(raw) : null);
-    } catch (error) {
-      return buildDefaultConfig();
-    }
+    return mergeWithDefaults(readObject(STORAGE_KEY));
   }
 
   function saveConfig(config) {
     var normalized = mergeWithDefaults(config);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+    writeObject(STORAGE_KEY, normalized);
     queueRemoteSync();
     return normalized;
   }
@@ -190,18 +186,12 @@
   }
 
   function getContentConfig() {
-    try {
-      var raw = window.localStorage.getItem(CONTENT_STORAGE_KEY);
-      var parsed = raw ? JSON.parse(raw) : {};
-      return parsed && typeof parsed === "object" ? parsed : {};
-    } catch (error) {
-      return {};
-    }
+    return readObject(CONTENT_STORAGE_KEY);
   }
 
   function saveContentConfig(config) {
     var normalized = config && typeof config === "object" ? config : {};
-    window.localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(normalized));
+    writeObject(CONTENT_STORAGE_KEY, normalized);
     queueRemoteSync();
     return normalized;
   }
@@ -303,18 +293,43 @@
   }
 
   function readSnapshot() {
-    var snapshot = {};
+    return cloneValue(getRemoteStateStore());
+  }
 
-    REMOTE_STATE_KEYS.forEach(function (key) {
-      try {
-        var raw = window.localStorage.getItem(key);
-        snapshot[key] = raw ? JSON.parse(raw) : null;
-      } catch (error) {
-        snapshot[key] = null;
-      }
+  function getRemoteStateStore() {
+    var store = window[REMOTE_STATE_STORE_KEY];
+    if (!store || typeof store !== "object" || Array.isArray(store)) {
+      store = {};
+      window[REMOTE_STATE_STORE_KEY] = store;
+    }
+    return store;
+  }
+
+  function replaceRemoteStateStore(snapshot) {
+    var store = getRemoteStateStore();
+    Object.keys(store).forEach(function (key) {
+      delete store[key];
     });
 
-    return snapshot;
+    if (snapshot && typeof snapshot === "object") {
+      Object.keys(snapshot).forEach(function (key) {
+        store[key] = cloneValue(snapshot[key]);
+      });
+    }
+
+    return store;
+  }
+
+  function readObject(key) {
+    var store = getRemoteStateStore();
+    var value = store[key];
+    return isPlainObject(value) ? cloneValue(value) : {};
+  }
+
+  function writeObject(key, value) {
+    var payload = value && typeof value === "object" && !Array.isArray(value) ? cloneValue(value) : {};
+    getRemoteStateStore()[key] = payload;
+    return payload;
   }
 
   function hasSnapshotData(snapshot) {
@@ -323,20 +338,6 @@
       if (Array.isArray(value)) return value.length > 0;
       if (value && typeof value === "object") return Object.keys(value).length > 0;
       return Boolean(value);
-    });
-  }
-
-  function applySnapshotToLocalStorage(snapshot) {
-    if (!snapshot || typeof snapshot !== "object") return;
-
-    REMOTE_STATE_KEYS.forEach(function (key) {
-      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
-      var value = snapshot[key];
-      if (value === null || value === undefined) {
-        window.localStorage.removeItem(key);
-        return;
-      }
-      window.localStorage.setItem(key, JSON.stringify(value));
     });
   }
 
@@ -473,20 +474,8 @@
   }
 
   function hydrateRemoteState() {
-    var localState = readSnapshot();
     var remoteState = readRemoteStateSync();
-    var mergedState = mergeSnapshotState(
-      remoteState && typeof remoteState === "object" ? remoteState : {},
-      localState && typeof localState === "object" ? localState : {}
-    );
-
-    if (hasSnapshotData(mergedState)) {
-      applySnapshotToLocalStorage(mergedState);
-    }
-
-    if (hasSnapshotData(localState) && JSON.stringify(mergedState) !== JSON.stringify(remoteState && typeof remoteState === "object" ? remoteState : {})) {
-      syncSnapshotToServer(mergedState);
-    }
+    replaceRemoteStateStore(remoteState && typeof remoteState === "object" ? remoteState : {});
   }
 
   function getSectionDefinition(pageKey, sectionKey) {

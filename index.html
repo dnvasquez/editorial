@@ -1213,10 +1213,6 @@
 
         renderHomepageHero();
         window.renderHomepageHero = renderHomepageHero;
-        window.addEventListener('storage', function (event) {
-          if (!event || (event.key !== 'editorialCmsPages' && event.key !== 'editorialCmsPageContent')) return;
-          renderHomepageHero();
-        });
 
       var programsEpisodesPanel = document.getElementById('home-programs-episodes');
       var activeProgramId = PROGRAMAS[0] ? String(PROGRAMAS[0].id) : '';
