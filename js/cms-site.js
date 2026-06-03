@@ -29,6 +29,7 @@
   });
   var REMOTE_STATE_STORE_KEY = "__editorialCmsRemoteState";
   var cmsStateEnvelope = null;
+  var cmsStateSyncPromise = null;
   var remoteSyncTimer = null;
 
   var PAGE_DEFINITIONS = [
@@ -262,31 +263,45 @@
       return Promise.resolve(null);
     }
 
-    var payload = snapshot && typeof snapshot === "object" ? clone(snapshot) : clone(getRemoteStateStore());
+    var state = snapshot && typeof snapshot === "object" ? snapshot : getRemoteStateStore();
+    var payload = clone(state);
 
     if (!hasSnapshotData(payload, REMOTE_STATE_KEYS)) {
       return Promise.resolve(null);
     }
 
+    if (cmsStateSyncPromise) {
+      console.log("[sync] reuse in-flight promise");
+      return cmsStateSyncPromise;
+    }
+
     var envelope = cmsStateEnvelope && typeof cmsStateEnvelope === "object" ? clone(cmsStateEnvelope) : { ok: true, state: {} };
     envelope.ok = true;
-    envelope.state = payload;
+    envelope.state = state;
     cmsStateEnvelope = clone(envelope);
+    var body = JSON.stringify(envelope);
 
-    var request = window.fetch(REMOTE_STATE_ENDPOINT, {
+    console.log("[sync] payload keys", Object.keys(envelope || {}));
+    console.log("[sync] state keys", Object.keys(envelope.state || {}));
+    console.log("[sync] columns length", envelope.state && envelope.state.editorialCmsColumnas && envelope.state.editorialCmsColumnas.length);
+    console.log("[sync] body length", body.length);
+
+    cmsStateSyncPromise = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "POST",
       credentials: "include",
       keepalive: true,
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(envelope)
+      body: body
     }).then(function (response) {
-      if (response.ok) {
-        return response;
-      }
+      console.log("[sync] response status", response.status);
+      return response.clone().text().then(function (text) {
+        console.log("[sync] response text", text);
+        if (response.ok) {
+          return response;
+        }
 
-      return response.text().then(function (text) {
         var message = text || ("HTTP " + response.status);
         try {
           var parsed = JSON.parse(text);
@@ -294,13 +309,22 @@
         } catch (error) {}
         throw new Error(message);
       });
+    }).catch(function (error) {
+      console.error("[sync] failed", error);
+      throw error;
+    }).then(function (response) {
+      cmsStateSyncPromise = null;
+      return response;
+    }, function (error) {
+      cmsStateSyncPromise = null;
+      throw error;
     });
 
     if (silent) {
-      request.catch(function () {});
+      cmsStateSyncPromise.catch(function () {});
     }
 
-    return request;
+    return cmsStateSyncPromise;
   }
 
   function flushRemoteSync() {
