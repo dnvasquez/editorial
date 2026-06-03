@@ -149,6 +149,33 @@
   <script src="js/content-interactions.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      function recordColumnView(columnId) {
+        if (!columnId) return;
+
+        fetch('/.netlify/functions/column-views', {
+          method: 'POST',
+          cache: 'no-store',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: columnId })
+        })
+          .then(function(response) {
+            return response.ok ? response.json() : null;
+          })
+          .then(function(payload) {
+            if (!payload || typeof payload.count !== 'number') return;
+            col.vistas = payload.count;
+            persistViewCount(col.id, payload.count);
+            var viewsNode = document.getElementById('col-views');
+            if (viewsNode) {
+              viewsNode.textContent = formatViews(payload.count);
+            }
+          })
+          .catch(function() {});
+      }
+
       function formatViews(count) {
         var value = parseInt(count, 10);
         var total = isFinite(value) && value > 0 ? value : 0;
@@ -271,26 +298,9 @@
       }
 
       if (col && col.id) {
-        fetch('/.netlify/functions/column-views', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id: col.id })
-        })
-          .then(function(response) {
-            return response.ok ? response.json() : null;
-          })
-          .then(function(payload) {
-            if (!payload || typeof payload.count !== 'number') return;
-            col.vistas = payload.count;
-            persistViewCount(col.id, payload.count);
-            var viewsNode = document.getElementById('col-views');
-            if (viewsNode) {
-              viewsNode.textContent = formatViews(payload.count);
-            }
-          })
-          .catch(function() {});
+        window.addEventListener('pageshow', function() {
+          recordColumnView(col.id);
+        });
       }
 
     });

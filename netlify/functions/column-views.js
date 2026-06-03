@@ -123,10 +123,32 @@ async function writeRemoteState(state, message) {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || "Unable to update CMS state.");
+    const error = new Error(text || "Unable to update CMS state.");
+    error.statusCode = response.status;
+    throw error;
   }
 
   return response.json();
+}
+
+function shouldRetryWrite(error) {
+  return Boolean(error) && (error.statusCode === 409 || error.statusCode === 422);
+}
+
+async function writeRemoteStateWithRetry(state, message, retries) {
+  var attempt = 0;
+  var maxAttempts = Math.max(1, (retries || 0) + 1);
+
+  while (attempt < maxAttempts) {
+    try {
+      return await writeRemoteState(state, message);
+    } catch (error) {
+      attempt += 1;
+      if (attempt >= maxAttempts || !shouldRetryWrite(error)) {
+        throw error;
+      }
+    }
+  }
 }
 
 function normalizeCount(value) {
@@ -195,7 +217,7 @@ exports.handler = async function (event) {
   state.editorialCmsColumnViews = views;
 
   try {
-    await writeRemoteState(state, `Increment column view for ${id}`);
+    await writeRemoteStateWithRetry(state, `Increment column view for ${id}`, 1);
     return {
       statusCode: 200,
       headers: {
