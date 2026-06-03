@@ -202,16 +202,16 @@
   }
 
   function hydrateRemoteState() {
-    var remoteState = readRemoteStateSync();
-    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
-      applySnapshotToLocalStorage(remoteState);
-      return;
-    }
-
     var localState = readSnapshot();
     if (hasSnapshotData(localState)) {
       applySnapshotToLocalStorage(localState);
       syncSnapshotToServer(localState);
+      return;
+    }
+
+    var remoteState = readRemoteStateSync();
+    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
+      applySnapshotToLocalStorage(remoteState);
     }
   }
 
