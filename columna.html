@@ -149,6 +149,8 @@
   <script src="js/content-interactions.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      var hasRecordedView = false;
+
       function recordColumnView(columnId) {
         if (!columnId) return;
 
@@ -174,6 +176,12 @@
             }
           })
           .catch(function() {});
+      }
+
+      function recordCurrentColumnView() {
+        if (!col || !col.id || hasRecordedView) return;
+        hasRecordedView = true;
+        recordColumnView(col.id);
       }
 
       function formatViews(count) {
@@ -298,8 +306,12 @@
       }
 
       if (col && col.id) {
-        window.addEventListener('pageshow', function() {
-          recordColumnView(col.id);
+        recordCurrentColumnView();
+        window.addEventListener('pageshow', function(event) {
+          if (event && event.persisted) {
+            hasRecordedView = false;
+          }
+          recordCurrentColumnView();
         });
       }
 

@@ -1,6 +1,7 @@
 const DEFAULT_REPO = "dnvasquez/editorial";
 const DEFAULT_BRANCH = "main";
-const DEFAULT_PATH = "cms-state.json";
+const DEFAULT_PATH = "cms-column-views.json";
+const LEGACY_PATH = "cms-state.json";
 
 function getRepoFullName() {
   return process.env.CMS_DATA_REPO || DEFAULT_REPO;
@@ -31,9 +32,28 @@ function buildApiUrl(repo, path) {
 }
 
 async function readRemoteState() {
+  const primary = await readRemoteStateFromPath(getPath());
+  const primaryViews = getViewsMap(primary);
+  if (Object.keys(primaryViews).length > 0) {
+    return primary;
+  }
+
+  if (getPath() === LEGACY_PATH) {
+    return primary;
+  }
+
+  const legacy = await readRemoteStateFromPath(LEGACY_PATH);
+  const legacyViews = getViewsMap(legacy);
+  if (Object.keys(legacyViews).length > 0) {
+    return legacy;
+  }
+
+  return primary;
+}
+
+async function readRemoteStateFromPath(path) {
   const repo = getRepoFullName();
   const branch = getBranch();
-  const path = getPath();
   const token = getGitHubToken();
 
   try {
@@ -135,13 +155,20 @@ function shouldRetryWrite(error) {
   return Boolean(error) && (error.statusCode === 409 || error.statusCode === 422);
 }
 
-async function writeRemoteStateWithRetry(state, message, retries) {
+async function incrementRemoteViewCount(columnId, retries) {
   var attempt = 0;
   var maxAttempts = Math.max(1, (retries || 0) + 1);
 
   while (attempt < maxAttempts) {
+    var state = await readRemoteState();
+    var views = getViewsMap(state);
+    var nextCount = normalizeCount(views[columnId]) + 1;
+    views[columnId] = nextCount;
+    state.editorialCmsColumnViews = views;
+
     try {
-      return await writeRemoteState(state, message);
+      await writeRemoteState(state, `Increment column view for ${columnId}`);
+      return { count: nextCount, views };
     } catch (error) {
       attempt += 1;
       if (attempt >= maxAttempts || !shouldRetryWrite(error)) {
@@ -177,10 +204,9 @@ function readRequestBody(event) {
 }
 
 exports.handler = async function (event) {
-  const state = await readRemoteState();
-  const views = getViewsMap(state);
-
   if (event.httpMethod === "GET") {
+    const state = await readRemoteState();
+    const views = getViewsMap(state);
     const id = (event.queryStringParameters && event.queryStringParameters.id) ? String(event.queryStringParameters.id) : "";
     const count = id ? normalizeCount(views[id]) : 0;
 
@@ -212,19 +238,15 @@ exports.handler = async function (event) {
     };
   }
 
-  const nextCount = normalizeCount(views[id]) + 1;
-  views[id] = nextCount;
-  state.editorialCmsColumnViews = views;
-
   try {
-    await writeRemoteStateWithRetry(state, `Increment column view for ${id}`, 1);
+    const result = await incrementRemoteViewCount(id, 2);
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-store"
       },
-      body: JSON.stringify({ ok: true, id, count: nextCount, views })
+      body: JSON.stringify({ ok: true, id, count: result.count, views: result.views })
     };
   } catch (error) {
     return {

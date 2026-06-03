@@ -10,6 +10,7 @@
     comments: "editorialCmsComments"
   };
   var REMOTE_STATE_ENDPOINT = "/.netlify/functions/cms-state";
+  var COLUMN_VIEWS_ENDPOINT = "/.netlify/functions/column-views";
   var REMOTE_STATE_KEYS = [
     "editorialCmsProgramas",
     "editorialCmsEpisodios",
@@ -160,6 +161,26 @@
     return null;
   }
 
+  function readColumnViewsSync() {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", COLUMN_VIEWS_ENDPOINT, false);
+      xhr.setRequestHeader("Accept", "application/json");
+      xhr.send(null);
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var payload = JSON.parse(xhr.responseText || "{}");
+        if (payload && typeof payload === "object" && payload.views && typeof payload.views === "object") {
+          return payload.views;
+        }
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
   function syncSnapshotToServer(snapshot, silent) {
     if (!snapshot || typeof snapshot !== "object") return Promise.resolve();
     if (typeof window.fetch !== "function") return Promise.resolve();
@@ -233,6 +254,11 @@
     var remoteState = readRemoteStateSync();
     if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
       applySnapshotToLocalStorage(remoteState);
+    }
+
+    var columnViews = readColumnViewsSync();
+    if (columnViews && typeof columnViews === "object") {
+      writeObject(STORAGE_KEYS.columnViews, columnViews);
     }
   }
 
