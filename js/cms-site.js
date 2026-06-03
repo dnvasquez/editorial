@@ -266,7 +266,7 @@
     }
 
     var request = window.fetch(REMOTE_STATE_ENDPOINT, {
-      method: "PUT",
+      method: "POST",
       credentials: "include",
       keepalive: true,
       headers: {
