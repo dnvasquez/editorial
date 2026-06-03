@@ -28,6 +28,7 @@
     return key !== "editorialCmsColumnViews" && key !== "editorialCmsComments";
   });
   var REMOTE_STATE_STORE_KEY = "__editorialCmsRemoteState";
+  var cmsStateEnvelope = null;
   var remoteSyncTimer = null;
 
   var PAGE_DEFINITIONS = [
@@ -268,8 +269,10 @@
       return Promise.resolve(null);
     }
 
-    var envelope = readRemoteStateEnvelopeSync() || { ok: true, state: {} };
-    envelope.state = mergeSnapshotState(envelope.state && typeof envelope.state === "object" ? envelope.state : {}, payload);
+    var envelope = cmsStateEnvelope && typeof cmsStateEnvelope === "object" ? clone(cmsStateEnvelope) : { ok: true, state: {} };
+    envelope.ok = true;
+    envelope.state = payload;
+    cmsStateEnvelope = clone(envelope);
 
     var request = window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "POST",
@@ -321,8 +324,9 @@
   }
 
   function hydrateRemoteState() {
-    var remoteState = readRemoteStateSync();
-    replaceRemoteStateStore(remoteState && typeof remoteState === "object" ? remoteState : {});
+    var envelope = readRemoteStateEnvelopeSync();
+    cmsStateEnvelope = envelope && typeof envelope === "object" ? clone(envelope) : { ok: true, state: {} };
+    replaceRemoteStateStore(cmsStateEnvelope.state && typeof cmsStateEnvelope.state === "object" ? cmsStateEnvelope.state : {});
   }
 
   function normalizeDate(dateValue) {

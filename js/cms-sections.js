@@ -14,6 +14,7 @@
     "editorialCmsSectionContent"
   ];
   var REMOTE_STATE_STORE_KEY = "__editorialCmsRemoteState";
+  var cmsStateEnvelope = null;
   var remoteSyncTimer = null;
   var PAGE_DEFINITIONS = [
     {
@@ -448,8 +449,10 @@
 
     if (!hasSnapshotData(payload)) return;
 
-    var envelope = readRemoteStateEnvelopeSync() || { ok: true, state: {} };
-    envelope.state = mergeSnapshotState(envelope.state && typeof envelope.state === "object" ? envelope.state : {}, payload);
+    var envelope = cmsStateEnvelope && typeof cmsStateEnvelope === "object" ? cloneValue(cmsStateEnvelope) : { ok: true, state: {} };
+    envelope.ok = true;
+    envelope.state = payload;
+    cmsStateEnvelope = cloneValue(envelope);
 
     window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "POST",
@@ -474,8 +477,9 @@
   }
 
   function hydrateRemoteState() {
-    var remoteState = readRemoteStateSync();
-    replaceRemoteStateStore(remoteState && typeof remoteState === "object" ? remoteState : {});
+    var envelope = readRemoteStateEnvelopeSync();
+    cmsStateEnvelope = envelope && typeof envelope === "object" ? cloneValue(envelope) : { ok: true, state: {} };
+    replaceRemoteStateStore(cmsStateEnvelope.state && typeof cmsStateEnvelope.state === "object" ? cmsStateEnvelope.state : {});
   }
 
   function getSectionDefinition(pageKey, sectionKey) {
