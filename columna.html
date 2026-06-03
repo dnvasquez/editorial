@@ -164,7 +164,10 @@
           body: JSON.stringify({ id: columnId })
         })
           .then(function(response) {
-            return response.ok ? response.json() : null;
+            if (!response.ok) {
+              throw new Error('Unable to record view');
+            }
+            return response.json();
           })
           .then(function(payload) {
             if (!payload || typeof payload.count !== 'number') return;
@@ -175,7 +178,23 @@
               viewsNode.textContent = formatViews(payload.count);
             }
           })
-          .catch(function() {});
+          .catch(function() {
+            try {
+              if (navigator.sendBeacon) {
+                var beaconBody = new Blob([JSON.stringify({ id: columnId })], { type: 'application/json' });
+                navigator.sendBeacon('/.netlify/functions/column-views', beaconBody);
+              }
+            } catch (error) {}
+
+            var fallbackCount = parseInt(col && col.vistas, 10);
+            fallbackCount = isFinite(fallbackCount) && fallbackCount > 0 ? fallbackCount + 1 : 1;
+            col.vistas = fallbackCount;
+            persistViewCount(col.id, fallbackCount);
+            var fallbackViewsNode = document.getElementById('col-views');
+            if (fallbackViewsNode) {
+              fallbackViewsNode.textContent = formatViews(fallbackCount);
+            }
+          });
       }
 
       function recordCurrentColumnView() {

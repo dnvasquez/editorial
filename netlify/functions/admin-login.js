@@ -16,7 +16,7 @@ function buildCookie(value, maxAgeSeconds, host) {
     `${COOKIE_NAME}=${value}`,
     "Path=/",
     "HttpOnly",
-    "SameSite=Strict"
+    "SameSite=Lax"
   ];
 
   if (secure) {
