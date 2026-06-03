@@ -2032,9 +2032,32 @@
     if (deleteButton) {
       deleteButton.addEventListener("click", function () {
         if (!window.confirm("Se eliminará esta columna del sitio. ¿Continuar?")) return;
-        window.EditorialCmsSite.deleteColumn(selected.id);
-        closeAdminModal();
-        renderColumns("");
+        try {
+          window.EditorialCmsSite.deleteColumn(selected.id);
+          if (window.EditorialCmsSite && typeof window.EditorialCmsSite.syncStateNow === "function") {
+            window.EditorialCmsSite.syncStateNow().then(function () {
+              closeAdminModal();
+              renderColumns("");
+            }).catch(function (error) {
+              var feedback = modal.querySelector("#" + prefix + "-feedback");
+              if (feedback) {
+                feedback.textContent = error && error.message
+                  ? error.message
+                  : "No se pudo sincronizar la eliminación con el estado remoto.";
+              }
+            });
+            return;
+          }
+          closeAdminModal();
+          renderColumns("");
+        } catch (error) {
+          var feedback = modal.querySelector("#" + prefix + "-feedback");
+          if (feedback) {
+            feedback.textContent = error && error.message
+              ? error.message
+              : "No se pudo eliminar la columna.";
+          }
+        }
       });
     }
 

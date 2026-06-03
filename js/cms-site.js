@@ -981,8 +981,6 @@
     }
 
     writeArray(STORAGE_KEYS.columns, localItems);
-    flushRemoteSync();
-    queueRemoteSync();
     return payload;
   }
 
@@ -1004,8 +1002,6 @@
       delete views[String(id)];
       writeObject(STORAGE_KEYS.columnViews, views);
     }
-    flushRemoteSync();
-    queueRemoteSync();
   }
 
   function getPublicationsForAdmin() {
