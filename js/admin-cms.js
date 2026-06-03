@@ -1993,7 +1993,7 @@
       bindRichEditor(modal, prefix);
     }
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
       var feedback = modal.querySelector("#" + prefix + "-feedback");
       var titleLength = getPlainTextLength(titleInput ? titleInput.value : "");
@@ -2007,14 +2007,25 @@
         return;
       }
 
-      var saved = window.EditorialCmsSite.saveColumn(readColumnModalDraft(modal, prefix, selected));
+      try {
+        var saved = window.EditorialCmsSite.saveColumn(readColumnModalDraft(modal, prefix, selected));
+        if (window.EditorialCmsSite && typeof window.EditorialCmsSite.syncStateNow === "function") {
+          await window.EditorialCmsSite.syncStateNow();
+        }
 
-      if (feedback) {
-        feedback.textContent = isNew ? "Columna creada. Actualizando la tabla..." : "Columna actualizada. Actualizando la tabla...";
+        if (feedback) {
+          feedback.textContent = isNew ? "Columna creada y sincronizada." : "Columna actualizada y sincronizada.";
+        }
+
+        closeAdminModal();
+        renderColumns(saved.id);
+      } catch (error) {
+        if (feedback) {
+          feedback.textContent = error && error.message
+            ? error.message
+            : "No se pudo sincronizar la columna con el estado remoto.";
+        }
       }
-
-      closeAdminModal();
-      renderColumns(saved.id);
     });
 
     var deleteButton = modal.querySelector("#" + prefix + "-delete");

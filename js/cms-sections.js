@@ -441,13 +441,12 @@
     if (!snapshot || typeof snapshot !== "object") return;
     if (typeof window.fetch !== "function") return;
 
-    var payload = {};
-    REMOTE_STATE_KEYS.forEach(function (key) {
-      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
-      var value = snapshot[key];
-      if (value === null || value === undefined) return;
-      payload[key] = value;
-    });
+    var remoteState = readRemoteStateSync();
+    var currentState = mergeSnapshotState(
+      remoteState && typeof remoteState === "object" ? remoteState : {},
+      readSnapshot() && typeof readSnapshot() === "object" ? readSnapshot() : {}
+    );
+    var payload = mergeSnapshotState(currentState, snapshot && typeof snapshot === "object" ? snapshot : {});
 
     if (!hasSnapshotData(payload)) return;
 
