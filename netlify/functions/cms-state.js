@@ -32,6 +32,45 @@ function buildApiUrl(repo, path) {
   return `https://api.github.com/repos/${repo}/contents/${normalizeRepoPath(path)}`;
 }
 
+function sanitizeIncomingValue(value) {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => sanitizeIncomingValue(item))
+      .filter((item) => item !== undefined);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.keys(value).reduce((acc, key) => {
+      const next = sanitizeIncomingValue(value[key]);
+      if (next !== undefined) {
+        acc[key] = next;
+      }
+      return acc;
+    }, {});
+  }
+
+  return value;
+}
+
+function mergeDefinedState(currentState, incomingState) {
+  const nextState = Array.isArray(currentState) ? currentState.slice() : Object.assign({}, currentState || {});
+  const sanitized = sanitizeIncomingValue(incomingState);
+
+  if (!sanitized || typeof sanitized !== "object") {
+    return nextState;
+  }
+
+  Object.keys(sanitized).forEach((key) => {
+    nextState[key] = sanitized[key];
+  });
+
+  return nextState;
+}
+
 async function readRemoteState() {
   const repo = getRepoFullName();
   const branch = getBranch();
@@ -179,7 +218,7 @@ exports.handler = async function (event) {
 
   try {
     const currentState = await readRemoteState();
-    const nextState = Object.assign({}, currentState && typeof currentState === "object" ? currentState : {}, state);
+    const nextState = mergeDefinedState(currentState && typeof currentState === "object" ? currentState : {}, state);
     await writeRemoteState(nextState, `Update CMS state from ${session.username}`);
     return {
       statusCode: 200,

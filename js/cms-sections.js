@@ -152,6 +152,15 @@
     return merged;
   }
 
+  function cloneValue(value) {
+    if (value === undefined) return undefined;
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function isPlainObject(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
   function getConfig() {
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
@@ -308,6 +317,83 @@
     return snapshot;
   }
 
+  function mergeSnapshotObject(remoteValue, localValue) {
+    var remote = isPlainObject(remoteValue) ? remoteValue : {};
+    var local = isPlainObject(localValue) ? localValue : {};
+    var merged = {};
+
+    Object.keys(local).forEach(function (key) {
+      merged[key] = cloneValue(local[key]);
+    });
+
+    Object.keys(remote).forEach(function (key) {
+      var remoteItem = remote[key];
+      var localItem = merged[key];
+
+      if (localItem === undefined || localItem === null) {
+        merged[key] = cloneValue(remoteItem);
+        return;
+      }
+
+      if (Array.isArray(remoteItem) && Array.isArray(localItem)) {
+        merged[key] = mergeSnapshotArray(remoteItem, localItem);
+        return;
+      }
+
+      if (isPlainObject(remoteItem) && isPlainObject(localItem)) {
+        merged[key] = mergeSnapshotObject(remoteItem, localItem);
+        return;
+      }
+
+      merged[key] = cloneValue(remoteItem);
+    });
+
+    return merged;
+  }
+
+  function mergeSnapshotArray(remoteArray, localArray) {
+    var merged = [];
+    var indexById = {};
+
+    function appendItem(item) {
+      if (item === undefined) return;
+      var cloned = cloneValue(item);
+      if (cloned && typeof cloned === "object" && !Array.isArray(cloned) && cloned.id !== undefined && cloned.id !== null) {
+        indexById[String(cloned.id)] = merged.length;
+      }
+      merged.push(cloned);
+    }
+
+    (Array.isArray(localArray) ? localArray : []).forEach(function (item) {
+      appendItem(item);
+    });
+
+    (Array.isArray(remoteArray) ? remoteArray : []).forEach(function (item) {
+      if (!item || typeof item !== "object" || Array.isArray(item) || item.id === undefined || item.id === null) {
+        appendItem(item);
+        return;
+      }
+
+      var id = String(item.id);
+      if (!Object.prototype.hasOwnProperty.call(indexById, id)) {
+        appendItem(item);
+        return;
+      }
+
+      merged[indexById[id]] = mergeSnapshotObject(item, merged[indexById[id]]);
+    });
+
+    return merged;
+  }
+
+  function mergeSnapshotState(remoteState, localState) {
+    if (!isPlainObject(remoteState)) {
+      return isPlainObject(localState) ? mergeSnapshotObject({}, localState) : {};
+    }
+
+    return mergeSnapshotObject(remoteState, localState);
+  }
+
   function hasSnapshotData(snapshot) {
     return REMOTE_STATE_KEYS.some(function (key) {
       var value = snapshot && snapshot[key];
@@ -355,6 +441,16 @@
     if (!snapshot || typeof snapshot !== "object") return;
     if (typeof window.fetch !== "function") return;
 
+    var payload = {};
+    REMOTE_STATE_KEYS.forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(snapshot, key)) return;
+      var value = snapshot[key];
+      if (value === null || value === undefined) return;
+      payload[key] = value;
+    });
+
+    if (!hasSnapshotData(payload)) return;
+
     window.fetch(REMOTE_STATE_ENDPOINT, {
       method: "PUT",
       credentials: "include",
@@ -362,7 +458,7 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ state: snapshot })
+      body: JSON.stringify({ state: payload })
     }).catch(function () {});
   }
 
@@ -378,16 +474,19 @@
   }
 
   function hydrateRemoteState() {
+    var remoteState = readRemoteStateSync();
     var localState = readSnapshot();
-    if (hasSnapshotData(localState)) {
-      applySnapshotToLocalStorage(localState);
-      syncSnapshotToServer(localState);
-      return;
+    var mergedState = mergeSnapshotState(
+      remoteState && typeof remoteState === "object" ? remoteState : {},
+      localState && typeof localState === "object" ? localState : {}
+    );
+
+    if (hasSnapshotData(mergedState)) {
+      applySnapshotToLocalStorage(mergedState);
     }
 
-    var remoteState = readRemoteStateSync();
-    if (remoteState && typeof remoteState === "object" && hasSnapshotData(remoteState)) {
-      applySnapshotToLocalStorage(remoteState);
+    if (JSON.stringify(mergedState) !== JSON.stringify(remoteState && typeof remoteState === "object" ? remoteState : {})) {
+      syncSnapshotToServer(mergedState);
     }
   }
 
