@@ -293,20 +293,6 @@
         latestDateNode.textContent = COLUMNAS[0].fecha;
       }
 
-      // â”€â”€ Footer: Ãºltimas 3 columnas â”€â”€
-      var footerHtml = '';
-      COLUMNAS.slice(0, 3).forEach(function(c) {
-        footerHtml +=
-          '<li class="mb-3"><a href="columna.html?id=' + c.id + '" class="d-flex">' +
-          '<figure class="image mr-4"><img src="' + c.imagen + '" alt="" class="img-fluid"></figure>' +
-          '<div class="text"><h3 class="heading font-weight-light">' + c.titulo + '</h3></div>' +
-          '</a></li>';
-      });
-      var footerColumns = document.getElementById('footer-columnas');
-      if (footerColumns) {
-        footerColumns.innerHTML = footerHtml;
-      }
-
       if (window.EditorialCmsSite) {
         window.EditorialCmsSite.applyPageConfig(document);
       }

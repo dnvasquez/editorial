@@ -1738,6 +1738,18 @@
       '<p class="site-footer__copyright">Copyright &copy; ' + new Date().getFullYear() + ' El Deslinde. Todos los derechos reservados.</p>' +
       '</div>' +
       '</div>';
+
+    var latestContainer = footer.querySelector('#footer-episodios');
+    if (latestContainer) {
+      var sourceColumns = Array.isArray(window.COLUMNAS) ? window.COLUMNAS : [];
+      latestContainer.innerHTML = sourceColumns.slice(0, 3).map(function (column) {
+        return '' +
+          '<li class="mb-3"><a href="columna.html?id=' + encodeURIComponent(column.id) + '" class="d-flex">' +
+          '<figure class="image mr-4"><img src="' + String(column.imagen || column.banner || '') + '" alt="" class="img-fluid"></figure>' +
+          '<div class="text"><h3 class="heading font-weight-light">' + String(column.titulo || '') + '</h3></div>' +
+          '</a></li>';
+      }).join('');
+    }
   }
 
   function buildDefaultPages() {
