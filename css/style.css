@@ -3345,7 +3345,9 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
 }
 
 .site-navbar.transparent {
-  background: transparent !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .site-navbar .row {
@@ -3380,7 +3382,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
 }
 
 .site-navbar.scrolled {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
   border-bottom: 0 !important;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -3410,7 +3412,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     max-height: 52px;
   }
 
-  body[data-cms-page="index"] #cms-page-hero .container {
-    padding-top: 6.5rem !important;
+  #cms-page-hero .container {
+    padding-top: 7.25rem !important;
   }
 }
