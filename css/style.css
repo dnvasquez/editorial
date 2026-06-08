@@ -280,8 +280,8 @@ footer[data-cms-section="footer"].site-footer--structured {
     pointer-events: none; }
 
 .column-article-hero {
-  padding-top: 3rem;
-  padding-bottom: 2rem;
+  padding-top: 6rem;
+  padding-bottom: 1rem;
   background: #fcfcf6; }
 
 .column-article-hero__inner {
@@ -3345,7 +3345,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
 }
 
 .site-navbar.transparent {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
