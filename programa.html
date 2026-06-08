@@ -167,13 +167,13 @@
       }
       document.getElementById('prog-episodios').innerHTML = html;
 
-      // Footer: Ãºltimos 3 episodios globales
+      // Footer: Ãºltimas 3 columnas globales
       var footerHtml = '';
-      EPISODIOS.slice(0, 3).forEach(function(ep) {
+      COLUMNAS.slice(0, 3).forEach(function(col) {
         footerHtml +=
-          '<li class="mb-3"><a href="single-post.html?id=' + ep.id + '" class="d-flex">' +
-          '<figure class="image mr-4"><img src="' + ep.imagen + '" alt="" class="img-fluid"></figure>' +
-          '<div class="text"><h3 class="heading font-weight-light">Ep. ' + ep.numero + ': ' + ep.titulo + '</h3></div>' +
+          '<li class="mb-3"><a href="columna.html?id=' + col.id + '" class="d-flex">' +
+          '<figure class="image mr-4"><img src="' + (col.imagen || col.banner || '') + '" alt="" class="img-fluid"></figure>' +
+          '<div class="text"><h3 class="heading font-weight-light">' + col.titulo + '</h3></div>' +
           '</a></li>';
       });
       var footerEpisodes = document.getElementById('footer-episodios');
