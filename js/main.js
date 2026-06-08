@@ -226,4 +226,31 @@ jQuery(document).ready(function($) {
 	};
 	siteCountDown();
 
+	var siteNavbarScroll = function() {
+		var nav = document.querySelector('.site-navbar');
+		if (!nav) {
+			return;
+		}
+
+		var logo = nav.querySelector('.site-logo img');
+		var defaultLogoSrc = logo ? logo.getAttribute('src') : '';
+		var scrolledLogoSrc = nav.getAttribute('data-scrolled-logo') || (logo && logo.getAttribute('data-scrolled-src')) || '';
+
+		var updateNavbarState = function() {
+			var isScrolled = window.scrollY > 50;
+			nav.classList.toggle('scrolled', isScrolled);
+
+			if (logo && defaultLogoSrc) {
+				var nextLogoSrc = isScrolled && scrolledLogoSrc ? scrolledLogoSrc : defaultLogoSrc;
+				if (logo.getAttribute('src') !== nextLogoSrc) {
+					logo.setAttribute('src', nextLogoSrc);
+				}
+			}
+		};
+
+		window.addEventListener('scroll', updateNavbarState, { passive: true });
+		updateNavbarState();
+	};
+	siteNavbarScroll();
+
 });
