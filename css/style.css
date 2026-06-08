@@ -2894,7 +2894,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
   #cms-page-hero .container {
     padding-top: 7.15rem; }
   #cms-page-hero .row {
-    align-items: flex-start !important; }
+    align-items: center !important; }
   .site-section {
     padding: 2.6em 0; }
   .site-section.site-section-sm {
@@ -3136,7 +3136,11 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     padding-bottom: 1rem; }
   body:not([data-cms-page="index"]) #cms-page-hero .container {
     min-height: 340px;
-    padding-top: 3.35rem;
+    padding-top: 6rem;
+    padding-bottom: 1rem; }
+  body:not([data-cms-page="index"]) #cms-page-hero .container {
+    min-height: 340px;
+    padding-top: 6rem;
     padding-bottom: 1rem; }
   .site-blocks-cover,
   .site-blocks-cover .row {
@@ -3160,7 +3164,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     height: auto; }
   body:not([data-cms-page="index"]) #cms-page-hero .container {
     min-height: 320px;
-    padding-top: 3.1rem; }
+    padding-top: 6rem; }
   #ep-hero {
     gap: 0.25rem;
     padding-top: 0;
@@ -3186,7 +3190,7 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
     width: 100%;
     justify-content: center; }
   .column-article-hero {
-    padding-top: 1.6rem;
+    padding-top: 6rem;
     padding-bottom: 1.2rem; }
   .column-article-hero__tag {
     font-size: 0.68rem; }
