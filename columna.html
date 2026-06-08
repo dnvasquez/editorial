@@ -103,34 +103,7 @@
         </div>
       </div>
     </div>
-
-
-    <footer data-cms-section="footer">
-      <div class="container">
-        <div class="row align-items-start">
-          <div class="col-lg-8 mb-4 mb-lg-0">
-            <h3 class="footer-heading mb-4">Sobre El Deslinde</h3>
-            <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos podcasts, columnas de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
-          </div>
-          <div class="col-lg-4">
-            <h3 class="footer-heading mb-4">S&iacute;guenos</h3>
-            <div>
-              <a href="#" class="pl-0 pr-3"><span class="icon-facebook"></span></a>
-              <a href="#" class="pl-3 pr-3"><span class="icon-twitter"></span></a>
-              <a href="#" class="pl-3 pr-3"><span class="icon-instagram"></span></a>
-              <a href="#" class="pl-3 pr-3"><span class="icon-linkedin"></span></a>
-            </div>
-          </div>
-        </div>
-        <div class="row pt-3 mt-3 text-center">
-          <div class="col-md-12">
-            <p>
-            Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos los derechos reservados | <a href="admin-login.html">Login administraci&oacute;n</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <footer data-cms-section="footer"></footer>
   </div>
 
   <script src="js/jquery-3.3.1.min.js"></script>
@@ -147,6 +120,13 @@
   <script src="js/episodes.js"></script>
   <script src="js/cms-site.js"></script>
   <script src="js/content-interactions.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.EditorialCmsSite && typeof window.EditorialCmsSite.renderFooterContent === 'function') {
+        window.EditorialCmsSite.renderFooterContent(document);
+      }
+    });
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var hasRecordedView = false;
@@ -293,20 +273,6 @@
           shareUrl: window.location.href.split('#')[0],
           previewUrl: window.location.origin + '/.netlify/functions/share-column?id=' + encodeURIComponent(col.id)
         });
-      }
-
-      // Footer: Ãºltimas 3 columnas
-      var footerHtml = '';
-      COLUMNAS.slice(0, 3).forEach(function(c) {
-        footerHtml +=
-          '<li class="mb-3"><a href="columna.html?id=' + c.id + '" class="d-flex">' +
-          '<figure class="image mr-4"><img src="' + c.imagen + '" alt="" class="img-fluid"></figure>' +
-          '<div class="text"><h3 class="heading font-weight-light">' + c.titulo + '</h3></div>' +
-          '</a></li>';
-      });
-      var footerColumns = document.getElementById('footer-columnas');
-      if (footerColumns) {
-        footerColumns.innerHTML = footerHtml;
       }
 
       if (col && col.id) {

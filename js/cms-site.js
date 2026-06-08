@@ -1695,7 +1695,6 @@
 
     var footer = body.querySelector('footer[data-cms-section="footer"]');
     if (!footer) return;
-
     var socialLinks = [
       { href: "https://www.facebook.com/", label: "Facebook", icon: "icon-facebook" },
       { href: "https://www.instagram.com/", label: "Instagram", icon: "icon-instagram" },
@@ -2050,6 +2049,7 @@
     formatViewLabel: formatViewLabel,
     renderAboutContent: renderAboutContent,
     renderContactContent: renderContactContent,
+    renderFooterContent: renderFooterContent,
     applyPageConfig: applyPageConfig
   };
 
