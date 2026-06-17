@@ -624,9 +624,9 @@
     },
     "about": {
       "visible": true,
-      "heroTitle": "",
+      "heroTitle": "Acerca de nosotros",
       "heroSubtitle": "",
-      "heroImage": ""
+      "heroImage": "https://dn711009.ca.archive.org/0/items/chat-gpt-image-16-may-2026-12-47-07/ChatGPT%20Image%2016%20may%202026%2C%2012_47_07.png"
     },
     "contact": {
       "visible": true,
