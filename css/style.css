@@ -2814,10 +2814,10 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
   .site-navbar h1 a img {
     max-height: 58px; }
   .site-navbar .site-menu-toggle {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem; }
+    padding-top: 0rem;
+    padding-bottom: 0rem; }
   .site-navbar .site-menu-toggle .icon-menu {
-    font-size: 1.75rem; }
+    font-size: 2.75rem; }
   .site-blocks-cover,
   .site-blocks-cover .row {
     min-height: 480px;
@@ -3121,14 +3121,14 @@ body:not([data-cms-page="index"]) #cms-page-hero .container {
   .site-navbar.transparent {
     background: transparent !important; }
   .site-navbar .container {
-    padding-left: 12px;
-    padding-right: 12px; }
+    padding-left: 20px;
+    padding-right: 25px; }
   .site-navbar h1 a {
     font-size: 0.95rem; }
   .site-navbar h1 a img {
     max-height: 44px; }
   .site-navbar .site-menu-toggle .icon-menu {
-    font-size: 1.1rem; }
+    font-size: 2rem; }
   #cms-page-hero .container {
     min-height: 100vh;
     min-height: 100svh;
