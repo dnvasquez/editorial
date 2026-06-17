@@ -34,6 +34,7 @@
 
   var PAGE_DEFINITIONS = [
     { id: "index", label: "Inicio", file: "index.html" },
+    { id: "columnista", label: "Columnista", file: "columnista.html" },
     { id: "programas", label: "Programas", file: "programas.html" },
     { id: "columnas", label: "Columnas", file: "columnas.html" },
     { id: "publicaciones", label: "Publicaciones", file: "publicaciones.html" },
