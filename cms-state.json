@@ -604,6 +604,12 @@
       "manualHeroAudio": "",
       "manualHeroTranscriptLink": ""
     },
+    "columnista": {
+      "visible": true,
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": ""
+    },
     "programas": {
       "visible": false,
       "heroTitle": "Nuestros Programas",
@@ -629,6 +635,12 @@
       "heroImage": "https://dn711009.ca.archive.org/0/items/chat-gpt-image-16-may-2026-12-47-07/ChatGPT%20Image%2016%20may%202026%2C%2012_47_07.png"
     },
     "contact": {
+      "visible": false,
+      "heroTitle": "Contacto",
+      "heroSubtitle": "",
+      "heroImage": "images/hero_bg_3.jpg"
+    },
+    "construction": {
       "visible": true,
       "heroTitle": "",
       "heroSubtitle": "",
