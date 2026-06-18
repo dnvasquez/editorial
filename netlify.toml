@@ -1,6 +1,26 @@
 [build]
   functions = "netlify/functions"
 
+[[redirects]]
+  from = "/programas"
+  to = "/en-construccion.html"
+  status = 302
+
+[[redirects]]
+  from = "/programas.html"
+  to = "/en-construccion.html"
+  status = 302
+
+[[redirects]]
+  from = "/contact"
+  to = "/en-construccion.html"
+  status = 302
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/en-construccion.html"
+  status = 302
+
 [[edge_functions]]
   function = "column-og"
   path = "/columna.html"
