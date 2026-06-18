@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>El Deslinde - En construcci&oacute;n</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="P&aacute;gina temporal de El Deslinde.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="logo_ico.png">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,700,900">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+      body[data-cms-page="construction"] .construction-section {
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+        color: #444;
+      }
+
+      body[data-cms-page="construction"] .construction-section .container {
+        position: relative;
+        z-index: 1;
+      }
+
+      body[data-cms-page="construction"] .construction-panel {
+        min-height: 72vh;
+        display: flex;
+        align-items: center;
+        padding: 3rem 0 4rem;
+      }
+
+      body[data-cms-page="construction"] .construction-grid {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: clamp(2rem, 5vw, 5rem);
+        align-items: center;
+      }
+
+      body[data-cms-page="construction"] .construction-copy {
+        max-width: 28rem;
+      }
+
+      body[data-cms-page="construction"] .construction-mark {
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 1rem;
+        display: inline-block;
+      }
+
+      body[data-cms-page="construction"] .construction-mark svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      body[data-cms-page="construction"] .construction-title {
+        margin: 0 0 1rem;
+        color: #202020;
+        font-size: clamp(2.3rem, 5vw, 4rem);
+        font-weight: 300;
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      body[data-cms-page="construction"] .construction-text {
+        margin: 0 0 1.5rem;
+        max-width: 24rem;
+        color: #5b5b5b;
+        font-size: 1.03rem;
+        line-height: 1.55;
+        letter-spacing: 0.01em;
+      }
+
+      body[data-cms-page="construction"] .construction-source {
+        margin: 0 0 1.8rem;
+        color: #6a6a6a;
+        font-size: 0.9rem;
+      }
+
+      body[data-cms-page="construction"] .construction-source a {
+        color: #4c4c4c;
+        text-decoration: underline;
+      }
+
+      body[data-cms-page="construction"] .construction-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 11.5rem;
+        padding: 0.95rem 1.5rem;
+        border: 1px solid #f23a2e;
+        border-radius: 8px;
+        color: #f23a2e;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        background: #fff;
+      }
+
+      body[data-cms-page="construction"] .construction-button:hover {
+        background: rgba(242, 58, 46, 0.06);
+        color: #d51f13;
+      }
+
+      body[data-cms-page="construction"] .construction-social {
+        display: flex;
+        gap: 1.15rem;
+        align-items: center;
+        margin-top: 2rem;
+      }
+
+      body[data-cms-page="construction"] .construction-social a {
+        color: #3f3f3f;
+        font-size: 1.05rem;
+        opacity: 0.88;
+      }
+
+      body[data-cms-page="construction"] .construction-social a:hover {
+        opacity: 1;
+      }
+
+      body[data-cms-page="construction"] .construction-visual {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 26rem;
+      }
+
+      body[data-cms-page="construction"] .construction-visual img {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 500px);
+        height: auto;
+        object-fit: contain;
+        filter: none;
+        box-shadow: none;
+      }
+
+      @media (max-width: 991.98px) {
+        body[data-cms-page="construction"] .construction-panel {
+          min-height: auto;
+          padding: 3.5rem 0 4rem;
+        }
+
+        body[data-cms-page="construction"] .construction-grid {
+          grid-template-columns: 1fr;
+          gap: 2.1rem;
+        }
+
+        body[data-cms-page="construction"] .construction-copy {
+          max-width: 32rem;
+          margin: 0 auto;
+          text-align: left;
+        }
+
+        body[data-cms-page="construction"] .construction-visual {
+          min-height: 18rem;
+        }
+      }
+
+      @media (max-width: 767.98px) {
+        body[data-cms-page="construction"] .construction-panel {
+          padding: 4.2rem 0 3.5rem;
+        }
+
+        body[data-cms-page="construction"] .construction-title {
+          font-size: clamp(2rem, 10vw, 3rem);
+        }
+
+        body[data-cms-page="construction"] .construction-text {
+          font-size: 0.98rem;
+        }
+
+        body[data-cms-page="construction"] .construction-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body data-cms-page="construction">
+    <div class="site-wrap">
+      <div class="site-mobile-menu">
+        <div class="site-mobile-menu-header">
+          <div class="site-mobile-menu-close mt-3">
+            <span class="icon-close2 js-menu-toggle"></span>
+          </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+      </div>
+
+      <header class="site-navbar py-4 absolute transparent" role="banner" data-cms-section="header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-3" data-aos="fade-down">
+              <h1><a href="index.html" class="site-logo"><img src="logo_hor_col.png" alt="El Deslinde"></a></h1>
+            </div>
+            <div class="col-9" data-aos="fade-down">
+              <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
+                <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
+
+                <ul class="site-menu js-clone-nav d-none">
+                  <li><a href="index.html">Inicio</a></li>
+                  <li><a href="about.html">Nosotros</a></li>
+                  <li><a href="programas.html">Programas</a></li>
+                  <li><a href="columnas.html">Columnas</a></li>
+                  <li><a href="publicaciones.html">Publicaciones</a></li>
+                  <li><a href="contact.html">Contacto</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main id="cms-page-main">
+        <div class="site-section construction-section" data-cms-section="construction-message">
+          <div class="container">
+            <div class="construction-panel">
+              <div class="construction-grid" data-aos="fade-up">
+                <div class="construction-copy">
+                  <span class="construction-mark" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                      <path d="M32 6L58 54H6L32 6Z" fill="#f23a2e"></path>
+                      <rect x="29" y="21" width="6" height="18" rx="3" fill="#fff"></rect>
+                      <circle cx="32" cy="45" r="3.25" fill="#fff"></circle>
+                    </svg>
+                  </span>
+                  <h2 class="construction-title">Bajo construcci&oacute;n</h2>
+                  <p class="construction-text">Nuestro sitio web est&aacute; en construcci&oacute;n, &iexcl;pero estamos listos para comenzar! Estamos preparando algo para ti.</p>
+                  <p class="construction-source">Imagen basada en <a href="https://www.freepik.com" target="_blank" rel="noopener">Freepik</a></p>
+                  <a href="index.html" class="construction-button">Inicio</a>
+                  <div class="construction-social" aria-label="Redes sociales">
+                    <a href="#" aria-label="Facebook"><span class="icon-facebook"></span></a>
+                    <a href="#" aria-label="Twitter"><span class="icon-twitter"></span></a>
+                    <a href="#" aria-label="Instagram"><span class="icon-instagram"></span></a>
+                    <a href="#" aria-label="LinkedIn"><span class="icon-linkedin"></span></a>
+                  </div>
+                </div>
+                <div class="construction-visual">
+                  <img src="https://ia601607.us.archive.org/11/items/imagen-1_202606/Imagen1.png" alt="Ilustraci&oacute;n de p&aacute;gina en construcci&oacute;n" loading="eager" referrerpolicy="no-referrer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer data-cms-section="footer"></footer>
+    </div>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/cms-site.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

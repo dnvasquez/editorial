@@ -1416,7 +1416,7 @@
       '<div class="admin-field"><label for="contact-subscribe-image-input">Imagen de fondo</label><input id="contact-subscribe-image-input" class="form-control" value="' + escapeHtml(content.subscribeImage) + '"></div>' +
       '</div></section>' +
       '</div>' +
-      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="contact.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
+      '<div class="admin-actions"><button type="submit" class="btn btn-primary">Guardar contenido</button><a href="en-construccion.html" target="_blank" rel="noopener" class="btn btn-outline-dark">Abrir página pública</a></div>' +
       '<p id="contact-content-feedback" class="admin-feedback" aria-live="polite"></p>' +
       '</form></section>';
   }

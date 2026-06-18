@@ -9,6 +9,42 @@ jQuery(document).ready(function($) {
 	"use strict";
 
 	
+	var siteMenuOrder = function() {
+		var desiredOrder = ['home', 'inicio', 'programas', 'columnas', 'publicaciones', 'nosotros', 'contacto'];
+
+		var normalizeLabel = function(value) {
+			return String(value || '')
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.trim();
+		};
+
+		$('.js-clone-nav').each(function() {
+			var $menu = $(this);
+			var items = $menu.children('li').get();
+
+			items.sort(function(a, b) {
+				var aLabel = normalizeLabel($(a).find('> a').first().text());
+				var bLabel = normalizeLabel($(b).find('> a').first().text());
+				var aIndex = desiredOrder.indexOf(aLabel);
+				var bIndex = desiredOrder.indexOf(bLabel);
+
+				if (aIndex === -1) aIndex = desiredOrder.length + 10;
+				if (bIndex === -1) bIndex = desiredOrder.length + 10;
+
+				if (aIndex !== bIndex) {
+					return aIndex - bIndex;
+				}
+
+				return 0;
+			});
+
+			$menu.append(items);
+		});
+	};
+
+	siteMenuOrder();
 
 	var siteMenuClone = function() {
 

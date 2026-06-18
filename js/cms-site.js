@@ -39,8 +39,13 @@
     { id: "columnas", label: "Columnas", file: "columnas.html" },
     { id: "publicaciones", label: "Publicaciones", file: "publicaciones.html" },
     { id: "about", label: "Nosotros", file: "about.html" },
-    { id: "contact", label: "Contacto", file: "contact.html" }
+    { id: "contact", label: "Contacto", file: "contact.html" },
+    { id: "construction", label: "En construcci&oacute;n", file: "en-construccion.html" }
   ];
+  var TEMPORARY_REDIRECT_FILES = {
+    "programas.html": "en-construccion.html",
+    "contact.html": "en-construccion.html"
+  };
 
   function clone(item) {
     return JSON.parse(JSON.stringify(item));
@@ -88,6 +93,43 @@
     return window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1" ||
       window.location.hostname === "::1";
+  }
+
+  function getTemporaryRedirectHref(href) {
+    if (!href) return "";
+
+    var trimmed = String(href).trim();
+    if (!trimmed || trimmed.indexOf("#") === 0) return "";
+    if (/^(?:javascript:|mailto:|tel:)/i.test(trimmed)) return "";
+
+    try {
+      var url = new URL(trimmed, window.location.href);
+      if (url.origin !== window.location.origin && url.protocol !== "file:") {
+        return "";
+      }
+
+      var filename = (url.pathname.split("/").pop() || "").toLowerCase();
+      var replacement = TEMPORARY_REDIRECT_FILES[filename];
+      if (!replacement) return "";
+
+      return replacement + url.search + url.hash;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function rewriteTemporaryPageLinks(body) {
+    if (!body) return;
+
+    body.querySelectorAll("a[href]").forEach(function (link) {
+      if (link.hasAttribute("data-cms-no-temporary-redirect")) return;
+
+      var originalHref = link.getAttribute("href");
+      var replacementHref = getTemporaryRedirectHref(originalHref);
+      if (replacementHref) {
+        link.setAttribute("href", replacementHref);
+      }
+    });
   }
 
   function readSnapshot() {
@@ -1899,6 +1941,7 @@
     renderFooterContent(body);
 
     applyNavigationVisibility(body);
+    rewriteTemporaryPageLinks(body);
     applyHomepageSectionVisibility(body);
 
     if (config.visible === false) {
@@ -1931,6 +1974,7 @@
 
     window.setTimeout(function () {
       applyNavigationVisibility(body);
+      rewriteTemporaryPageLinks(body);
       applyHomepageSectionVisibility(body);
       optimizeImages(body);
     }, 0);
