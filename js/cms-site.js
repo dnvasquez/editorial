@@ -1945,16 +1945,10 @@
     applyHomepageSectionVisibility(body);
 
     if (config.visible === false) {
-      var wrap = body.querySelector(".site-wrap");
-      if (wrap) wrap.style.display = "none";
-      if (!body.querySelector(".cms-page-hidden")) {
-        var hidden = document.createElement("div");
-        hidden.className = "cms-page-hidden";
-        hidden.style.padding = "72px 24px";
-        hidden.style.textAlign = "center";
-        hidden.innerHTML = "<h1 style=\"font-family:Poppins,sans-serif;\">Pagina temporalmente no visible</h1><p style=\"font-family:Poppins,sans-serif;\">Este contenido fue ocultado desde el CMS.</p>";
-        body.appendChild(hidden);
+      if (pageId === "construction") {
+        return;
       }
+      window.location.replace("en-construccion.html?source=" + encodeURIComponent(pageId));
       return;
     }
 
