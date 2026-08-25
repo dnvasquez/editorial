@@ -26,7 +26,7 @@
         { id: "hero", label: "Hero destacado" },
         { id: "programas", label: "Resumen de programas" },
         { id: "episodios", label: "Resumen de episodios" },
-        { id: "columnas", label: "Resumen de columnas" },
+        { id: "columnas", label: "Resumen de análisis y opinión" },
         { id: "publicaciones", label: "Resumen de publicaciones" },
         { id: "equipo", label: "Equipo" },
         { id: "invitados", label: "Invitados destacados" },
@@ -57,12 +57,11 @@
     },
     {
       page: "columnas",
-      label: "Columnas",
+      label: "Análisis y opinión",
       sections: [
         { id: "header", label: "Encabezado" },
         { id: "hero", label: "Hero" },
-        { id: "listado-columnas", label: "Listado de columnas" },
-        { id: "columnistas", label: "Columnistas" },
+        { id: "listado-columnas", label: "Listado de análisis y opinión" },
         { id: "footer", label: "Pie de pagina" }
       ]
     },

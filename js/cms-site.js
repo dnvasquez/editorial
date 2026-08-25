@@ -36,7 +36,7 @@
     { id: "index", label: "Inicio", file: "index.html" },
     { id: "columnista", label: "Columnista", file: "columnista.html" },
     { id: "programas", label: "Programas", file: "programas.html" },
-    { id: "columnas", label: "Columnas", file: "columnas.html" },
+    { id: "columnas", label: "Análisis y opinión", file: "columnas.html" },
     { id: "publicaciones", label: "Publicaciones", file: "publicaciones.html" },
     { id: "about", label: "Nosotros", file: "about.html" },
     { id: "contact", label: "Contacto", file: "contact.html" },
@@ -44,6 +44,8 @@
   ];
   var TEMPORARY_REDIRECT_FILES = {
     "programas.html": "en-construccion.html",
+    "programa.html": "en-construccion.html",
+    "single-post.html": "en-construccion.html",
     "contact.html": "en-construccion.html"
   };
 
@@ -1167,7 +1169,7 @@
         ],
         manifestoImage: "images/hero_bg_1.jpg",
         manifestoLeft: "Esta plataforma nace del convencimiento de que la complejidad territorial latinoamericana requiere análisis riguroso y multiformato. Publicamos desde perspectivas que articulan disciplinas: ecología política, sociología rural, agronomía y geografía ambiental. No buscamos simplificar realidades, sino hacerlas accesibles sin perder profundidad.\n\nNos enfocamos en cuestiones que moldean territorios: fragmentación de paisajes, conservación ambiental, conflictividades rurales y justicia territorial. Estos no son temas técnicos aislados, sino cuestiones políticas que afectan vidas de comunidades en toda América Latina.",
-        manifestoRight: "Producimos en múltiples formatos: artículos de análisis, podcasts, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
+        manifestoRight: "Producimos en múltiples formatos: artículos de análisis, reportes técnicos y ensayos reflexivos. Cada pieza busca alimentar debate público informado sin sacrificar rigor académico. El conocimiento sobre territorios debe circular más allá de universidades, llegando a quienes deciden y a comunidades que viven sus consecuencias.\n\nNos compromete comprender territorios como condición para habitarlos justamente. Por eso publicamos voces diversas: investigadores, dirigentes comunitarios, activistas ambientales y especialistas en políticas. Cada perspectiva suma a entendimiento más denso de lo que está en juego."
       },
       columnistas: {
         title: "Nuestros Columnistas",
@@ -1262,7 +1264,7 @@
         emailInfoLabel: "Correo",
         emailInfo: "youremail@domain.com",
         subscribeTitle: "Suscríbete",
-        subscribeText: "Recibe novedades, columnas y publicaciones directamente en tu correo.",
+        subscribeText: "Recibe novedades, análisis y publicaciones directamente en tu correo.",
         subscribePlaceholder: "Ingresa tu email",
         subscribeButton: "Enviar",
         subscribeImage: "images/hero_bg_1.jpg"
@@ -1542,7 +1544,9 @@
       appendParagraphs(manifestoLeft, about.manifestoLeft);
     }
     if (manifestoRight) {
-      appendParagraphs(manifestoRight, about.manifestoRight);
+      appendParagraphs(manifestoRight, String(about.manifestoRight || "")
+        .replace(/,?\s*podcasts?/gi, "")
+        .replace(/podcasts?,?\s*/gi, ""));
     }
   }
 
@@ -1741,8 +1745,7 @@
     var socialLinks = [
       { href: "https://www.facebook.com/", label: "Facebook", icon: "icon-facebook" },
       { href: "https://www.instagram.com/", label: "Instagram", icon: "icon-instagram" },
-      { href: "https://www.youtube.com/", label: "YouTube", icon: "icon-youtube" },
-      { href: "https://open.spotify.com/", label: "Spotify", icon: "icon-spotify" }
+      { href: "https://www.youtube.com/", label: "YouTube", icon: "icon-youtube" }
     ];
 
     footer.classList.add("site-footer", "site-footer--structured");
@@ -1752,13 +1755,12 @@
       '<div class="site-footer__brand">' +
       '<a href="index.html" class="site-footer__logo-link" aria-label="Ir al inicio"><img src="logo_hor_col.png" alt="El Deslinde" class="site-footer__logo"></a>' +
       '<p>Editorial digital de contenido cr&iacute;tico sobre territorio, agricultura y sociedad.</p>' +
-      '<p class="site-footer__brand-note">Podcasts, columnas y publicaciones en una sola plataforma.</p>' +
+      '<p class="site-footer__brand-note">An&aacute;lisis, opini&oacute;n y publicaciones en una sola plataforma.</p>' +
       '</div>' +
       '<div class="site-footer__column">' +
       '<h3 class="footer-heading mb-4">Explorar</h3>' +
       '<ul class="list-unstyled site-footer__links">' +
-      '<li><a href="programas.html">Programas</a></li>' +
-      '<li><a href="columnas.html">Columnas</a></li>' +
+      '<li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>' +
       '<li><a href="publicaciones.html">Publicaciones</a></li>' +
       '<li><a href="about.html">Nosotros</a></li>' +
       '</ul>' +
@@ -1959,11 +1961,13 @@
     if (hero && config.heroImage) {
       setSafeBackgroundImage(hero, config.heroImage, "");
     }
-    if (heroTitle && config.heroTitle) {
-      heroTitle.textContent = config.heroTitle;
+    if (heroTitle && (config.heroTitle || pageId === "columnas")) {
+      heroTitle.textContent = pageId === "columnas" ? "Análisis y opinión" : config.heroTitle;
     }
-    if (heroSubtitle && config.heroSubtitle) {
-      heroSubtitle.textContent = config.heroSubtitle;
+    if (heroSubtitle && (config.heroSubtitle || pageId === "columnas")) {
+      heroSubtitle.textContent = pageId === "columnas"
+        ? "Ideas, argumentos y perspectivas para mirar el territorio con otra profundidad."
+        : config.heroSubtitle;
     }
 
     window.setTimeout(function () {
@@ -2006,7 +2010,7 @@
     };
 
     Object.keys(hrefMap).forEach(function (pageId) {
-      toggleLinksByHref(body, hrefMap[pageId], isNavigationLinkVisible(pageId));
+      toggleLinksByHref(body, hrefMap[pageId], pageId === "programas" ? false : isNavigationLinkVisible(pageId));
     });
   }
 

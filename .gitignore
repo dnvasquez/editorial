@@ -2,3 +2,7 @@
 *.code-workspace
 Thumbs.db
 desktop.ini
+node_modules/
+
+# Local Netlify folder
+.netlify

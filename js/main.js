@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 
 	
 	var siteMenuOrder = function() {
-		var desiredOrder = ['home', 'inicio', 'programas', 'columnas', 'publicaciones', 'nosotros', 'contacto'];
+		var desiredOrder = ['home', 'inicio', 'programas', 'analisis y opinion', 'publicaciones', 'nosotros', 'contacto'];
 
 		var normalizeLabel = function(value) {
 			return String(value || '')

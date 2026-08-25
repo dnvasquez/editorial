@@ -5,11 +5,37 @@
   from = "/programas"
   to = "/en-construccion.html"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/programas.html"
   to = "/en-construccion.html"
   status = 302
+  force = true
+
+[[redirects]]
+  from = "/programa"
+  to = "/en-construccion.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/programa.html"
+  to = "/en-construccion.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/single-post"
+  to = "/en-construccion.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/single-post.html"
+  to = "/en-construccion.html"
+  status = 302
+  force = true
 
 [[redirects]]
   from = "/contact"

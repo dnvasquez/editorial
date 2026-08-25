@@ -40,9 +40,8 @@
               <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
                 <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
                 <ul class="site-menu js-clone-nav d-none">
-                  <li><a href="index.html">Home</a></li>
-                  <li><a href="programas.html">Programas</a></li>
-                  <li><a href="columnas.html">Columnas</a></li>
+                  <li><a href="index.html">Inicio</a></li>
+                  <li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
                   <li><a href="publicaciones.html">Publicaciones</a></li>
                   <li><a href="about.html">Nosotros</a></li>
                   <li><a href="contact.html">Contacto</a></li>
@@ -61,7 +60,7 @@
                 <img id="author-photo" src="images/person_1.jpg" alt="" class="img-fluid">
               </figure>
               <div class="author-page__copy">
-                <div class="author-page__tag">Columna</div>
+                <div class="author-page__tag">Analista</div>
                 <h1 id="author-name" class="author-page__name"></h1>
                 <div id="author-role" class="author-page__role"></div>
                 <p id="author-bio" class="author-page__bio"></p>
@@ -69,7 +68,7 @@
                 <div class="author-page__stats">
                   <div class="author-page__stat">
                     <strong id="author-count">0</strong>
-                    <span>Columnas publicadas</span>
+                    <span>Art&iacute;culos publicados</span>
                   </div>
                   <div class="author-page__stat">
                     <strong id="author-latest">-</strong>
@@ -87,7 +86,7 @@
               <div>
                 <div class="author-page__section-kicker">Repositorio</div>
               </div>
-              <p class="author-page__section-text">Todas las columnas publicadas por este autor aparecen ordenadas para lectura y consulta.</p>
+              <p class="author-page__section-text">Todos los an&aacute;lisis y art&iacute;culos de opini&oacute;n publicados por este autor aparecen ordenados a continuaci&oacute;n.</p>
             </div>
             <div id="author-columns-list" class="author-columns-list"></div>
           </div>
@@ -99,7 +98,7 @@
           <div class="row align-items-start">
             <div class="col-lg-8 mb-4 mb-lg-0">
               <h3 class="footer-heading mb-4">Sobre El Deslinde</h3>
-              <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos podcasts, columnas de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
+              <p>Somos una editorial digital de contenido cr&iacute;tico. Producimos an&aacute;lisis, art&iacute;culos de opini&oacute;n y publicaciones sobre territorio, agricultura y sociedad.</p>
             </div>
             <div class="col-lg-4">
               <h3 class="footer-heading mb-4">S&iacute;guenos</h3>
@@ -203,7 +202,7 @@
 
           var listNode = document.getElementById('author-columns-list');
           if (listNode) {
-            listNode.innerHTML = '<div class="author-page__empty"><h3>Autor no encontrado</h3><p>Revisa el enlace o vuelve a la pagina de columnas para abrir un columnista valido.</p></div>';
+            listNode.innerHTML = '<div class="author-page__empty"><h3>Autor no encontrado</h3><p>Revisa el enlace o vuelve a la p&aacute;gina de An&aacute;lisis y opini&oacute;n para abrir un autor v&aacute;lido.</p></div>';
           }
 
           document.body.classList.remove('is-loading');
@@ -231,7 +230,7 @@
             '<p class="author-column-card__excerpt">' + escapeHtml(column.resumen || '') + '</p>' +
             '<div class="author-column-card__footer">' +
             '<div class="author-column-card__hashtags" aria-label="Hashtags de la columna">' + hashtagsHtml + '</div>' +
-            '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Leer columna</a>' +
+            '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Continuar leyendo</a>' +
             '</div>' +
             '</div>' +
             '</article>'
@@ -275,7 +274,7 @@
               return renderColumnCard(column, index);
             }).join('');
           } else {
-            listNode.innerHTML = '<div class="author-page__empty"><h3>No hay columnas publicadas todavia</h3><p>Cuando este autor publique nuevas columnas, apareceran aqui automaticamente.</p></div>';
+            listNode.innerHTML = '<div class="author-page__empty"><h3>No hay art&iacute;culos publicados todav&iacute;a</h3><p>Cuando este autor publique nuevos an&aacute;lisis o art&iacute;culos de opini&oacute;n, aparecer&aacute;n aqu&iacute; autom&aacute;ticamente.</p></div>';
           }
         }
 

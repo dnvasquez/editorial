@@ -621,7 +621,7 @@
     html += '<div class="admin-sidebar-links">';
     html += createLink("admin-columnas.html?view=programs", "Programas", currentView === "programs" || currentView === "program");
     html += createLink("admin-columnas.html?view=episodes", "Episodios", currentView === "episodes" || currentView === "episode");
-    html += createLink("admin-columnas.html?view=columns", "Columnas", currentView === "columns" || currentView === "column");
+    html += createLink("admin-columnas.html?view=columns", "Análisis y opinión", currentView === "columns" || currentView === "column");
     html += createLink("admin-columnas.html?view=publications", "Publicaciones", currentView === "publications" || currentView === "publication");
     html += createLink("admin-columnas.html?view=invitados-content", "Invitados destacados", currentView === "invitados-content");
     html += createLink("admin-columnas.html?view=about-content", "Nosotros", currentView === "about-content");
@@ -667,14 +667,14 @@
 
     var metricsHtml =
       '<section class="admin-overview-grid">' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Visualizaciones</span><strong>' + totalColumnViews + '</strong><p>Total de vistas en columnas publicadas.</p></article>' +
-      '<article class="admin-overview-card"><span class="admin-overview-label">Columnas</span><strong>' + visibleColumns.length + '</strong><p>' + (columns.length - visibleColumns.length) + ' ocultas.</p></article>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Visualizaciones</span><strong>' + totalColumnViews + '</strong><p>Total de vistas en análisis y artículos de opinión publicados.</p></article>' +
+      '<article class="admin-overview-card"><span class="admin-overview-label">Análisis y opinión</span><strong>' + visibleColumns.length + '</strong><p>' + (columns.length - visibleColumns.length) + ' piezas ocultas.</p></article>' +
       '<article class="admin-overview-card"><span class="admin-overview-label">Capítulos</span><strong>' + visibleEpisodes.length + '</strong><p>' + (episodes.length - visibleEpisodes.length) + ' ocultos.</p></article>' +
       '<article class="admin-overview-card"><span class="admin-overview-label">Publicaciones</span><strong>' + visiblePublications.length + '</strong><p>' + (publications.length - visiblePublications.length) + ' ocultas.</p></article>' +
       '</section>';
 
     var recentColumnsHtml = '<section class="admin-card admin-library-card">' +
-      '<div class="admin-library-header"><div><span class="admin-kicker">Últimas columnas</span><h3>Contenido reciente</h3></div></div>' +
+      '<div class="admin-library-header"><div><span class="admin-kicker">Últimos análisis y opinión</span><h3>Contenido reciente</h3></div></div>' +
       '<div class="admin-recent-list">';
 
     if (recentColumns.length > 0) {
@@ -683,7 +683,7 @@
         recentColumnsHtml += '<div class="admin-recent-item"><div class="admin-recent-info"><strong>' + escapeHtml(col.autor || 'Anónimo') + '</strong><p>' + escapeHtml(col.titulo || 'Sin título') + '</p></div><div class="admin-recent-metric">' + views + ' vistas</div></div>';
       });
     } else {
-      recentColumnsHtml += '<p class="admin-muted">Sin columnas publicadas aún.</p>';
+      recentColumnsHtml += '<p class="admin-muted">Sin análisis ni artículos de opinión publicados aún.</p>';
     }
     recentColumnsHtml += '</div></section>';
 
@@ -1374,7 +1374,7 @@
     setHeader(
       "Contenido",
       "Nuestros columnistas",
-      "Edita las fichas visibles en la secciÃ³n Columnistas de la pÃ¡gina Columnas. Esta lista alimenta tambiÃ©n el selector de autor en nuevas columnas."
+      "Edita las fichas visibles en la secciÃ³n de autores de la pÃ¡gina AnÃ¡lisis y opiniÃ³n. Esta lista alimenta tambiÃ©n el selector de autor en nuevos artÃ­culos."
     );
 
     document.getElementById("admin-main-content").innerHTML = buildColumnistasContentMarkup(content, items, selectedIndex);
@@ -2333,17 +2333,17 @@
         '<div><span class="admin-column-status' + (column.estado === "borrador" ? ' is-borrador' : '') + '">' + escapeHtml(column.estado || "borrador") + '</span></div>' +
         '<div class="admin-column-cell">Abrir</div>' +
         '</button>';
-    }).join("") : '<div class="admin-empty-state">No hay columnas creadas todavia. Usa <strong>Nueva columna</strong> para crear la primera.</div>';
+    }).join("") : '<div class="admin-empty-state">No hay art&iacute;culos creados todav&iacute;a. Usa <strong>Nuevo art&iacute;culo</strong> para crear el primero.</div>';
 
     renderEntityEditor({
       kicker: "Contenido",
-      title: "Columnas",
-      subtitle: "Administra piezas editoriales, borradores y columnas publicadas desde una sola biblioteca.",
+      title: "Análisis y opinión",
+      subtitle: "Administra análisis, artículos de opinión y borradores desde una sola biblioteca.",
       html:
         '<section class="admin-library-layout">' +
         '<div class="admin-card admin-library-card">' +
-        '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Columnas</h3></div><button id="add-column" type="button" class="btn btn-primary">Nueva columna</button></div>' +
-        '<div class="admin-library-meta"><span>' + columns.length + ' columnas</span><span>Haz clic en una fila para ver, editar o borrar</span></div>' +
+        '<div class="admin-library-header"><div><span class="admin-kicker">Biblioteca</span><h3>Análisis y opinión</h3></div><button id="add-column" type="button" class="btn btn-primary">Nuevo artículo</button></div>' +
+        '<div class="admin-library-meta"><span>' + columns.length + ' artículos</span><span>Haz clic en una fila para ver, editar o borrar</span></div>' +
         '<div class="admin-table-head admin-column-table-head">' +
         '<span>Titulo</span><span>Autor</span><span>Fecha</span><span>Estado</span><span></span>' +
         '</div>' +
