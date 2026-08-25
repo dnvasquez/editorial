@@ -2,6 +2,57 @@
   functions = "netlify/functions"
 
 [[redirects]]
+  from = "/columnas"
+  to = "/analisis-y-opinion"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/columnas.html"
+  to = "/analisis-y-opinion"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/columna"
+  to = "/articulo"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/columna.html"
+  to = "/articulo"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/columnista"
+  to = "/analista"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/columnista.html"
+  to = "/analista"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/analisis-y-opinion"
+  to = "/columnas.html"
+  status = 200
+
+[[redirects]]
+  from = "/articulo"
+  to = "/columna.html"
+  status = 200
+
+[[redirects]]
+  from = "/analista"
+  to = "/columnista.html"
+  status = 200
+
+[[redirects]]
   from = "/programas"
   to = "/en-construccion.html"
   status = 302
@@ -41,15 +92,17 @@
   from = "/contact"
   to = "/en-construccion.html"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/contact.html"
   to = "/en-construccion.html"
   status = 302
+  force = true
 
 [[edge_functions]]
   function = "column-og"
-  path = "/columna.html"
+  path = "/articulo"
 
 [[edge_functions]]
   function = "admin-guard"

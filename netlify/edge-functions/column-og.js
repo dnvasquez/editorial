@@ -80,7 +80,7 @@ function buildMeta(column, origin, requestUrl) {
 
 export default async function (request, context) {
   const requestUrl = new URL(request.url);
-  if (requestUrl.pathname !== "/columna.html") {
+  if (requestUrl.pathname !== "/articulo") {
     return context.next();
   }
 
@@ -116,5 +116,5 @@ export default async function (request, context) {
 }
 
 export const config = {
-  path: "/columna.html"
+  path: "/articulo"
 };

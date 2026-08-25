@@ -821,10 +821,9 @@
               <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
               <ul class="site-menu js-clone-nav d-none">
                 <li class="active"><a href="index.html">Inicio</a></li>
-                <li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
+                <li><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>
                 <li><a href="publicaciones.html">Publicaciones</a></li>
                 <li><a href="about.html">Nosotros</a></li>
-                <li><a href="contact.html">Contacto</a></li>
               </ul>
             </nav>
           </div>
@@ -1086,7 +1085,7 @@
             '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>Por ' + escapeHtml(column.autor || "Autor/a") + ' <span class="sep">/</span> ' + escapeHtml(column.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(column.lectura || "") + '</small></span></div>',
             '<p class="featured-column-summary text-white">' + escapeHtml(column.resumen || "Lee esta columna destacada.") + '</p>',
             buildHeroHashtags(column.hashtags || []),
-            '<p class="mb-0"><a id="cms-hero-transcript-link" href="columna.html?id=' + encodeURIComponent(column.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Continuar leyendo</a></p>',
+            '<p class="mb-0"><a id="cms-hero-transcript-link" href="/articulo?id=' + encodeURIComponent(column.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Continuar leyendo</a></p>',
             '</div>',
             '</article>'
           ].join('');
@@ -1326,19 +1325,19 @@
 
         var detailHtml =
           '<article class="home-column-detail">' +
-          '<a href="columna.html?id=' + currentColumn.id + '" class="home-column-detail__media" style="background-image: url(\'' + (currentColumn.imagen || currentColumn.banner) + '\');" aria-label="Abrir columna ' + currentColumn.titulo + '"></a>' +
+          '<a href="/articulo?id=' + currentColumn.id + '" class="home-column-detail__media" style="background-image: url(\'' + (currentColumn.imagen || currentColumn.banner) + '\');" aria-label="Abrir art&iacute;culo ' + currentColumn.titulo + '"></a>' +
           '<div class="home-column-detail__body">' +
           '<span class="home-column-detail__kicker">An&aacute;lisis y opini&oacute;n</span>' +
-          '<h3><a href="columna.html?id=' + currentColumn.id + '">' + currentColumn.titulo + '</a></h3>' +
+          '<h3><a href="/articulo?id=' + currentColumn.id + '">' + currentColumn.titulo + '</a></h3>' +
           '<div class="home-column-detail__meta"><span>Por ' + currentColumn.autor + '</span><span>•</span><span>' + currentColumn.fecha + '</span><span>•</span><span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(currentColumn.vistas || 0) : ((currentColumn.vistas || 0) + ' vistas')) + '</span></div>' +
           '<p>' + currentColumn.resumen + '</p>' +
-          '<a href="columna.html?id=' + currentColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Continuar leyendo</a>' +
+          '<a href="/articulo?id=' + currentColumn.id + '" class="btn btn-primary btn-sm py-3 px-4 small">Continuar leyendo</a>' +
           '</div>' +
           '</article>';
 
         var moreColumnsHtml = COLUMNAS.length > recentColumns.length ? (
           '<div class="mt-3">' +
-            '<a href="columnas.html" class="btn btn-outline-primary btn-block py-3 px-4 small">Ver m&aacute;s an&aacute;lisis y opini&oacute;n</a>' +
+            '<a href="/analisis-y-opinion" class="btn btn-outline-primary btn-block py-3 px-4 small">Ver m&aacute;s an&aacute;lisis y opini&oacute;n</a>' +
           '</div>'
         ) : '';
 
@@ -1357,7 +1356,7 @@
             var isMobile = window.matchMedia && window.matchMedia('(max-width: 767.98px)').matches;
 
             if (isMobile) {
-              window.location.href = 'columna.html?id=' + encodeURIComponent(columnId);
+              window.location.href = '/articulo?id=' + encodeURIComponent(columnId);
               return;
             }
 
@@ -1405,7 +1404,7 @@
       var footerEpHtml = '';
       COLUMNAS.slice(0, 3).forEach(function(col) {
         footerEpHtml +=
-          '<li class="mb-3"><a href="columna.html?id=' + col.id + '" class="d-flex">' +
+          '<li class="mb-3"><a href="/articulo?id=' + col.id + '" class="d-flex">' +
           '<figure class="image mr-4"><img src="' + (col.imagen || col.banner || '') + '" alt="" class="img-fluid"></figure>' +
           '<div class="text"><h3 class="heading font-weight-light">' + col.titulo + '</h3></div>' +
           '</a></li>';

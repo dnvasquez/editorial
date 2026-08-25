@@ -47,10 +47,9 @@
               <ul class="site-menu js-clone-nav d-none">
                 <li><a href="index.html">Inicio</a></li>
                 <li class="active"><a href="programas.html">Programas</a></li>
-                <li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
+                <li><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>
                 <li><a href="publicaciones.html">Publicaciones</a></li>
                 <li><a href="about.html">Nosotros</a></li>
-                <li><a href="contact.html">Contacto</a></li>
               </ul>
             </nav>
           </div>
@@ -171,7 +170,7 @@
       var footerHtml = '';
       COLUMNAS.slice(0, 3).forEach(function(col) {
         footerHtml +=
-          '<li class="mb-3"><a href="columna.html?id=' + col.id + '" class="d-flex">' +
+          '<li class="mb-3"><a href="/articulo?id=' + col.id + '" class="d-flex">' +
           '<figure class="image mr-4"><img src="' + (col.imagen || col.banner || '') + '" alt="" class="img-fluid"></figure>' +
           '<div class="text"><h3 class="heading font-weight-light">' + col.titulo + '</h3></div>' +
           '</a></li>';

@@ -382,7 +382,7 @@
         buildPreviewDatum("Fecha de publicacion", content.fecha || ""),
         buildPreviewDatum("Tiempo de lectura", content.lectura || ""),
         buildPreviewDatum("Categoria", content.categoria || ""),
-        buildPreviewDatum("Enlace", "columna.html?id=" + content.id)
+        buildPreviewDatum("Enlace", "/articulo?id=" + content.id)
       ];
     } else if (contentType === "publication") {
       title = "Publicacion destacada";
@@ -570,7 +570,7 @@
         buildPreviewDatum("Fecha de publicacion", content.fecha || ""),
         buildPreviewDatum("Tiempo de lectura", content.lectura || ""),
         buildPreviewDatum("Categoria", content.categoria || ""),
-        buildPreviewDatum("Enlace", "columna.html?id=" + content.id)
+        buildPreviewDatum("Enlace", "/articulo?id=" + content.id)
       ];
     } else if (contentType === "publication") {
       title = "Publicacion destacada";

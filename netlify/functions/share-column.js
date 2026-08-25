@@ -173,7 +173,7 @@ exports.handler = async function (event) {
   const column = findColumnById(columns, id);
 
   if (!column) {
-    const fallbackUrl = `${siteOrigin}/columnas.html`;
+    const fallbackUrl = `${siteOrigin}/analisis-y-opinion`;
     return {
       statusCode: 404,
       headers: {
@@ -193,7 +193,7 @@ exports.handler = async function (event) {
   const title = String(column.titulo || "Columna");
   const description = String(column.resumen || "");
   const image = absoluteUrl(siteOrigin, column.banner || column.imagen || DEFAULT_IMAGE);
-  const pageUrl = `${siteOrigin}/columna.html?id=${encodeURIComponent(column.id)}`;
+  const pageUrl = `${siteOrigin}/articulo?id=${encodeURIComponent(column.id)}`;
   const canonicalUrl = pageUrl;
   const published = column.fecha && /^\d{4}-\d{2}-\d{2}$/.test(column.fecha) ? `${column.fecha}T12:00:00Z` : "";
 

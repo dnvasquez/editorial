@@ -44,10 +44,9 @@
               <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
               <ul class="site-menu js-clone-nav d-none">
                 <li><a href="index.html">Inicio</a></li>
-                <li class="active"><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
+                <li class="active"><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>
                 <li><a href="publicaciones.html">Publicaciones</a></li>
                 <li><a href="about.html">Nosotros</a></li>
-                <li><a href="contact.html">Contacto</a></li>
               </ul>
             </nav>
           </div>
@@ -152,7 +151,7 @@
           });
         }
         var lookup = column.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(column.autor || '') : '');
-        return lookup ? 'columnista.html?id=' + encodeURIComponent(lookup) : '';
+        return lookup ? '/analista?id=' + encodeURIComponent(lookup) : '';
       }
 
       function renderColumnCard(column, index) {
@@ -163,7 +162,7 @@
           : '<span class="column-archive-card__author">Por ' + escapeHtml(column.autor || '') + '</span>';
         return (
           '<article class="column-archive-card" data-aos="fade-up"' + delay + '>' +
-          '<a href="columna.html?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + (column.imagen || column.banner) + '\');">' +
+          '<a href="/articulo?id=' + column.id + '" class="column-archive-card__media" style="background-image:url(\'' + (column.imagen || column.banner) + '\');">' +
           '<span class="column-archive-card__badge">' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : formatViews(column.vistas || 0)) + '</span>' +
           '</a>' +
           '<div class="column-archive-card__body">' +
@@ -172,11 +171,11 @@
           '<span>•</span>' +
           '<span>' + escapeHtml(column.lectura || 'Lectura breve') + '</span>' +
           '</div>' +
-          '<h3 class="column-archive-card__title"><a href="columna.html?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
+          '<h3 class="column-archive-card__title"><a href="/articulo?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
           '<p class="column-archive-card__excerpt">' + escapeHtml(column.resumen || '') + '</p>' +
           '<div class="column-archive-card__footer">' +
           authorHtml +
-          '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Continuar leyendo</a>' +
+          '<a href="/articulo?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Continuar leyendo</a>' +
           '</div>' +
           '</div>' +
           '</article>'
@@ -205,9 +204,9 @@
           '</div>' +
           '<h3>' + escapeHtml(featured.titulo || '') + '</h3>' +
           '<p>' + escapeHtml(featured.resumen || '') + '</p>' +
-          '<a href="columna.html?id=' + featured.id + '" class="btn btn-primary btn-sm py-2 px-4 column-feature__cta">Continuar leyendo</a>' +
+          '<a href="/articulo?id=' + featured.id + '" class="btn btn-primary btn-sm py-2 px-4 column-feature__cta">Continuar leyendo</a>' +
           '</div>' +
-          '<a href="columna.html?id=' + featured.id + '" class="column-feature__featured-media" style="background-image:url(\'' + (featured.imagen || featured.banner) + '\');" aria-label="Abrir columna destacada"></a>' +
+          '<a href="/articulo?id=' + featured.id + '" class="column-feature__featured-media" style="background-image:url(\'' + (featured.imagen || featured.banner) + '\');" aria-label="Abrir art&iacute;culo destacado"></a>' +
           '</div>' +
           '</section>';
       }

@@ -44,10 +44,9 @@
               <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
               <ul class="site-menu js-clone-nav d-none">
                 <li><a href="index.html">Inicio</a></li>
-                <li class="active"><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
+                <li class="active"><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>
                 <li><a href="publicaciones.html">Publicaciones</a></li>
                 <li><a href="about.html">Nosotros</a></li>
-                <li><a href="contact.html">Contacto</a></li>
               </ul>
             </nav>
           </div>
@@ -86,7 +85,7 @@
               <!-- Renderizado por JS -->
             </div>
             <div class="mt-5">
-              <a href="columnas.html" class="btn btn-outline-primary px-4 py-3">&larr; Volver a An&aacute;lisis y opini&oacute;n</a>
+              <a href="/analisis-y-opinion" class="btn btn-outline-primary px-4 py-3">&larr; Volver a An&aacute;lisis y opini&oacute;n</a>
             </div>
           </div>
         </div>
@@ -217,7 +216,7 @@
           name: col.autor || ''
         });
       } else if (col.autorId || col.autor) {
-        authorUrl = 'columnista.html?id=' + encodeURIComponent(col.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(col.autor) : col.autor || ''));
+        authorUrl = '/analista?id=' + encodeURIComponent(col.autorId || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(col.autor) : col.autor || ''));
       }
 
       var authorLabel = col.autor || 'Autor/a';

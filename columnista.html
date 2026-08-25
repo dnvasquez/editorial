@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title>Columnista &mdash; Estaci&oacute;n Rural</title>
+    <title>Analista &mdash; El Deslinde</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="logo_ico.png">
@@ -41,10 +41,9 @@
                 <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
                 <ul class="site-menu js-clone-nav d-none">
                   <li><a href="index.html">Inicio</a></li>
-                  <li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>
+                  <li><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>
                   <li><a href="publicaciones.html">Publicaciones</a></li>
                   <li><a href="about.html">Nosotros</a></li>
-                  <li><a href="contact.html">Contacto</a></li>
                 </ul>
               </nav>
             </div>
@@ -161,7 +160,7 @@
             return window.EditorialCmsSite.getColumnistaPageUrl(author);
           }
           var ref = author.id || (window.EditorialCmsSite ? window.EditorialCmsSite.slugify(author.name || '') : '');
-          return ref ? 'columnista.html?id=' + encodeURIComponent(ref) : '';
+          return ref ? '/analista?id=' + encodeURIComponent(ref) : '';
         }
 
         function renderSocials(container, member) {
@@ -190,10 +189,10 @@
         }
 
         function renderMissingAuthor(authorRef) {
-          document.title = 'Columnista no encontrado - El Deslinde';
+          document.title = 'Analista no encontrado - El Deslinde';
           document.getElementById('author-photo').src = 'images/person_1.jpg';
-          document.getElementById('author-photo').alt = 'Columnista no encontrado';
-          document.getElementById('author-name').textContent = 'Columnista no encontrado';
+          document.getElementById('author-photo').alt = 'Analista no encontrado';
+          document.getElementById('author-name').textContent = 'Analista no encontrado';
           document.getElementById('author-role').textContent = '';
           document.getElementById('author-bio').textContent = 'No pudimos encontrar la ficha editorial asociada a este enlace.';
           document.getElementById('author-count').textContent = '0';
@@ -217,7 +216,7 @@
             : '<span class="author-column-card__hashtag author-column-card__hashtag--empty">Sin hashtags</span>';
           return (
             '<article class="author-column-card">' +
-            '<a href="columna.html?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.imagen || column.banner || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir columna') + '"></a>' +
+            '<a href="/articulo?id=' + column.id + '" class="author-column-card__media" style="background-image:url(\'' + (column.imagen || column.banner || 'images/col01_img.jpg') + '\');" aria-label="' + escapeHtml(column.titulo || 'Abrir art&iacute;culo') + '"></a>' +
             '<div class="author-column-card__body">' +
             '<div class="author-column-card__meta">' +
             '<span>' + escapeHtml(column.fecha || '') + '</span>' +
@@ -226,11 +225,11 @@
             '<span>/</span>' +
             '<span>' + (window.EditorialCmsSite ? window.EditorialCmsSite.formatViewLabel(column.vistas || 0) : formatViews(column.vistas || 0)) + '</span>' +
             '</div>' +
-            '<h3 class="author-column-card__title"><a href="columna.html?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
+            '<h3 class="author-column-card__title"><a href="/articulo?id=' + column.id + '">' + escapeHtml(column.titulo || '') + '</a></h3>' +
             '<p class="author-column-card__excerpt">' + escapeHtml(column.resumen || '') + '</p>' +
             '<div class="author-column-card__footer">' +
             '<div class="author-column-card__hashtags" aria-label="Hashtags de la columna">' + hashtagsHtml + '</div>' +
-            '<a href="columna.html?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Continuar leyendo</a>' +
+            '<a href="/articulo?id=' + column.id + '" class="btn btn-primary btn-sm py-2 px-4">Continuar leyendo</a>' +
             '</div>' +
             '</div>' +
             '</article>'
@@ -257,10 +256,10 @@
           return refs.indexOf(String(author.id || '')) !== -1 || refs.indexOf(window.EditorialCmsSite ? window.EditorialCmsSite.slugify(author.name || '') : '') !== -1;
         });
 
-        document.title = (author.name || 'Columnista') + ' - El Deslinde';
+        document.title = (author.name || 'Analista') + ' - El Deslinde';
         document.getElementById('author-photo').src = author.image || 'images/person_1.jpg';
-        document.getElementById('author-photo').alt = author.name || 'Columnista';
-        document.getElementById('author-name').textContent = author.name || 'Columnista';
+        document.getElementById('author-photo').alt = author.name || 'Analista';
+        document.getElementById('author-name').textContent = author.name || 'Analista';
         document.getElementById('author-role').textContent = author.role || '';
         document.getElementById('author-bio').textContent = author.bio || '';
         document.getElementById('author-count').textContent = String(authorColumns.length);

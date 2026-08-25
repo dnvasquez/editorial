@@ -34,9 +34,9 @@
 
   var PAGE_DEFINITIONS = [
     { id: "index", label: "Inicio", file: "index.html" },
-    { id: "columnista", label: "Columnista", file: "columnista.html" },
+    { id: "columnista", label: "Analista", file: "/analista" },
     { id: "programas", label: "Programas", file: "programas.html" },
-    { id: "columnas", label: "Análisis y opinión", file: "columnas.html" },
+    { id: "columnas", label: "Análisis y opinión", file: "/analisis-y-opinion" },
     { id: "publicaciones", label: "Publicaciones", file: "publicaciones.html" },
     { id: "about", label: "Nosotros", file: "about.html" },
     { id: "contact", label: "Contacto", file: "contact.html" },
@@ -480,10 +480,10 @@
   }
 
   function getColumnistaPageUrl(columnist) {
-    if (!columnist) return "columnista.html";
+    if (!columnist) return "/analista";
     var ref = columnist.id || slugify(columnist.name || "");
     if (!ref) return "";
-    return "columnista.html?id=" + encodeURIComponent(ref);
+    return "/analista?id=" + encodeURIComponent(ref);
   }
 
   function resolveColumnAuthor(column) {
@@ -1760,7 +1760,7 @@
       '<div class="site-footer__column">' +
       '<h3 class="footer-heading mb-4">Explorar</h3>' +
       '<ul class="list-unstyled site-footer__links">' +
-      '<li><a href="columnas.html">An&aacute;lisis y opini&oacute;n</a></li>' +
+      '<li><a href="/analisis-y-opinion">An&aacute;lisis y opini&oacute;n</a></li>' +
       '<li><a href="publicaciones.html">Publicaciones</a></li>' +
       '<li><a href="about.html">Nosotros</a></li>' +
       '</ul>' +
@@ -1788,7 +1788,7 @@
       var sourceColumns = Array.isArray(window.COLUMNAS) ? window.COLUMNAS : [];
       latestContainer.innerHTML = sourceColumns.slice(0, 3).map(function (column) {
         return '' +
-          '<li class="mb-3"><a href="columna.html?id=' + encodeURIComponent(column.id) + '" class="d-flex">' +
+          '<li class="mb-3"><a href="/articulo?id=' + encodeURIComponent(column.id) + '" class="d-flex">' +
           '<figure class="image mr-4"><img src="' + String(column.imagen || column.banner || '') + '" alt="" class="img-fluid"></figure>' +
           '<div class="text"><h3 class="heading font-weight-light">' + String(column.titulo || '') + '</h3></div>' +
           '</a></li>';
@@ -2003,14 +2003,14 @@
   function applyNavigationVisibility(body) {
     var hrefMap = {
       programas: "programas.html",
-      columnas: "columnas.html",
+      columnas: "/analisis-y-opinion",
       publicaciones: "publicaciones.html",
       about: "about.html",
       contact: "contact.html"
     };
 
     Object.keys(hrefMap).forEach(function (pageId) {
-      toggleLinksByHref(body, hrefMap[pageId], pageId === "programas" ? false : isNavigationLinkVisible(pageId));
+      toggleLinksByHref(body, hrefMap[pageId], (pageId === "programas" || pageId === "contact") ? false : isNavigationLinkVisible(pageId));
     });
   }
 
