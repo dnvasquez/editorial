@@ -62,7 +62,7 @@ export default async function (request, context) {
   const protectedPaths = new Set(["/admin-columnas.html", "/admin-seccion.html"]);
 
   if (!protectedPaths.has(pathname) && pathname !== loginPath) {
-    return;
+    return context.next();
   }
 
   const sessionSecret = Netlify.env.get("CMS_ADMIN_SESSION_SECRET");
@@ -77,14 +77,11 @@ export default async function (request, context) {
     if (authenticated) {
       return Response.redirect(new URL("/admin-columnas.html", request.url), 302);
     }
-    return;
+    return context.next();
   }
 
   if (!authenticated) {
     return Response.redirect(new URL(loginPath, request.url), 302);
   }
+  return context.next();
 }
-
-export const config = {
-  path: "/*"
-};
