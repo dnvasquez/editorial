@@ -375,7 +375,7 @@
         buildPreviewDatum("Enlace de transcripcion", "single-post.html?id=" + content.id)
       ];
     } else if (contentType === "column") {
-      title = "Columna destacada";
+      title = "Contenido más reciente";
       data = [
         buildPreviewDatum("Titulo", content.titulo || "Sin titulo"),
         buildPreviewDatum("Autor", content.autor || ""),
@@ -563,7 +563,7 @@
         buildPreviewDatum("Enlace de transcripcion", "single-post.html?id=" + content.id)
       ];
     } else if (contentType === "column") {
-      title = "Columna destacada";
+      title = "Contenido más reciente";
       data = [
         buildPreviewDatum("Titulo", content.titulo || "Sin titulo"),
         buildPreviewDatum("Autor", content.autor || ""),

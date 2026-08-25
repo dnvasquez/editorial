@@ -172,7 +172,7 @@
       }
 
       body[data-cms-page="index"] #ep-hero[data-hero-kind="column"]:before {
-        content: "Columna destacada";
+        content: "Contenido más reciente";
       }
 
       body[data-cms-page="index"] #ep-hero[data-hero-kind="publication"]:before {
@@ -1080,10 +1080,10 @@
           return [
             '<article class="featured-column-panel">',
             '<div class="featured-column-copy">',
-            '<span class="featured-hero-kicker">Columna destacada</span>',
+            '<span class="featured-hero-kicker">Contenido m&aacute;s reciente</span>',
             '<h2 id="cms-hero-title" class="featured-hero-title text-white">' + escapeHtml(column.titulo || "") + '</h2>',
             '<div id="cms-hero-subtitle" class="featured-hero-meta text-white"><span class="text-white-opacity-05"><small>Por ' + escapeHtml(column.autor || "Autor/a") + ' <span class="sep">/</span> ' + escapeHtml(column.fecha || "") + ' <span class="sep">/</span> ' + escapeHtml(column.lectura || "") + '</small></span></div>',
-            '<p class="featured-column-summary text-white">' + escapeHtml(column.resumen || "Lee esta columna destacada.") + '</p>',
+            '<p class="featured-column-summary text-white">' + escapeHtml(column.resumen || "Explora este contenido reciente.") + '</p>',
             buildHeroHashtags(column.hashtags || []),
             '<p class="mb-0"><a id="cms-hero-transcript-link" href="/articulo?id=' + encodeURIComponent(column.id) + '" class="btn btn-primary btn-sm py-3 px-4 small">Continuar leyendo</a></p>',
             '</div>',
